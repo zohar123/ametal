@@ -87,7 +87,7 @@ void demo_am845_core_hw_acmp_int_entry (void)
             AMHW_LPC82X_ACMP_CTRL_HYS_20MV     | /* 迟滞电压为 20mV */
             AMHW_LPC84X_ACMP_CTRL_INTENA;        /* ACMP中断使能 */
 
-    demo_lpc824_hw_acmp_int_entry(LPC84X_ACMP, flags, INUM_ACMP, PIO0_18);
+    demo_lpc824_hw_acmp_int_entry(LPC84X_ACMP, flags, INUM_ACMP_CAPT, PIO0_18);
 }
 /** [src_am845_core_hw_acmp_int] */
 

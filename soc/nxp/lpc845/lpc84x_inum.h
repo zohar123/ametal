@@ -53,7 +53,7 @@ extern "C" {
 #define INUM_I2C0                8    /**< \brief I2C0中断               */
 #define INUM_SCT0                9    /**< \brief SCT中断                */
 #define INUM_MRT                 10   /**< \brief Multi-rate 定时器中断  */
-#define INUM_ACMP                11   /**< \brief 模拟比较器中断         */
+#define INUM_ACMP_CAPT           11   /**< \brief 模拟比较器和CAPT中断         */
 #define INUM_WDT                 12   /**< \brief 看门狗中断             */
 #define INUM_BOD                 13   /**< \brief BOD中断                */
 #define INUM_FLASH               14   /**< \brief FLASH中断              */
