@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define>AM_VDEBUG AM_CORTEX_M0</Define>
               <Undefine></Undefine>
-              <IncludePath>..\user_code;..\user_config;..\user_config\am_hwconf_usrcfg;..\user_config\am_servconf_usrcfg;..\..\..\..\3rdparty\CMSIS\Include;..\..\..\..\arch\arm\include;..\..\..\bsp_common\include;..\..\..\..\components\drivers\include;..\..\..\..\components\libc\microlib_adapter\include;..\..\..\..\components\libc\armlib_adapter\include;..\..\..\..\components\service\include;..\..\..\..\components\util\include;..\..\..\..\examples\board\am824_core;..\..\..\..\examples\components;..\..\..\..\examples\soc\nxp;..\..\..\..\examples\std;..\..\..\..\interface;..\..\..\..\soc\nxp\drivers\include\acmp;..\..\..\..\soc\nxp\drivers\include\adc;..\..\..\..\soc\nxp\drivers\include\clk;..\..\..\..\soc\nxp\drivers\include\crc;..\..\..\..\soc\nxp\drivers\include\dma;..\..\..\..\soc\nxp\drivers\include\fmc;..\..\..\..\soc\nxp\drivers\include\gpio;..\..\..\..\soc\nxp\drivers\include\i2c;..\..\..\..\soc\nxp\drivers\include\iap;..\..\..\..\soc\nxp\drivers\include\inmux;..\..\..\..\soc\nxp\drivers\include\iocon;..\..\..\..\soc\nxp\drivers\include\mrt;..\..\..\..\soc\nxp\drivers\include\pint;..\..\..\..\soc\nxp\drivers\include\pmu;..\..\..\..\soc\nxp\drivers\include\rit;..\..\..\..\soc\nxp\drivers\include\rtc;..\..\..\..\soc\nxp\drivers\include\sct;..\..\..\..\soc\nxp\drivers\include\spi;..\..\..\..\soc\nxp\drivers\include\swm;..\..\..\..\soc\nxp\drivers\include\syscon;..\..\..\..\soc\nxp\drivers\include\timer;..\..\..\..\soc\nxp\drivers\include\usart;..\..\..\..\soc\nxp\drivers\include\utick;..\..\..\..\soc\nxp\drivers\include\wkt;..\..\..\..\soc\nxp\drivers\include\wwdt;..\..\..\..\soc\nxp\lpc845;..\..\..\..\soc\nxp\drivers\include\adc;..\..\..\..\soc\nxp\drivers\include\dac;..\..\..\..\examples\board\am845_core;..\..\..\..\soc\nxp\drivers\include\clk\hw</IncludePath>
+              <IncludePath>..\user_code;..\user_config;..\user_config\am_hwconf_usrcfg;..\user_config\am_servconf_usrcfg;..\..\..\..\3rdparty\CMSIS\Include;..\..\..\..\arch\arm\include;..\..\..\bsp_common\include;..\..\..\..\components\drivers\include;..\..\..\..\components\libc\microlib_adapter\include;..\..\..\..\components\libc\armlib_adapter\include;..\..\..\..\components\service\include;..\..\..\..\components\util\include;..\..\..\..\examples\board\am824_core;..\..\..\..\examples\components;..\..\..\..\examples\soc\nxp;..\..\..\..\examples\std;..\..\..\..\interface;..\..\..\..\soc\nxp\drivers\include\acmp;..\..\..\..\soc\nxp\drivers\include\adc;..\..\..\..\soc\nxp\drivers\include\clk;..\..\..\..\soc\nxp\drivers\include\crc;..\..\..\..\soc\nxp\drivers\include\dma;..\..\..\..\soc\nxp\drivers\include\fmc;..\..\..\..\soc\nxp\drivers\include\gpio;..\..\..\..\soc\nxp\drivers\include\i2c;..\..\..\..\soc\nxp\drivers\include\iap;..\..\..\..\soc\nxp\drivers\include\inmux;..\..\..\..\soc\nxp\drivers\include\iocon;..\..\..\..\soc\nxp\drivers\include\mrt;..\..\..\..\soc\nxp\drivers\include\pint;..\..\..\..\soc\nxp\drivers\include\pmu;..\..\..\..\soc\nxp\drivers\include\rit;..\..\..\..\soc\nxp\drivers\include\rtc;..\..\..\..\soc\nxp\drivers\include\sct;..\..\..\..\soc\nxp\drivers\include\spi;..\..\..\..\soc\nxp\drivers\include\swm;..\..\..\..\soc\nxp\drivers\include\syscon;..\..\..\..\soc\nxp\drivers\include\timer;..\..\..\..\soc\nxp\drivers\include\usart;..\..\..\..\soc\nxp\drivers\include\utick;..\..\..\..\soc\nxp\drivers\include\wkt;..\..\..\..\soc\nxp\drivers\include\wwdt;..\..\..\..\soc\nxp\lpc845;..\..\..\..\soc\nxp\drivers\include\adc;..\..\..\..\soc\nxp\drivers\include\dac;..\..\..\..\examples\board\am845_core;..\..\..\..\soc\nxp\drivers\include\clk\hw;..\..\..\..\soc\nxp\drivers\include\capt</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -977,6 +977,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\soc\nxp\drivers\source\pmu\hw\amhw_lpc84x_pmu.c</FilePath>
             </File>
+            <File>
+              <FileName>amhw_lpc84x_capt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\soc\nxp\drivers\source\capt\hw\amhw_lpc84x_capt.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1357,6 +1362,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\examples\board\am845_core\sct\demo_am845_core_std_sct_cap.c</FilePath>
             </File>
+            <File>
+              <FileName>demo_am845_core_hw_capt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\examples\board\am845_core\capt\demo_am845_core_hw_capt.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1656,6 +1666,11 @@
               <FileName>demo_lpc845_hw_iap.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\examples\soc\nxp\iap\demo_lpc845_hw_iap.c</FilePath>
+            </File>
+            <File>
+              <FileName>demo_lpc84x_hw_capt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\examples\soc\nxp\capt\demo_lpc84x_hw_capt.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -3047,6 +3062,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\soc\nxp\drivers\source\pmu\hw\amhw_lpc84x_pmu.c</FilePath>
             </File>
+            <File>
+              <FileName>amhw_lpc84x_capt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\soc\nxp\drivers\source\capt\hw\amhw_lpc84x_capt.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -3427,6 +3447,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\examples\board\am845_core\sct\demo_am845_core_std_sct_cap.c</FilePath>
             </File>
+            <File>
+              <FileName>demo_am845_core_hw_capt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\examples\board\am845_core\capt\demo_am845_core_hw_capt.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -3726,6 +3751,11 @@
               <FileName>demo_lpc845_hw_iap.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\examples\soc\nxp\iap\demo_lpc845_hw_iap.c</FilePath>
+            </File>
+            <File>
+              <FileName>demo_lpc84x_hw_capt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\examples\soc\nxp\capt\demo_lpc84x_hw_capt.c</FilePath>
             </File>
           </Files>
         </Group>

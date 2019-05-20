@@ -28,7 +28,8 @@
 #include "am_led.h"
 #include "am_fm175xx.h"
 #include "demo_am845_core_entries.h"
-
+#include "lpc84x_periph_map.h"
+#include "lpc84x_pin.h"
 /**
  * \brief AMetal 应用程序入口
  */
@@ -120,6 +121,7 @@ void am_main (void)
    //demo_am845_core_fm175xx_picca_write_block ();
    //demo_am845_core_zlg52810_auto_baudrate_entry();
    //demo_am845_core_eeprom_entry();
+   //demo_am845_core_hw_capt_entry();
 
    while(1) {
         ;

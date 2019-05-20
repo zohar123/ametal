@@ -538,6 +538,11 @@ void demo_am845_core_zlg52810_auto_baudrate_entry(void);
 void demo_am845_core_eeprom_entry (void);
 
 /**
+ * \brief CAPT例程
+ */
+void demo_am845_core_hw_capt_entry(void);
+
+/**
  * \brief bootloader固件升级例程
  */
 void demo_am845_core_bootloader_entry(void);

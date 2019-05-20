@@ -135,6 +135,8 @@ extern "C" {
 /** \brief IAP DAC1µÿ÷∑        */
 #define LPC84X_DAC1_BASE           (0x40018000UL)
 
+/** \brief IAP CAPTµÿ÷∑        */
+#define LPC84X_CAPT_BASE           (0x40060000UL)
 
 /** @} */    
 

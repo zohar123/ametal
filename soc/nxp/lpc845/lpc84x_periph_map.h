@@ -37,6 +37,7 @@ extern "C" {
 #include "hw/amhw_lpc_usart.h"
 #include "hw/amhw_lpc_wkt.h"
 
+#include "hw/amhw_lpc84x_capt.h"
 #include "hw/amhw_lpc84x_adc.h"
 #include "hw/amhw_lpc84x_dma.h"
 #include "hw/amhw_lpc84x_gpio.h"
@@ -135,11 +136,14 @@ extern "C" {
 /** \brief 窗口看门狗(WWDT)寄存器块指针         */
 #define LPC84X_WWDT        ((amhw_lpc_wwdt_t    *)LPC84X_WWDT_BASE   )
 
-/** \brief 窗口看门狗(WWDT)寄存器块指针         */
+/** \brief DAC0寄存器块指针         */
 #define LPC84X_DAC0        ((amhw_lpc_dac_t     *)LPC84X_DAC0_BASE   )
 
-/** \brief 窗口看门狗(WWDT)寄存器块指针         */
-#define LPC84X_DAC1        ((amhw_fsl_dac_t     *)LPC84X_DAC1_BASE   )
+/** \brief DAC1寄存器块指针         */
+#define LPC84X_DAC1        ((amhw_lpc_dac_t     *)LPC84X_DAC1_BASE   )
+
+/** \brief 电容触摸(CAPT)寄存器块指针         */
+#define LPC84X_CAPT        ((amhw_lpc84x_capt_t *)LPC84X_CAPT_BASE   )
 
 
 /** @} */
