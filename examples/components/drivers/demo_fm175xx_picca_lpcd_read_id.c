@@ -103,7 +103,10 @@ void demo_fm175xx_picca_lpcd_mode (am_fm175xx_handle_t handle)
 {
     int int_flag = 0;
 
-    /* 设置回调函数及函数变量*/
+    /* 设置回调函数及函数变量
+     * 注意，中断回调函数中，不能与FM175xx进行通信。
+     * 否则将会发生同优先级中断嵌套，导致程序一直在中断中等待中断发生
+     */
     am_fm175xx_lpcd_cb_set(handle, __fm175xx_lpcd_cb, &int_flag);
 
     /* 进入LPCD模式 */
@@ -112,15 +115,28 @@ void demo_fm175xx_picca_lpcd_mode (am_fm175xx_handle_t handle)
     while(1){
 
         am_mdelay(10);
-
+         /* 触发卡进场回调函数 
+          * 注意，LPCD模式只会触发两种中断，卡进场中断以及自动唤醒中断
+          */
         if(int_flag == 1){
+            uint8_t isr;
+ 
             int_flag = 0;
 
-            /*可在此进行相应的处理函数   本例程以读取ID号为例*/
-            picca_active_info(handle);
+            isr = am_fm175xx_get_reg_ext(handle, AM_FM175XX_LPCD_IRQ);
+            if(isr == AM_FM175XX_LPCD_CARD_IRQ){
 
-            /* 重新进入LPCD模式 */
-            am_fm175xx_lpcd_mode_entry(handle);
+                /* 退出LPCD模式需要对部分FM175xx配置重新进行设置 */
+                am_fm175xx_exit_lpcd_config(handle);
+
+                /*可在此进行相应的卡操作*/
+                picca_active_info(handle);
+
+                /* 触发卡定时自动唤醒中断 */
+            }else if(isr == AM_FM175XX_LPCD_WUP_IRQ){
+                am_fm175xx_lpcd_init(handle);
+                am_fm175xx_lpcd_mode_entry(handle);
+            }
         }
     }
 }

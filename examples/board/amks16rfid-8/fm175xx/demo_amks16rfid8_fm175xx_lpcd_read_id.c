@@ -13,18 +13,18 @@
 
 /**
  * \file
- * \brief FM175xx LPCDæ¨¡å¼
+ * \brief FM175xx LPCDÄ£Ê½
  *
- * - æ“ä½œæ­¥éª¤ï¼š
- *   1. æ­£ç¡®è¿æ¥å¹¶é…ç½®å¥½ä¸²å£ã€‚
- *   2. æ­£ç¡®è¿æ¥å¥½å¤©çº¿ã€‚
+ * - ²Ù×÷²½Öè£º
+ *   1. ÕıÈ·Á¬½Ó²¢ÅäÖÃºÃ´®¿Ú¡£
+ *   2. ÕıÈ·Á¬½ÓºÃÌìÏß¡£
  *
- * - å®éªŒç°è±¡ï¼š
- *   1. åœ¨æ‰§è¡Œæ“ä½œæ­¥éª¤1 2åï¼Œ éšåå¡è¿›å…¥ä½åŠŸè€—è‡ªåŠ¨å¡ç‰‡æ£€æµ‹ï¼ˆLPCDï¼‰æ¨¡å¼
- *   2. å°†å¡æ”¾ç½®æ„Ÿåº”åŒºï¼ŒFM175xxè®¾å¤‡å°†äº§ç”Ÿå¡è¿›åœºä¸­æ–­æ ‡å¿—ï¼Œæ‰§è¡Œç›¸åº”è®¾å®šæ“ä½œã€‚
- *   3. ç§»å¼€å¡ç‰‡åï¼Œè¾¾åˆ°è®¾å®šçš„AUTO_WUP_TIMEçš„æ—¶é—´æ—¶ï¼ŒFM175xxè‡ªåŠ¨é€€å‡ºLPCDæ¨¡å¼ï¼Œè‡ªåŠ¨è¿›è¡Œè°ƒæ ¡ã€‚
+ * - ÊµÑéÏÖÏó£º
+ *   1. ÔÚÖ´ĞĞ²Ù×÷²½Öè1 2ºó£¬ Ëæºó¿¨½øÈëµÍ¹¦ºÄ×Ô¶¯¿¨Æ¬¼ì²â£¨LPCD£©Ä£Ê½
+ *   2. ½«¿¨·ÅÖÃ¸ĞÓ¦Çø£¬FM175xxÉè±¸½«²úÉú¿¨½ø³¡ÖĞ¶Ï±êÖ¾£¬Ö´ĞĞÏàÓ¦Éè¶¨²Ù×÷¡£
+ *   3. ÒÆ¿ª¿¨Æ¬ºó£¬´ïµ½Éè¶¨µÄAUTO_WUP_TIMEµÄÊ±¼äÊ±£¬FM175xx×Ô¶¯ÍË³öLPCDÄ£Ê½£¬×Ô¶¯½øĞĞµ÷Ğ£¡£
  *
- * \par æºä»£ç 
+ * \par Ô´´úÂë
  * \snippet demo_amks16rfid8_m175xx_picca_lpcd_mode.c demo_amks16rfid8_fm175xx_picca_lpcd_mode
  *
  * \internal
@@ -52,7 +52,7 @@
 #include "demo_amks16rfid8_entries.h"
 
 /**
- * \name å®šä¹‰CD4051çš„å¼•è„š
+ * \name ¶¨ÒåCD4051µÄÒı½Å
  * @{
  */
 #define __CD4051_PIN_EN PIOB_19
@@ -60,7 +60,7 @@
 #define __CD4051_PIN_S1 PIOB_17
 #define __CD4051_PIN_S0 PIOB_16
 
-/* å®šä¹‰ fm175xx å¤©çº¿åˆ‡æ¢ä¿¡æ¯ */
+/* ¶¨Òå fm175xx ÌìÏßÇĞ»»ĞÅÏ¢ */
 static am_antenna_info_t  __g_antenna_info = {
     {
         __CD4051_PIN_EN,
@@ -72,15 +72,17 @@ static am_antenna_info_t  __g_antenna_info = {
 };
 
 /**
- * \brief LPCDæ¨¡å¼
+ * \brief LPCDÄ£Ê½
  */
 void demo_amks16rfid8_fm175xx_lpcd_read_id (void)
 {
-    am_fm175xx_handle_t handle = am_fm175xx_inst_init();
+    am_fm175xx_handle_t handle;
 
+    /* ³õÊ¼»¯ÌìÏß²¢Ñ¡ÔñÌìÏß1   ×¢Òâ´Ë´¦Ò»¶¨ÒªÏÈÑ¡ÔñÌìÏß*/
     am_cd4051_pin_init(&__g_antenna_info);
-    /* é€‰æ‹©å¤©çº¿1 */
     am_cd4051_channel_selected(&__g_antenna_info, 0);
+
+    handle = am_fm175xx_inst_init();
 
     demo_fm175xx_picca_lpcd_mode(handle);
 }

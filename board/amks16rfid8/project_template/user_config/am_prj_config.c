@@ -28,7 +28,8 @@
 #include "hw/amhw_kl26_sim.h"
 #include "am_board.h"
 #include "am_service_inst_init.h"
-
+/** \brief 检测加密函数 */
+extern void am_encrypt (void);
 /** \brief am_main外部函数 */
 extern int am_main (void);
 
@@ -52,6 +53,10 @@ int main (void)
 #if (AM_CFG_CLK_ENABLE == 1)
     am_kl26_clk_inst_init();
 #endif
+
+    /* 检测芯片是否加密，如果芯片没有加密，则执行该函数后串口PTA_2打印“ready”等待加密 */
+    /* 未加密的芯片部分功能无法使用 */
+    am_encrypt();
 
     /* 中断初始化 */
 #if (AM_CFG_INT_ENABLE == 1)
