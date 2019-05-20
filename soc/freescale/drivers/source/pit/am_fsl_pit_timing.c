@@ -114,14 +114,14 @@ void __pit_irq_handler (void *p_arg)
     if (amhw_fsl_pit_timerout_flag_check(p_hw_pit, AMHW_FSL_PIT_CH(0))) {
         if (p_dev->pfn_ch1_callback != NULL) {
             p_dev->pfn_ch1_callback(p_dev->p_arg_ch1);
-            amhw_fsl_pit_timerout_flag_clr(p_hw_pit, 0);
         }
+        amhw_fsl_pit_timerout_flag_clr(p_hw_pit, 0);
     }
     if(amhw_fsl_pit_timerout_flag_check(p_hw_pit, AMHW_FSL_PIT_CH(1))) {
         if (p_dev->pfn_ch2_callback != NULL) {
             p_dev->pfn_ch2_callback(p_dev->p_arg_ch2);
-            amhw_fsl_pit_timerout_flag_clr(p_hw_pit, 1);
         }
+        amhw_fsl_pit_timerout_flag_clr(p_hw_pit, 1);
     }
 }
 
