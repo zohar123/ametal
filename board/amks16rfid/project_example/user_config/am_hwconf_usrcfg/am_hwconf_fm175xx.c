@@ -54,7 +54,7 @@ am_local am_const am_fm175xx_devinfo_t __g_fm175xx_devinfo = {
     PIOE_16,
     PIOC_1,
     AM_FM175XX_PROT_TYPE_ISO14443A_106,
-//    &__g_lpcd_cfg_info        //若需要开启LPCD功能则需要取消此行注释
+   &__g_lpcd_cfg_info        //若不需要开启LPCD功能则对该行进行注释即可
 };
 
 
