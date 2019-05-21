@@ -371,7 +371,7 @@
             <vShortWch>0</vShortWch>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>AM_VDEBUG,AM_CORTEX_M0,KL16</Define>
+              <Define>AM_VDEBUG,AM_CORTEX_M0,KL16,CRP_ENABLE</Define>
               <Undefine></Undefine>
               <IncludePath>.\user_code;.\user_config\am_hwconf_usrcfg;.\user_config\am_servconf_usrcfg;.\user_config;..\..\..\..\3rdparty\CMSIS\Include;..\..\..\..\arch\arm\include;..\..\..\..\components\drivers\include;..\..\..\..\components\libc\armlib_adapter\include;..\..\..\..\components\libc\microlib_adapter\include;..\..\..\..\components\service\include;..\..\..\..\components\util\include;..\..\..\..\interface;..\..\..\..\soc\freescale\drivers\include\adc;..\..\..\..\soc\freescale\drivers\include\bme;..\..\..\..\soc\freescale\drivers\include\clk;..\..\..\..\soc\freescale\drivers\include\cmp;..\..\..\..\soc\freescale\drivers\include\dac;..\..\..\..\soc\freescale\drivers\include\dma;..\..\..\..\soc\freescale\drivers\include\ftfa;..\..\..\..\soc\freescale\drivers\include\gpio;..\..\..\..\soc\freescale\drivers\include\i2c;..\..\..\..\soc\freescale\drivers\include\i2s;..\..\..\..\soc\freescale\drivers\include\llwu;..\..\..\..\soc\freescale\drivers\include\lptmr;..\..\..\..\soc\freescale\drivers\include\mcg;..\..\..\..\soc\freescale\drivers\include\mcm;..\..\..\..\soc\freescale\drivers\include\pinctr;..\..\..\..\soc\freescale\drivers\include\pit;..\..\..\..\soc\freescale\drivers\include\pmc;..\..\..\..\soc\freescale\drivers\include\pmu;..\..\..\..\soc\freescale\drivers\include\rcm;..\..\..\..\soc\freescale\drivers\include\rtc;..\..\..\..\soc\freescale\drivers\include\sim;..\..\..\..\soc\freescale\drivers\include\smc;..\..\..\..\soc\freescale\drivers\include\spi;..\..\..\..\soc\freescale\drivers\include\tpm;..\..\..\..\soc\freescale\drivers\include\tsi;..\..\..\..\soc\freescale\drivers\include\uart;..\..\..\..\soc\freescale\drivers\include\wdt;..\user_config;..\user_config\am_hwconf_usrcfg;..\user_config\am_servconf_usrcfg;..\..\..\bsp_common\include;..\..\..\..\examples\board;..\..\..\..\examples\components;..\..\..\..\examples\soc\freescale;..\..\..\..\examples\std;..\..\..\..\examples\board\amks16z_core;..\..\..\..\soc\freescale\kl26;..\..\..\..\examples\board\amks16rfid</IncludePath>
             </VariousControls>
@@ -466,11 +466,6 @@
         <Group>
           <GroupName>drivers</GroupName>
           <Files>
-            <File>
-              <FileName>am_fm175xx_kl16.lib</FileName>
-              <FileType>4</FileType>
-              <FilePath>..\..\..\..\components\drivers\source\fm175xx\am_fm175xx_kl16.lib</FilePath>
-            </File>
             <File>
               <FileName>am_cs1237.c</FileName>
               <FileType>1</FileType>
@@ -640,6 +635,11 @@
               <FileName>am_zlg600.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\components\drivers\source\zlg600\am_zlg600.c</FilePath>
+            </File>
+            <File>
+              <FileName>am_fm175xx_kl16.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\..\..\components\drivers\source\fm175xx\am_fm175xx_kl16.lib</FilePath>
             </File>
           </Files>
         </Group>
@@ -840,6 +840,16 @@
               <FileName>am_wait.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\components\util\source\am_wait.c</FilePath>
+            </File>
+            <File>
+              <FileName>stack_overflow.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\..\..\components\util\source\stack_overflow.lib</FilePath>
+            </File>
+            <File>
+              <FileName>am_encrypt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\components\util\source\am_encrypt.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -2252,7 +2262,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\debug\</OutputDirectory>
-          <OutputName>template_amks16z_core</OutputName>
+          <OutputName>example_amks16z_core</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>1</CreateHexFile>
@@ -2575,9 +2585,9 @@
             <vShortWch>0</vShortWch>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>AM_VDEBUG,AM_CORTEX_M0,KL16</Define>
+              <Define>AM_VDEBUG,AM_CORTEX_M0,KL16,CRP_ENABLE</Define>
               <Undefine></Undefine>
-              <IncludePath>.\user_code;.\user_config\am_hwconf_usrcfg;.\user_config\am_servconf_usrcfg;.\user_config;..\..\..\..\3rdparty\CMSIS\Include;..\..\..\..\arch\arm\include;..\..\..\..\components\drivers\include;..\..\..\..\components\libc\armlib_adapter\include;..\..\..\..\components\libc\microlib_adapter\include;..\..\..\..\components\service\include;..\..\..\..\components\util\include;..\..\..\..\interface;..\..\..\..\soc\freescale\amkl26;..\..\..\..\soc\freescale\drivers\include\adc;..\..\..\..\soc\freescale\drivers\include\bme;..\..\..\..\soc\freescale\drivers\include\clk;..\..\..\..\soc\freescale\drivers\include\cmp;..\..\..\..\soc\freescale\drivers\include\dac;..\..\..\..\soc\freescale\drivers\include\dma;..\..\..\..\soc\freescale\drivers\include\ftfa;..\..\..\..\soc\freescale\drivers\include\gpio;..\..\..\..\soc\freescale\drivers\include\i2c;..\..\..\..\soc\freescale\drivers\include\i2s;..\..\..\..\soc\freescale\drivers\include\llwu;..\..\..\..\soc\freescale\drivers\include\lptmr;..\..\..\..\soc\freescale\drivers\include\mcg;..\..\..\..\soc\freescale\drivers\include\mcm;..\..\..\..\soc\freescale\drivers\include\pinctr;..\..\..\..\soc\freescale\drivers\include\pit;..\..\..\..\soc\freescale\drivers\include\pmc;..\..\..\..\soc\freescale\drivers\include\pmu;..\..\..\..\soc\freescale\drivers\include\rcm;..\..\..\..\soc\freescale\drivers\include\rtc;..\..\..\..\soc\freescale\drivers\include\sim;..\..\..\..\soc\freescale\drivers\include\smc;..\..\..\..\soc\freescale\drivers\include\spi;..\..\..\..\soc\freescale\drivers\include\tpm;..\..\..\..\soc\freescale\drivers\include\tsi;..\..\..\..\soc\freescale\drivers\include\uart;..\..\..\..\soc\freescale\drivers\include\wdt;..\user_config;..\user_config\am_hwconf_usrcfg;..\user_config\am_servconf_usrcfg;..\..\..\bsp_common\include;..\..\..\..\examples\board;..\..\..\..\examples\components;..\..\..\..\examples\soc\freescale;..\..\..\..\examples\std;..\..\..\..\examples\board\amks16z_core</IncludePath>
+              <IncludePath>.\user_code;.\user_config\am_hwconf_usrcfg;.\user_config\am_servconf_usrcfg;.\user_config;..\..\..\..\3rdparty\CMSIS\Include;..\..\..\..\arch\arm\include;..\..\..\..\components\drivers\include;..\..\..\..\components\libc\armlib_adapter\include;..\..\..\..\components\libc\microlib_adapter\include;..\..\..\..\components\service\include;..\..\..\..\components\util\include;..\..\..\..\interface;..\..\..\..\soc\freescale\amkl26;..\..\..\..\soc\freescale\drivers\include\adc;..\..\..\..\soc\freescale\drivers\include\bme;..\..\..\..\soc\freescale\drivers\include\clk;..\..\..\..\soc\freescale\drivers\include\cmp;..\..\..\..\soc\freescale\drivers\include\dac;..\..\..\..\soc\freescale\drivers\include\dma;..\..\..\..\soc\freescale\drivers\include\ftfa;..\..\..\..\soc\freescale\drivers\include\gpio;..\..\..\..\soc\freescale\drivers\include\i2c;..\..\..\..\soc\freescale\drivers\include\i2s;..\..\..\..\soc\freescale\drivers\include\llwu;..\..\..\..\soc\freescale\drivers\include\lptmr;..\..\..\..\soc\freescale\drivers\include\mcg;..\..\..\..\soc\freescale\drivers\include\mcm;..\..\..\..\soc\freescale\drivers\include\pinctr;..\..\..\..\soc\freescale\drivers\include\pit;..\..\..\..\soc\freescale\drivers\include\pmc;..\..\..\..\soc\freescale\drivers\include\pmu;..\..\..\..\soc\freescale\drivers\include\rcm;..\..\..\..\soc\freescale\drivers\include\rtc;..\..\..\..\soc\freescale\drivers\include\sim;..\..\..\..\soc\freescale\drivers\include\smc;..\..\..\..\soc\freescale\drivers\include\spi;..\..\..\..\soc\freescale\drivers\include\tpm;..\..\..\..\soc\freescale\drivers\include\tsi;..\..\..\..\soc\freescale\drivers\include\uart;..\..\..\..\soc\freescale\drivers\include\wdt;..\user_config;..\user_config\am_hwconf_usrcfg;..\user_config\am_servconf_usrcfg;..\..\..\bsp_common\include;..\..\..\..\examples\board;..\..\..\..\examples\components;..\..\..\..\examples\soc\freescale;..\..\..\..\examples\std;..\..\..\..\examples\board\amks16z_core;..\..\..\..\soc\freescale\kl26;..\..\..\..\examples\board\amks16rfid</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -2607,7 +2617,7 @@
             <TextAddressRange>0x00000000</TextAddressRange>
             <DataAddressRange>0x1FFFF000</DataAddressRange>
             <pXoBase></pXoBase>
-            <ScatterFile>.\example_amks16z_core.sct</ScatterFile>
+            <ScatterFile>.\example_amks16rfid.sct</ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
             <Misc>--remove</Misc>
@@ -2670,11 +2680,6 @@
         <Group>
           <GroupName>drivers</GroupName>
           <Files>
-            <File>
-              <FileName>am_fm175xx_kl16.lib</FileName>
-              <FileType>4</FileType>
-              <FilePath>..\..\..\..\components\drivers\source\fm175xx\am_fm175xx_kl16.lib</FilePath>
-            </File>
             <File>
               <FileName>am_cs1237.c</FileName>
               <FileType>1</FileType>
@@ -2844,6 +2849,11 @@
               <FileName>am_zlg600.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\components\drivers\source\zlg600\am_zlg600.c</FilePath>
+            </File>
+            <File>
+              <FileName>am_fm175xx_kl16.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\..\..\components\drivers\source\fm175xx\am_fm175xx_kl16.lib</FilePath>
             </File>
           </Files>
         </Group>
@@ -3044,6 +3054,16 @@
               <FileName>am_wait.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\components\util\source\am_wait.c</FilePath>
+            </File>
+            <File>
+              <FileName>stack_overflow.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\..\..\components\util\source\stack_overflow.lib</FilePath>
+            </File>
+            <File>
+              <FileName>am_encrypt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\components\util\source\am_encrypt.c</FilePath>
             </File>
           </Files>
         </Group>

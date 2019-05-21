@@ -12,7 +12,7 @@
 
 /**
  * \file
- * \brief kl26 ºËÐÄ°å
+ * \brief kl16 RFID°å
  *
  * \internal
  * \par Modification history.
