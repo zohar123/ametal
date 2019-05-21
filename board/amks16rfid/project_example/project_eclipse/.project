@@ -75,11 +75,6 @@
 			<type>2</type>
 			<locationURI>PARENT-1-PROJECT_LOC/user_config</locationURI>
 		</link>
-		<link>
-			<name>user_code/am_fm175xx.c</name>
-			<type>1</type>
-			<location>C:/Users/yizhong/Desktop/am_fm175xx.c</location>
-		</link>
 	</linkedResources>
 	<variableList>
 		<variable>

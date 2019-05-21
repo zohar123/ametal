@@ -41,7 +41,7 @@ static const int __g_led_pin[ ] = {PIOA_4, PIOA_5};
 /** \brief 板上LED的GPIO管脚和是否低电平点亮 */
 static const am_led_gpio_info_t __g_led_gpio_info = {
      {LED0, LED1},
-	   __g_led_pin,
+     __g_led_pin,
      AM_TRUE
 };
 

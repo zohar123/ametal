@@ -46,10 +46,10 @@ am_pwm_handle_t am_buzzer_pwm_inst_init (void)
     am_pwm_handle_t handle = am_kl26_tpm0_pwm_inst_init();
 
     if (NULL != handle) {
-		am_buzzer_pwm_init(handle,
-						   __BUZZER_TIMER_CHAN,
-						   10000000 * __BUZZER_PWM_DUTY / __BUZZER_PWM_FREQ,
-						   1000000000 / __BUZZER_PWM_FREQ);
+        am_buzzer_pwm_init(handle,
+                           __BUZZER_TIMER_CHAN,
+                           10000000 * __BUZZER_PWM_DUTY / __BUZZER_PWM_FREQ,
+                           1000000000 / __BUZZER_PWM_FREQ);
 	}
 
     return handle;
