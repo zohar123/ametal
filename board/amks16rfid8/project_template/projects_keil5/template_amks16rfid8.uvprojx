@@ -842,14 +842,9 @@
               <FilePath>..\..\..\..\components\util\source\am_wait.c</FilePath>
             </File>
             <File>
-              <FileName>am_encrypt.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\components\util\source\am_encrypt.c</FilePath>
-            </File>
-            <File>
-              <FileName>stack_overflow.lib</FileName>
+              <FileName>am_encrypt.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>..\..\..\..\components\util\source\stack_overflow.lib</FilePath>
+              <FilePath>..\..\..\..\components\util\source\am_encrypt.lib</FilePath>
             </File>
           </Files>
         </Group>
@@ -2146,14 +2141,9 @@
               <FilePath>..\..\..\..\components\util\source\am_wait.c</FilePath>
             </File>
             <File>
-              <FileName>am_encrypt.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\components\util\source\am_encrypt.c</FilePath>
-            </File>
-            <File>
-              <FileName>stack_overflow.lib</FileName>
+              <FileName>am_encrypt.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>..\..\..\..\components\util\source\stack_overflow.lib</FilePath>
+              <FilePath>..\..\..\..\components\util\source\am_encrypt.lib</FilePath>
             </File>
           </Files>
         </Group>

@@ -369,10 +369,6 @@ static void __port_cd_int_isr (void *p_arg)
     }
 }
 
-#if CRP_ENABLE
-#include "awbl_stack_overflow_check.h"
-#endif
-
 /**
  * \brief 连接引脚中断回调函数
  */
@@ -385,13 +381,6 @@ int am_gpio_trigger_connect (int           pin,
     uint32_t     port;
     int          key;
     int          slot      = -1;
-
-#if CRP_ENABLE
-    if (0 != awbl_stack_overflow_check() ) {
-        volatile int *p = (int *)am_gpio_trigger_connect;
-        *p = 0;
-    }
-#endif
 
     /** \brief 获得引脚对应的引脚端号 */
     port = pin >> 5;
