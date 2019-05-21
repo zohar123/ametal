@@ -37,8 +37,8 @@
 /** \brief PWM 的占空比，50 代表 50% */
 #define __BUZZER_PWM_DUTY       50
 
-/** \brief 使用通道1, TPM_CH2, PIOC_3 */
-#define __BUZZER_TIMER_CHAN     2
+/** \brief 使用通道1, TPM_CH1, PIOE_25 */
+#define __BUZZER_TIMER_CHAN     1
 
 /** \brief 蜂鸣器实例初始化 */
 am_pwm_handle_t am_buzzer_pwm_inst_init (void)
