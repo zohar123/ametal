@@ -45,7 +45,7 @@
 #include "ametal.h"
 #include "am_delay.h"
 #include "am_vdebug.h"
-#include "hw/amhw_lpc82x_acmp.h"
+#include "hw/amhw_lpc84x_acmp.h"
 #include "hw/amhw_lpc84x_clk.h"
 #include "hw/amhw_lpc84x_syscon.h"
 #include "demo_nxp_entries.h"
@@ -79,7 +79,7 @@ void demo_am845_core_hw_acmp_lad_entry (void)
     /* 平台初始化 */
     __plfm_acmp_init();
     
-    demo_lpc824_hw_acmp_lad_entry(LPC84X_ACMP, PIO0_18);
+    demo_lpc845_hw_acmp_lad_entry(LPC84X_ACMP, PIO0_18);
 }
 /** [src_am845_core_hw_acmp_lad] */
 

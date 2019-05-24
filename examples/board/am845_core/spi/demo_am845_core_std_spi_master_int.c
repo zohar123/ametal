@@ -21,8 +21,8 @@
  *   1. 主机发起一次传输，并校验发送的数据与接收的数据是否一致；
  *
  * \note
- *    1. 如需观察串口打印的调试信息，需要将 PIO0_14 引脚连接 PC 串口的 TXD，
- *       PIO0_23 引脚连接 PC 串口的 RXD。
+ *    1. 如需观察串口打印的调试信息，需要将 PIO1_2 引脚连接 PC 串口的 TXD，
+ *       PIO1_0 引脚连接 PC 串口的 RXD。
  *
  * \par 源代码
  * \snippet demo_am845_core_std_spi_master_int.c src_am845_core_std_spi_master_int

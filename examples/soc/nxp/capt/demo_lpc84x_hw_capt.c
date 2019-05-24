@@ -201,7 +201,7 @@ static uint32_t __compute_notouch_baseline(amhw_lpc84x_capt_t *p_hw_capt)
 /**
  * \brief ACMP初始化
  */
-static void lpc84x_acmp_init (amhw_lpc82x_acmp_t *p_hw_acmp)
+static void lpc84x_acmp_init (amhw_lpc84x_acmp_t *p_hw_acmp)
 {
     uint32_t flags;
 
@@ -210,15 +210,15 @@ static void lpc84x_acmp_init (amhw_lpc82x_acmp_t *p_hw_acmp)
     amhw_lpc84x_clk_periph_enable(AMHW_LPC84X_CLK_ACMP);
     amhw_lpc84x_syscon_periph_reset(AMHW_LPC84X_RESET_ACMP);
 
-    flags = AMHW_LPC82X_ACMP_CTRL_VP_BGAP   |   /* 基准电压正输入 */
-            AMHW_LPC82X_ACMP_CTRL_VM_LADOUT |   /* 电压阶梯负输入 */
-            AMHW_LPC82X_ACMP_CTRL_HYS_20MV  |   /* 迟滞电压为 20mV */
+    flags = AMHW_LPC84X_ACMP_CTRL_VP_BGAP   |   /* 基准电压正输入 */
+            AMHW_LPC84X_ACMP_CTRL_VM_LADOUT |   /* 电压阶梯负输入 */
+            AMHW_LPC84X_ACMP_CTRL_HYS_20MV  |   /* 迟滞电压为 20mV */
             (0 << 24)    ;                      /* 中断禁能 */
 
-    amhw_lpc82x_acmp_config(p_hw_acmp, flags);
+    amhw_lpc84x_acmp_config(p_hw_acmp, flags);
 
-    amhw_lpc82x_acmp_ladsel_set(p_hw_acmp, 31);
-    amhw_lpc82x_acmp_ladder_enable(p_hw_acmp);
+    amhw_lpc84x_acmp_ladsel_set(p_hw_acmp, 31);
+    amhw_lpc84x_acmp_ladder_enable(p_hw_acmp);
 
 }
 
@@ -278,7 +278,7 @@ static void lpc84x_capt_init(amhw_lpc84x_capt_t  *p_hw_capt)
 }
 
 void demo_lpc84x_hw_capt_entry (amhw_lpc84x_capt_t *p_hw_capt,
-                                amhw_lpc82x_acmp_t *p_hw_acmp)
+                                amhw_lpc84x_acmp_t *p_hw_acmp)
 {
     int                       x;
 

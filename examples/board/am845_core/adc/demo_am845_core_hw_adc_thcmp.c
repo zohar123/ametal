@@ -28,8 +28,8 @@
  *   2. 模拟输入 2 的电压变化经过 1100mV 时，串口会输出电压值及比较结果。
  *
  * \note
- *    如需观察串口打印的调试信息，需要将 PIO0_14 引脚连接 PC 串口的 TXD，
- *    PIO0_23 引脚连接 PC 串口的 RXD。
+ *    如需观察串口打印的调试信息，需要将 PIO1_2 引脚连接 PC 串口的 TXD，
+ *    PIO1_0 引脚连接 PC 串口的 RXD。
  *
  * \par 源代码
  * \snippet demo_am845_core_hw_adc_thcmp.c src_am845_core_hw_adc_thcmp
@@ -55,7 +55,7 @@
 #include "demo_nxp_entries.h"
 
 extern void demo_lpc845_hw_adc_thcmp_entry(amhw_lpc84x_adc_t  *p_hw_adc,
-	                                         int                 inum,
+                                           int                 inum,
                                            uint32_t            vref_mv);
 
 /**

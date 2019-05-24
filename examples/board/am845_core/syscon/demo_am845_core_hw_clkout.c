@@ -20,8 +20,8 @@
  *   3. LED0 以 0.2s 的时间间隔闪烁。
  *
  * \note
- *    1. 如需观察串口打印的调试信息，需要将 PIO0_14 引脚连接 PC 串口的 TXD，
- *       PIO0_23 引脚连接 PC 串口的 RXD。
+ *    1. 如需观察串口打印的调试信息，需要将 PIO1_2 引脚连接 PC 串口的 TXD，
+ *       PIO1_0 引脚连接 PC 串口的 RXD。
  *
  * \par 源代码
  * \snippet demo_am845_core_hw_clkout.c src_am845_core_hw_clkout
@@ -48,7 +48,6 @@
  */
 void demo_am845_core_hw_clkout_entry (void)
 {
-
     demo_lpc845_hw_clkout_entry();
 }
 /** [src_am845_core_hw_clkout] */

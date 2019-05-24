@@ -78,7 +78,10 @@ void demo_lpc845_hw_bod_entry (void)
         AM_DBG_INFO("Reset by External Reset Pin\r\n");
     }
 
+    amhw_lpc84x_syscon_bod_rst_disable();
+    
     amhw_lpc84x_syscon_powerup(AMHW_LPC84X_SYSCON_PD_BOD);
+    am_udelay(500);
 
     /* 设定掉电检测中断电压 2.85V，设备复位电压 1.46V */
     amhw_lpc84x_syscon_bod_level_set(AMHW_LPC84X_SYSCON_BODRSTLVL_1_46V,

@@ -14,8 +14,8 @@
  * \brief I2C 主机读写 EEPROM 例程，通过异步标准接口实现
  *
  * - 操作步骤：
- *   1. PIO0_16 引脚连接 EEPROM 的 SCL 引脚；
- *   2. PIO0_18 引脚连接 EEPROM 的 SDA 引脚。
+ *   1. PIO0_10 引脚连接 EEPROM 的 SCL 引脚；
+ *   2. PIO0_11 引脚连接 EEPROM 的 SDA 引脚。
  *
  * - 实验现象：
  *   1. 主机写地址和数据到从机；
@@ -65,7 +65,7 @@ void demo_am845_core_std_i2c_master_async_entry (void)
 
     AM_DBG_INFO("demo am845_core std i2c master async!\r\n");
 
-    demo_std_i2c_master_async_entry(am_lpc84x_i2c1_inst_init(),
+    demo_std_i2c_master_async_entry(am_lpc84x_i2c0_inst_init(),
                                     __EEPROM_ADDR,
                                     __TEST_LEN);
     

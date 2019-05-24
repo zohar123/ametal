@@ -15,7 +15,7 @@
  * \brief SPI 回环例程（DMA 方式），通过标准接口实现
  *
  * - 操作步骤：
- *   1. 短接 SPI 的 MOSI(PIO0_12) 和 MISO(PIO0_13)；
+ *   1. 短接 SPI 的 MOSI(PIO0_18) 和 MISO(PIO0_19)；
  *   2. 按下 KEY，发起一次传输。
  *
  * - 实验现象：
@@ -23,8 +23,8 @@
  *   2. 按下按键后，发起一次传输，并通过串口打印发送的数据与接收的数据。
  *
  * \note
- *    1. 如需观察串口打印的调试信息，需要将 PIO0_14 引脚连接 PC 串口的 TXD，
- *       PIO0_23 引脚连接 PC 串口的 RXD。
+ *    1. 如需观察串口打印的调试信息，需要将 PIO1_2 引脚连接 PC 串口的 TXD，
+ *       PIO1_0 引脚连接 PC 串口的 RXD。
  *
  * \par 源代码
  * \snippet demo_am845_core_std_spi_master_dma.c src_am_am845_core_std_spi_master_dma

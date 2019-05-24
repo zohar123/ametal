@@ -66,7 +66,7 @@ void demo_am845_core_std_i2c_master_sync_entry (void)
 
     AM_DBG_INFO("I2C master sync transfer(EEPROM) demo.\r\n");
 
-    handle = am_lpc84x_i2c1_inst_init();
+    handle = am_lpc84x_i2c0_inst_init();
   
     demo_std_i2c_master_sync_entry(handle, __EEPROM_ADDR, __TEST_LEN);
     

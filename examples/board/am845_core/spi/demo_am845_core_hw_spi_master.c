@@ -22,8 +22,8 @@
  *
  * \note
  *    1. 本例程需要与 demo_am845_hw_spi_slave.c 一同测试；
- *    2. 如需观察串口打印的调试信息，需要将 PIO0_14 引脚连接 PC 串口的 TXD，
- *       PIO0_23 引脚连接 PC 串口的 RXD。
+ *    2. 如需观察串口打印的调试信息，需要将 PIO1_2 引脚连接 PC 串口的 TXD，
+ *       PIO1_0 引脚连接 PC 串口的 RXD。
  *
  * \par 源代码
  * \snippet demo_am845_core_hw_spi_master.c src_am845_core_hw_spi_master

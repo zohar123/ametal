@@ -40,7 +40,7 @@
 #include "demo_nxp_entries.h"
 
 /** \brief 按键引脚 */
-#define __KEY_PIN  PIO0_4
+#define __KEY_PIN  PIO1_11
 
 /**
  * \brief 例程入口

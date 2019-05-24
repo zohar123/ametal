@@ -23,8 +23,8 @@
  *   2. 输入 2 小于输入 3 时，串口会输出比较结果 "result: PIO0_1_ACMP_I2 < PIO0_14_ACMP_I3"。
  *
  * \note
- *    如需观察串口打印的调试信息，需要将 PIO0_0 引脚连接 PC 串口的 TXD，
- *    PIO0_4 引脚连接 PC 串口的 RXD。
+ *    如需观察串口打印的调试信息，需要将 PIO1_2 引脚连接 PC 串口的 TXD，
+ *    PIO1_0 引脚连接 PC 串口的 RXD。
  *
  * \par 源代码
  * \snippet demo_lpc845_hw_acmp_poll.c src_lpc845_hw_acmp_poll
@@ -46,16 +46,16 @@
 #include "am_delay.h"
 #include "am_vdebug.h"
 #include "am_gpio.h"
-#include "hw/amhw_lpc82x_acmp.h"
+#include "hw/amhw_lpc84x_acmp.h"
 
-void demo_lpc845_hw_acmp_poll_entry(amhw_lpc82x_acmp_t *p_hw_acmp,
+void demo_lpc845_hw_acmp_poll_entry(amhw_lpc84x_acmp_t *p_hw_acmp,
                                     int                 pin)
 {
-    amhw_lpc82x_acmp_config(p_hw_acmp,
-                            AMHW_LPC82X_ACMP_CTRL_VP_CMP2 | /* 输入 2 为同相端输入 */
-                            AMHW_LPC82X_ACMP_CTRL_VM_CMP3); /* 输入 3 为反相端输入 */
+    amhw_lpc84x_acmp_config(p_hw_acmp,
+                            AMHW_LPC84X_ACMP_CTRL_VP_CMP2 | /* 输入 2 为同相端输入 */
+                            AMHW_LPC84X_ACMP_CTRL_VM_CMP3); /* 输入 3 为反相端输入 */
 
-    amhw_lpc82x_acmp_ladder_disable(p_hw_acmp);
+    amhw_lpc84x_acmp_ladder_disable(p_hw_acmp);
     AM_FOREVER {
 
         if (am_gpio_get(pin)) {
