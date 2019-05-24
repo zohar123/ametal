@@ -32,8 +32,8 @@
  *      只在最后的突发大小的地址范围内传输数据。
  *
  * \note
- *    如需观察串口打印的调试信息，需要将 PIO0_14 引脚连接 PC 串口的 TXD，
- *    PIO0_23 引脚连接 PC 串口的 RXD。
+ *    如需观察串口打印的调试信息，需要将 PIO1_2 引脚连接 PC 串口的 TXD，
+ *    PIO1_0 引脚连接 PC 串口的 RXD。
  *
  * \par 源代码
  * \snippet demo_am845_core_drv_dma_hwtrigger_burst.c src_am845_core_drv_dma_hwtrigger_burst
@@ -60,7 +60,7 @@
 #define __GET_CHAR(ch) \
             amhw_lpc_usart_poll_receive(AMHW_LPC82X_USART0, (&ch), 1);
 
-#define __GPIO_PIN     PIO0_19          /**< \brief 产生中断信号的引脚 */
+#define __GPIO_PIN     PIO0_17          /**< \brief 产生中断信号的引脚 */
 #define __INT_PIN      PIO0_18          /**< \brief 作为中断 0 输入的引脚 */
 
 

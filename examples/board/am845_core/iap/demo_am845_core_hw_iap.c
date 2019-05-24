@@ -91,8 +91,8 @@
  *          63      |        1         | 1008 - 1023 | 0x0000 fc00 - 0x0000 ffff
  *
  * \note；
- *    4. 如需观察串口打印的调试信息，需要将 PIO0_14 引脚连接 PC 串口的 TXD，
- *       PIO0_23 引脚连接 PC 串口的 RXD。
+ *    4. 如需观察串口打印的调试信息，需要将 PIO1_2 引脚连接 PC 串口的 TXD，
+ *       PIO1_0 引脚连接 PC 串口的 RXD。
  *
  * \par 源代码
  * \snippet demo_am845_core_hw_iap.c src_am845_core_hw_iap

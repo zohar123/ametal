@@ -35,7 +35,7 @@
 
 /** \brief 按键引脚号 */
 am_local am_const int __g_key_pins[] = {
-    PIO0_4   /* KEY/RES 按键引脚 */
+    PIO1_11   /* KEY/RES 按键引脚 */
 };
 
 /** \brief 按键编码 */

@@ -24,8 +24,8 @@
  *   3. 输入 2 小于输入 3 时，串口会输出比较结果 "result: PIO0_1_ACMP_I2 < PIO0_14_ACMP_I3"。
  *
  * \note
- *    如需观察串口打印的调试信息，需要将 PIO0_0 引脚连接 PC 串口的 TXD，
- *    PIO0_4 引脚连接 PC 串口的 RXD。
+ *    如需观察串口打印的调试信息，需要将 PIO1_2 引脚连接 PC 串口的 TXD，
+ *    PIO1_0 引脚连接 PC 串口的 RXD。
  *
  * \par 源代码
  * \snippet demo_am845_core_hw_acmp_int.c src_am845_core_hw_acmp_int
@@ -81,13 +81,13 @@ void demo_am845_core_hw_acmp_int_entry (void)
     /* 平台初始化 */
     __plfm_acmp_init();
 
-    flags = AMHW_LPC82X_ACMP_CTRL_VP_CMP2      | /* 输入 2 为同相端输入 */
-            AMHW_LPC82X_ACMP_CTRL_VM_CMP3      | /* 输入 3 为反相端输入 */
-            AMHW_LPC82X_ACMP_CTRL_EDGESEL_BOTH | /* 配置双边沿触发中断 */
-            AMHW_LPC82X_ACMP_CTRL_HYS_20MV     | /* 迟滞电压为 20mV */
+    flags = AMHW_LPC84X_ACMP_CTRL_VP_CMP2      | /* 输入 2 为同相端输入 */
+            AMHW_LPC84X_ACMP_CTRL_VM_CMP3      | /* 输入 3 为反相端输入 */
+            AMHW_LPC84X_ACMP_CTRL_EDGESEL_BOTH | /* 配置双边沿触发中断 */
+            AMHW_LPC84X_ACMP_CTRL_HYS_20MV     | /* 迟滞电压为 20mV */
             AMHW_LPC84X_ACMP_CTRL_INTENA;        /* ACMP中断使能 */
 
-    demo_lpc824_hw_acmp_int_entry(LPC84X_ACMP, flags, INUM_ACMP_CAPT, PIO0_18);
+    demo_lpc845_hw_acmp_int_entry(LPC84X_ACMP, flags, INUM_ACMP_CAPT, PIO0_18);
 }
 /** [src_am845_core_hw_acmp_int] */
 

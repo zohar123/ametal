@@ -59,9 +59,9 @@ am_local void __lpc84x_spi1_dma_plfm_deinit (void)
     amhw_lpc84x_syscon_periph_reset(AMHW_LPC84X_RESET_SPI1);
     amhw_lpc84x_clk_periph_disable(AMHW_LPC84X_CLK_SPI1);
 
-    am_gpio_pin_cfg(PIO0_11, AM_GPIO_PULLUP | AM_GPIO_INPUT);
-    am_gpio_pin_cfg(PIO0_10, AM_GPIO_PULLUP | AM_GPIO_INPUT);
-    am_gpio_pin_cfg(PIO0_9, AM_GPIO_PULLUP | AM_GPIO_INPUT);
+    am_gpio_pin_cfg(PIO0_17, AM_GPIO_PULLUP | AM_GPIO_INPUT);
+    am_gpio_pin_cfg(PIO0_18, AM_GPIO_PULLUP | AM_GPIO_INPUT);
+    am_gpio_pin_cfg(PIO0_19, AM_GPIO_PULLUP | AM_GPIO_INPUT);
 }
 
 /** \brief SPI1 (DMA 方式) 设备信息 */

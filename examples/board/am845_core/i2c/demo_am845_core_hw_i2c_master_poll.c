@@ -23,9 +23,9 @@
  *   3. 若写入数据和读取的数据一致，校验通过，LED0 以 200ms 间隔闪烁。
  *
  * \note
- *    1. LED0 需要短接 J9 跳线帽，才能被 PIO0_20 控制；
- *    2. 如需观察串口打印的调试信息，需要将 PIO0_14 引脚连接 PC 串口的 TXD，
- *       PIO0_23 引脚连接 PC 串口的 RXD。
+ *    1. LED0 需要短接 J9 跳线帽，才能被 PIO1_8 控制；
+ *    2. 如需观察串口打印的调试信息，需要将 PIO1_2 引脚连接 PC 串口的 TXD，
+ *       PIO1_0 引脚连接 PC 串口的 RXD。
  *
  * \par 源代码
  * \snippet demo_am845_core_hw_i2c_master_poll.c src_am845_core_hw_i2c_master_poll

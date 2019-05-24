@@ -54,8 +54,8 @@
 void demo_am845_core_hw_usart_autobaud_entry (void)
 {
     am_kprintf("demo am845 hw usart autobaud!\r\n");
-    demo_lpc824_hw_usart_autobaud_entry(LPC84X_USART0,
-    amhw_lpc84x_clk_periph_freq_get(LPC84X_USART0));
+    demo_lpc845_hw_usart_autobaud_entry(LPC84X_USART0,
+        amhw_lpc84x_clk_periph_freq_get(LPC84X_USART0));
 }
 /** [src_am845_core_hw_usart_autobaud] */
 

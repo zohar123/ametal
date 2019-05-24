@@ -40,7 +40,7 @@ am_local void __lpc84x_i2c3_plfm_init (void)
     am_gpio_pin_cfg(PIO0_6, PIO_FUNC_I2C3_SCL | PIO0_6_OPEN_DRAIN);
     am_gpio_pin_cfg(PIO0_7, PIO_FUNC_I2C3_SDA | PIO0_7_OPEN_DRAIN);
 
-    amhw_lpc84x_clk_i2c0_clk_sel_set (AMHW_LPC84X_CLK_DEVICE_FRG0CLK);
+    amhw_lpc84x_clk_i2c3_clk_sel_set (AMHW_LPC84X_CLK_DEVICE_FRG0CLK);
     amhw_lpc84x_clk_periph_enable(AMHW_LPC84X_CLK_I2C3);
     amhw_lpc84x_syscon_periph_reset(AMHW_LPC84X_RESET_I2C3);
 }

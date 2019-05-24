@@ -18,7 +18,7 @@
  *   1. LED0 和 LED1 以 0.5s 的时间间隔闪烁。
  *
  * \note
- *    1. LED0/LED1 需要短接 J9/J10 跳线帽，才能分别被 PIO0_20/PIO0_21 控制；
+ *    1. LED0/LED1 需要短接 J9/J10 跳线帽，才能分别被 PIO1_8/PIO1_10 控制；
  *    2. 测试本例程必须在 am_prj_config.h 内将 AM_CFG_LED_ENABLE 定义为 1，但该宏
  *       已经默认配置为 1， 用户不必再次配置。
  *
@@ -55,7 +55,7 @@ void demo_am845_core_hw_dac_entry (void)
 {
     am_kprintf("demo am845_core hw dac!\r\n");
   
-    demo_lpc_hw_dac_buf_int_entry ( LPC84X_DAC0, INUM_DAC0);
+    demo_lpc_hw_dac_buf_int_entry (LPC84X_DAC0, INUM_DAC0);
 }
 /** [src_am845_core_std_led] */
 

@@ -18,7 +18,7 @@
  *   1. LED0 以 1s 间隔闪烁。
  *
  * \note
- *    LED0 需要短接 J9 跳线帽，才能被 PIO0_20 控制。
+ *    LED0 需要短接 J9 跳线帽，才能被 PIO1_3 控制。
  *
  * \par 源代码
  * \snippet demo_am845_core_hw_wkt_timer.c src_am845_core_hw_wkt_timer

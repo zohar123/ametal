@@ -16,12 +16,12 @@
  *
  * - 实验现象：
  *   1. LED0 以 10Hz 的频率闪烁;
- *   2. 蜂鸣器引脚(PIO0_24)状态以 8KHz 的频率翻转，输出波形为 4KHz，
+ *   2. 蜂鸣器引脚(PIO0_17)状态以 8KHz 的频率翻转，输出波形为 4KHz，
  *      每次鸣叫 50 毫秒，鸣叫频率为 10Hz。
  *
  * \note
- *    1. LED0 需要短接 J9 跳线帽，才能被 PIO0_20 控制；
- *    2. 蜂鸣器需要短接 J7 跳线帽，才能被 PIO0_24 控制；
+ *    1. LED0 需要短接 J9 跳线帽，才能被 PIO1_8 控制；
+ *    2. 蜂鸣器需要短接 J7 跳线帽，才能被 PIO0_17 控制；
  *    3. 由于 SCT 默认作为驱动蜂鸣器，使用测试本 Demo 前需要将 am_prj_config.h 中
  *       的 AM_CFG_BUZZER_ENABLE 定义为 0，不默认初始化蜂鸣器。
  *
@@ -65,13 +65,13 @@ void demo_am845_core_hw_sct_2_16bit_timing_entry (void)
     AM_DBG_INFO("The PIO0_24 toggle in 8KHz, The output waveform is 4KHz\r\n");
 
     /* 初始化蜂鸣器 ，输出高，蜂鸣器不响 */
-    am_gpio_pin_cfg(PIO0_24, AM_GPIO_OUTPUT_INIT_HIGH | AM_GPIO_PULLUP);
+    am_gpio_pin_cfg(PIO0_17, AM_GPIO_OUTPUT_INIT_HIGH | AM_GPIO_PULLUP);
 
     frq = amhw_lpc84x_clk_system_clkrate_get();
     demo_lpc_hw_sct_2_16bit_timing_entry(LPC84X_SCT0,
                                          INUM_SCT0, 
                                          frq,
-                                         PIO0_24);
+                                         PIO0_17);
 }
 /** [src_am845_core_hw_sct_2_16bit_timing] */
 

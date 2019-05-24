@@ -41,7 +41,7 @@
 #include "lpc84x_periph_map.h"
 #include "lpc84x_pin.h"
 /** \brief LED0 Òý½Å */
-#define __LED0_PIN  PIO0_0
+#define __LED0_PIN  PIO1_8
 
 extern void demo_lpc845_hw_gpio_entry (amhw_lpc84x_gpio_t *p_hw_gpio,
                                        int                 pin);

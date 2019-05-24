@@ -46,6 +46,7 @@
 //#include "hw/amhw_lpc84x_gpio.h"
 //#include "hw/amhw_lpc84x_dac.h"
 //#include "hw/amhw_lpc84x_adc.h"
+#include "hw/amhw_lpc84x_acmp.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -651,14 +652,40 @@ void demo_lpc845_drv_dma_m2m_entry(uint8_t *p_src, int len);
 void demo_lpc845_drv_dma_ping_pong_entry (uint8_t  chan,
                                           uint8_t *p_src,
                                           int      len);
+
 /**
- * \brief ADC 例程入口
+ * \brief acmp 硬件层（使用了中断）例程入口
  *
- * \param[in] p_hw_acmp  : adc寄存器块
- * \param[in] pin        : 输出引脚号
+ * \param[in] p_hw_acmp : 指向 acmp 外设寄存器块的指针
+ * \param[in] flags     : acmp配置
+ * \param[in] inum      : 中断号
+ * \param[in] pin       : 比较输出引脚
+ *
+ * \note 一般情况下，在使用本 demo 前，还需打开 WWDT 模块相应的时钟，
+ * 配置合适的WDT时钟频率。
  */
-void demo_lpc845_hw_acmp_poll_entry(amhw_lpc82x_acmp_t *p_hw_acmp,
+void demo_lpc845_hw_acmp_int_entry (amhw_lpc84x_acmp_t *p_hw_acmp, 
+                                    uint32_t            flags, 
+                                    int                 inum, 
                                     int                 pin);
+
+/**
+ * \brief acmp 硬件层（电压阶梯）例程入口
+ *
+ * \param[in] p_hw_acmp : 指向 acmp 外设寄存器块的指针
+ * \param[in] pin       : 输出比较引脚
+ */
+void demo_lpc845_hw_acmp_lad_entry (amhw_lpc84x_acmp_t *p_hw_acmp, 
+                                    int                 pin);
+                             
+/**
+ * \brief acmp 硬件层（轮询）例程入口
+ *
+ * \param[in] p_hw_acmp : 指向 acmp 外设寄存器块的指针
+ * \param[in] p_acmp    : 模拟比较寄存器块
+ */
+void demo_lpc845_hw_acmp_poll_entry (amhw_lpc84x_acmp_t *p_hw_acmp,
+                                     int                 pin);
 
 /**
  * \brief IIC 硬件层（master）例程入口
@@ -716,6 +743,15 @@ void demo_lpc845_hw_usart_tx_dma_entry (amhw_lpc_usart_t *p_hw_usart,
                                         uint32_t          uclk,
                                         uint32_t          baudrate,
                                         int               chan);
+
+/**
+ * \brief usart 硬件层（自动波特率）例程入口
+ *
+ * \param[in] p_hw_usart  : usart寄存器块
+ * \param[in] u_clk       : 串口基本工作频率
+ */
+void demo_lpc845_hw_usart_autobaud_entry(amhw_lpc_usart_t *p_hw_usart,
+                                         uint32_t          u_clk);
 
 /**
  * \brief iap 例程入口

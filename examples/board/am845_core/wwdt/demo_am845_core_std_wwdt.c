@@ -20,9 +20,9 @@
  *   3. 修改宏定义 __WWDT_FEED_TIME_MS 的值，小于 1500ms(存在 5ms 误差)，程序正常运行。
  *
  * \note
- *    1. LED0 需要短接 J9 跳线帽，才能被 PIO0_20 控制；
- *    2. 如需观察串口打印的调试信息，需要将 PIO0_14 引脚连接 PC 串口的 TXD，
- *       PIO0_23 引脚连接 PC 串口的 RXD；
+ *    1. LED0 需要短接 J9 跳线帽，才能被 PIO1_8 控制；
+ *    2. 如需观察串口打印的调试信息，需要将 PIO1_2 引脚连接 PC 串口的 TXD，
+ *       PIO1_0 引脚连接 PC 串口的 RXD；
  *    3. WDT 时钟，0.6MHz，64 分频，时钟频率 9.375KHz，WDT 计数器固定 4 分频时钟；
  *    4. 片内 WDTOSC 频率产生存在最大 40% 的误差。
  *
@@ -62,7 +62,7 @@
  * \brief 看门狗喂狗时间，若喂狗时间超过 __WWDT_TIMEOUT_MS 的值（大于 5ms 以上）,
  *        会产生看门狗事件
  */
-#define __WWDT_FEED_TIME_MS     1600
+#define __WWDT_FEED_TIME_MS     2000
 
 /**
  * \brief 例程入口

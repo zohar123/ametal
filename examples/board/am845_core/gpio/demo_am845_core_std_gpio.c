@@ -14,16 +14,18 @@
  * \file
  * \brief GPIO 例程，通过标准接口实现
  *
+ * - 操作步骤：
+ *   1. 使输入引脚为低电平。
+ *
  * - 实验现象：
- *   1. 间隔 0.5s，LED0 闪烁 5 次；
- *   2. 之后，LED0 以 0.2s 的间隔一直闪烁。
+ *   2. 输入引脚为低电平时，输出引脚状态翻转。
  *
  * \par 源代码
- * \snippet demo_am845_core_std_gpio.c src_am845_core_std_gpio
+ * \snippet demo_std_gpio.c src_std_gpio
  *
  * \internal
- * \par Modification history
- * - 1.00 15-07-10  zxl, first implementation
+ * \par Modification History
+ * - 1.00 17-04-15  nwt, first implementation
  * \endinternal
  */
 
@@ -40,10 +42,10 @@
 #include "demo_std_entries.h"
 
 /** \brief LED0 引脚 */
-#define __LED0_PIN  PIO0_0
+#define __LED0_PIN  PIO1_8
 
 /** \brief 按键引脚 */
-#define __KEY_PIN  PIO0_4
+#define __KEY_PIN  PIO1_11
 
 /**
  * \brief 例程入口

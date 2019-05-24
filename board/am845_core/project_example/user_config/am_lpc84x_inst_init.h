@@ -50,6 +50,8 @@ extern "C" {
 #include "am_hwconf_buzzer_pwm.h"
 #include "am_hwconf_debug_uart.h"
 #include "am_hwconf_system_tick_softimer.h"
+#include "am_hwconf_miniport.h"
+#include "am_hwconf_microport.h"
 
 /**
  * \addtogroup am_if_lpc84x_inst_init
@@ -285,6 +287,25 @@ am_timer_handle_t am_lpc84x_sct0_timing_inst_init (void);
  * \return 无
  */
 void am_lpc84x_sct0_timing_inst_deinit (am_timer_handle_t handle);
+
+/**
+ * \brief SCT0 CAP 实例初始化，获得 CAP 标准服务句柄
+ *
+ * \param 无
+ *
+ * \return CAP 标准服务句柄，若为 NULL，表明初始化失败
+ */
+am_cap_handle_t am_lpc84x_sct0_cap_inst_init (void);
+    
+/**
+ * \brief SCT0 CAP 实例解初始化
+ *
+ * \param[in] handle 通过 am_lpc84x_sct0_cap_inst_init() 函数获得的 CAP 标准
+ *                   服务句柄
+ *
+ * \return 无
+ */
+void am_lpc84x_sct0_cap_inst_deinit (am_cap_handle_t handle);
 
 /**
  * \brief SCT0 实例初始化，获得 SCT 服务句柄
@@ -535,10 +556,6 @@ am_spi_handle_t am_lpc84x_spi0_poll_inst_init (void);
  */
 void am_lpc84x_spi0_poll_inst_deinit (am_spi_handle_t handle);
 
-/**
- * \brief CAT24C512 EEPROM 实例初始化
- */
-am_ep24cxx_handle_t am_eeprom_cat24c512_inst_init (void);
 /**
  * @}
  */

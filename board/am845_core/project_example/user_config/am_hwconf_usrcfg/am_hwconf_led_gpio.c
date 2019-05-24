@@ -34,8 +34,8 @@
 
 /** \brief LED 引脚号 */
 am_local am_const int __g_led_pins[] = {
-    PIO0_0,    /* LED0 引脚 */
-    PIO0_12     /* LED1 引脚 */
+    PIO1_8,    /* LED0 引脚 */
+    PIO1_10    /* LED1 引脚 */
 };
 
 /** \brief LED 设备信息 */

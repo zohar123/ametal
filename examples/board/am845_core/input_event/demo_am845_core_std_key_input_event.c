@@ -18,12 +18,16 @@
  *   1. 调试串口打印按键事件。
  *
  * \note
- *    1. LED0 需要短接 J9 跳线帽，才能被 PIO0_20 控制；
- *    2. 使用按键需要将 J14 跳线帽的 KEY 和 PIO0_1 短接，且必须在 am_prj_config.h
+<<<<<<< HEAD
+ *    1. LED0 需要短接 J9 跳线帽，才能被 PIO1_3 控制；
+=======
+ *    1. LED0 需要短接 J9 跳线帽，才能被 PIO1_8 控制；
+>>>>>>> c30fd2a269cc42c5f6c688e5b171a7fb5b8e6b85
+ *    2. 使用按键需要将 J14 跳线帽的 KEY 和 PIO1_11 短接，且必须在 am_prj_config.h
  *       内将 AM_CFG_KEY_GPIO_ENABLE 定义为 1，但该宏已经默认配置为 1， 用户不必再
  *       次配置；
- *    3. 如需观察串口打印的调试信息，需要将 PIO0_14 引脚连接 PC 串口的 TXD，
- *       PIO0_23 引脚连接 PC 串口的 RXD。
+ *    3. 如需观察串口打印的调试信息，需要将 PIO1_2 引脚连接 PC 串口的 TXD，
+ *       PIO1_0 引脚连接 PC 串口的 RXD。
  *
  * \par 源代码
  * \snippet demo_am845_core_std_key_input_event.c src_am845_core_std_key_input_event

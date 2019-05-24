@@ -21,8 +21,8 @@
  *   1. ADC 转换完成 100 次，串口打印出 100 个采样电压值。
  *
  * \note
- *    如需观察串口打印的调试信息，需要将 PIO0_14 引脚连接 PC 串口的 TXD，
- *    PIO0_23 引脚连接 PC 串口的 RXD。
+ *    如需观察串口打印的调试信息，需要将 PIO1_2 引脚连接 PC 串口的 TXD，
+ *    PIO1_0 引脚连接 PC 串口的 RXD。
  *
  * \par 源代码
  * \snippet demo_am845_core_hw_adc_dma.c src_am845_core_hw_adc_dma
@@ -50,7 +50,7 @@
 
 extern void demo_lpc845_hw_adc_dma_entry(amhw_lpc84x_adc_t *p_hw_adc,
                                          int                ch,
-                                         uint32_t        vref_mv);
+                                         uint32_t           vref_mv);
 
 /**
  * \brief 例程入口
@@ -62,7 +62,7 @@ void demo_am845_core_hw_adc_dma_entry (void)
     /* 平台初始化 */
     amhw_lpc84x_syscon_powerup(AMHW_LPC84X_SYSCON_PD_ADC0);
     amhw_lpc84x_clk_periph_enable(AMHW_LPC84X_CLK_ADC);
-	
+
     /* 配置通道，使用通道 0，引脚配置为消极模式 INACTIVE */
     am_gpio_pin_cfg(PIO0_7, PIO0_7_ADC_0 | PIO0_7_INACTIVE);
 

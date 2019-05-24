@@ -23,8 +23,8 @@
  *   2. 输入 2 小于输入 3 时，串口会输出比较结果 "result: PIO0_1_ACMP_I2 < PIO0_14_ACMP_I3"。
  *
  * \note
- *    如需观察串口打印的调试信息，需要将 PIO0_0 引脚连接 PC 串口的 TXD，
- *    PIO0_4 引脚连接 PC 串口的 RXD。
+ *    如需观察串口打印的调试信息，需要将 PIO1_2 引脚连接 PC 串口的 TXD，
+ *    PIO1_0 引脚连接 PC 串口的 RXD。
  *
  * \par 源代码
  * \snippet demo_am845_core_hw_acmp_poll.c src_am845_core_hw_acmp_poll
@@ -48,7 +48,7 @@
 #include "lpc84x_pin.h"
 #include "hw/amhw_lpc84x_clk.h"
 #include "hw/amhw_lpc84x_syscon.h"
-#include "hw/amhw_lpc82x_acmp.h"
+#include "hw/amhw_lpc84x_acmp.h"
 #include "demo_nxp_entries.h"
 
 /**

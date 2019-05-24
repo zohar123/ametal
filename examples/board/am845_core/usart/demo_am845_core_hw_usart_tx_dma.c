@@ -77,8 +77,8 @@ void demo_am845_core_hw_usart_tx_dma_entry (void)
     amhw_lpc84x_syscon_periph_reset(AMHW_LPC84X_RESET_UART0);
 
     /* 配置引脚复用 */
-    am_gpio_pin_cfg(PIO0_19, PIO_FUNC_U0_TXD);
-    am_gpio_pin_cfg(PIO0_18, PIO_FUNC_U0_RXD);
+    am_gpio_pin_cfg(PIO1_0, PIO_FUNC_U0_TXD);
+    am_gpio_pin_cfg(PIO1_2, PIO_FUNC_U0_RXD);
     /* USART 初始化 */
     demo_lpc845_hw_usart_tx_dma_entry(LPC84X_USART0,
     		amhw_lpc84x_clk_periph_freq_get(LPC84X_USART0),

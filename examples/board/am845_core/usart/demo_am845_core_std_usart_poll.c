@@ -19,8 +19,8 @@
  *
  * \note
  *    1. 例程使用 USART0，与 DEBUG 调试使用串口相同；
- *    2. 如需观察串口打印的调试信息，需要将 PIO0_14 引脚连接 PC 串口的 TXD，
- *       PIO0_23 引脚连接 PC 串口的 RXD。
+ *    2. 如需观察串口打印的调试信息，需要将 PIO1_2 引脚连接 PC 串口的 TXD，
+ *       PIO1_0 引脚连接 PC 串口的 RXD。
  *
  * \par 源代码
  * \snippet demo_am845_core_std_usart_poll.c src_am845_core_std_usart_poll

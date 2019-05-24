@@ -20,8 +20,8 @@
  *   3. 串口打印 "CRC-32 result is     : 0xcbf43926\r\n"。
  *
  * \note
- *    如需观察串口打印的调试信息，需要将 PIO0_14 引脚连接 PC 串口的 TXD，
- *    PIO0_23 引脚连接 PC 串口的 RXD。
+ *    如需观察串口打印的调试信息，需要将 PIO1_2 引脚连接 PC 串口的 TXD，
+ *    PIO1_0 引脚连接 PC 串口的 RXD。
  *
  * \par 源代码
  * \snippet demo_am845_core_hw_crc.c src_am845_core_hw_crc

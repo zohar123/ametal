@@ -54,7 +54,7 @@ void demo_am845_core_std_sct_cap_entry (void)
 
     AM_DBG_INFO("The SCT demo for standard CAP service\r\n");
 
-    demo_std_timer_cap_entry((am_cap_handle_t)am_lpc84x_sct0_cap_inst_init(), 0);
+    demo_std_timer_cap_entry(am_lpc84x_sct0_cap_inst_init(), 0);
 
 }
 /** [src_am845_std_sct_cap] */

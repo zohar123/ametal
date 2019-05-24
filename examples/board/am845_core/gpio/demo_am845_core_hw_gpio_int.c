@@ -15,7 +15,7 @@
  * \brief GPIO 引脚中断例程，通过标准接口实现
  *
  * - 实验现象：
- *   1. PIO0_1 的电平由高电平改变为低电平（按键 KEY/RES 按下）时，LED0 状态改变。
+ *   1. PIO1_11 的电平由高电平改变为低电平（按键 KEY/RES 按下）时，LED0 状态改变。
  *
  * \par 源代码
  * \snippet demo_am845_core_hw_gpio_int.c src_am845_core_hw_gpio_int
@@ -43,10 +43,10 @@
 #include "lpc84x_inum.h"
 
 /** \brief LED0 引脚 */
-#define __LED0_PIN  PIO0_0
+#define __LED0_PIN  PIO1_8
 
 /** \brief 按键引脚 */
-#define __KEY_PIN  PIO0_4
+#define __KEY_PIN  PIO1_11
 
 /**
  * \brief 例程入口

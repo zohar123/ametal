@@ -45,7 +45,7 @@ extern "C" {
 #include "hw/amhw_lpc84x_iocon.h"
 #include "hw/amhw_lpc82x_pint.h"
 #include "hw/amhw_lpc84x_swm.h"
-#include "hw/amhw_lpc82x_acmp.h"
+#include "hw/amhw_lpc84x_acmp.h"
 
 /** 
  * \addtogroup lpc82x_if_periph_map
@@ -131,7 +131,7 @@ extern "C" {
 #define LPC84X_ADC0        ((amhw_lpc84x_adc_t  *)LPC84X_ADC0_BASE   )
 
 /** \brief 模拟比较器(ACMP)寄存器块指针         */                     
-#define LPC84X_ACMP        ((amhw_lpc82x_acmp_t *)LPC84X_ACMP_BASE   )
+#define LPC84X_ACMP        ((amhw_lpc84x_acmp_t *)LPC84X_ACMP_BASE   )
 
 /** \brief 窗口看门狗(WWDT)寄存器块指针         */
 #define LPC84X_WWDT        ((amhw_lpc_wwdt_t    *)LPC84X_WWDT_BASE   )
