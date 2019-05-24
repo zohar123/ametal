@@ -2057,9 +2057,19 @@
           <GroupName>user_config</GroupName>
           <Files>
             <File>
+              <FileName>am_prj_config.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\user_config\am_prj_config.c</FilePath>
+            </File>
+            <File>
               <FileName>am_prj_config.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\user_config\am_prj_config.h</FilePath>
+            </File>
+            <File>
+              <FileName>am_board.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\user_config\am_board.c</FilePath>
             </File>
             <File>
               <FileName>am_hwconf_arm_nvic.c</FileName>
@@ -2235,16 +2245,6 @@
               <FileName>am_hwconf_system_tick_softimer.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\user_config\am_hwconf_usrcfg\am_hwconf_system_tick_softimer.c</FilePath>
-            </File>
-            <File>
-              <FileName>am_prj_config.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\user_config\am_prj_config.c</FilePath>
-            </File>
-            <File>
-              <FileName>am_board.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\user_config\am_board.c</FilePath>
             </File>
             <File>
               <FileName>am_servconf_event_input.c</FileName>
@@ -4381,9 +4381,19 @@
           <GroupName>user_config</GroupName>
           <Files>
             <File>
+              <FileName>am_prj_config.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\user_config\am_prj_config.c</FilePath>
+            </File>
+            <File>
               <FileName>am_prj_config.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\user_config\am_prj_config.h</FilePath>
+            </File>
+            <File>
+              <FileName>am_board.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\user_config\am_board.c</FilePath>
             </File>
             <File>
               <FileName>am_hwconf_arm_nvic.c</FileName>
@@ -4559,16 +4569,6 @@
               <FileName>am_hwconf_system_tick_softimer.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\user_config\am_hwconf_usrcfg\am_hwconf_system_tick_softimer.c</FilePath>
-            </File>
-            <File>
-              <FileName>am_prj_config.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\user_config\am_prj_config.c</FilePath>
-            </File>
-            <File>
-              <FileName>am_board.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\user_config\am_board.c</FilePath>
             </File>
             <File>
               <FileName>am_servconf_event_input.c</FileName>

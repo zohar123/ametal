@@ -120,6 +120,7 @@ void am_main (void)
 //    demo_am845_core_hw_wkt_deeppowerdown_wakeup_entry();
 //    demo_am845_core_hw_wkt_timer_entry();
 //    demo_am845_core_std_wkt_timer_entry();
+//    demo_am845_core_hw_capt_entry();
 //    demo_am845_core_hw_dac_entry ();
 //    demo_am845_core_std_dac_entry();
 //    demo_am845_core_fm175xx_picca_halt ();
