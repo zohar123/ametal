@@ -23,8 +23,8 @@
  *
  * * - 实验现象：
  *   1. 用手触摸ACMP 与CAPTX0时，打印X0的触摸计数值为4095，yestouch开始计数，notouch停止计数；
- *   1. 用手触摸ACMP 与CAPTX1时，打印X1的触摸计数值为4095，yestouch开始计数，notouch停止计数；；
- *   1. 用手触摸ACMP 与CAPTX2时，打印X2的触摸计数值为4095，yestouch开始计数，notouch停止计数；；
+ *   1. 用手触摸ACMP 与CAPTX1时，打印X1的触摸计数值为4095，yestouch开始计数，notouch停止计数；
+ *   1. 用手触摸ACMP 与CAPTX2时，打印X2的触摸计数值为4095，yestouch开始计数，notouch停止计数；
  *
  * \internal
  * \par Modification history
@@ -208,6 +208,9 @@ static void lpc84x_acmp_init (amhw_lpc84x_acmp_t *p_hw_acmp)
     amhw_lpc84x_syscon_powerup(AMHW_LPC84X_SYSCON_PD_ACMP);
 
     amhw_lpc84x_clk_periph_enable(AMHW_LPC84X_CLK_ACMP);
+    amhw_lpc84x_clk_periph_enable(AMHW_LPC84X_CLK_IOCON);
+    amhw_lpc84x_clk_periph_enable(AMHW_LPC84X_CLK_SWM);
+
     amhw_lpc84x_syscon_periph_reset(AMHW_LPC84X_RESET_ACMP);
 
     flags = AMHW_LPC84X_ACMP_CTRL_VP_BGAP   |   /* 基准电压正输入 */
@@ -217,9 +220,11 @@ static void lpc84x_acmp_init (amhw_lpc84x_acmp_t *p_hw_acmp)
 
     amhw_lpc84x_acmp_config(p_hw_acmp, flags);
 
-    amhw_lpc84x_acmp_ladsel_set(p_hw_acmp, 31);
+    amhw_lpc84x_acmp_ladsel_set(p_hw_acmp, 30);
     amhw_lpc84x_acmp_ladder_enable(p_hw_acmp);
 
+    amhw_lpc84x_swm_fixed_func_enable(LPC84X_SWM, AMHW_LPC84X_SWM_PIO0_30_ACMP_I5);
+    am_gpio_pin_cfg (PIO0_30, PIO0_30_ACMP_I5 | PIO0_30_INACTIVE);
 }
 
 /**
