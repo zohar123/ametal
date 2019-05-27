@@ -51,13 +51,15 @@
 #include "demo_amks16rfid8_entries.h"
 
 /**
- * \name 定义CD4051的引脚
+ * \name 定义核心板相关固定引脚
  * @{
  */
-#define __CD4051_PIN_EN PIOB_19
-#define __CD4051_PIN_S2 PIOB_18
-#define __CD4051_PIN_S1 PIOB_17
-#define __CD4051_PIN_S0 PIOB_16
+#define __CD4051_PIN_EN  PIOB_19         /**< \brief   CD4051通道控制芯片 使能引脚  */
+#define __CD4051_PIN_S2  PIOB_18         /**< \brief   CD4051通道控制芯片S2引脚  */
+#define __CD4051_PIN_S1  PIOB_17         /**< \brief   CD4051通道控制芯片S1引脚  */
+#define __CD4051_PIN_S0  PIOB_16         /**< \brief   CD4051通道控制芯片S0引脚  */
+
+#define __ANT_ENABLE_PIN PIOE_29         /**<\brief   天线升压芯片使能引脚  */
 
 /* 定义 fm175xx 天线切换信息 */
 static am_antenna_info_t  __g_antenna_info = {
@@ -88,8 +90,14 @@ void demo_amks16rfid8_fm175xx_cpu_card (void)
     uint32_t ats_nbytes  = 0;          /* ATS回应数据的长度 */  
     uint8_t  rbuf[200]   = {0};        /* 文件操作时，用作数据接收缓冲区 */  
     uint32_t r_nbyte     = 0;          /* 每次接收文件时，接收到的数据长度 */ 
+    am_fm175xx_handle_t handle;
 
-    am_fm175xx_handle_t handle = am_fm175xx_inst_init();
+    /* B版本核心板存在此引脚   需要拉高使能天线
+     * 若为A版本核心板则可对该行代码进行注释
+     */
+    am_gpio_pin_cfg(__ANT_ENABLE_PIN, AM_GPIO_OUTPUT_INIT_HIGH);
+
+    handle = am_fm175xx_inst_init();
 
     am_cd4051_pin_init(&__g_antenna_info);
 

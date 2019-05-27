@@ -132,6 +132,9 @@ void demo_fm175xx_picca_lpcd_mode (am_fm175xx_handle_t handle)
                 /*可在此进行相应的卡操作*/
                 picca_active_info(handle);
 
+                /*执行完毕后再次进入LPCD模式*/
+                am_fm175xx_lpcd_mode_entry(handle);
+
                 /* 触发卡定时自动唤醒中断 */
             }else if(isr == AM_FM175XX_LPCD_WUP_IRQ){
                 am_fm175xx_lpcd_init(handle);
