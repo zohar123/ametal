@@ -19,7 +19,7 @@
  *   2. 串口将会打印出PT100测量温度值
  *
  * \par 源代码
- * \snippet demo_aml166_core_cs1239_pt100_measure.c src_aml166_core_cs1239_pt100_measure
+ * \snippet demo_aml166_core_adc24_pt100_measure.c src_aml166_core_adc24_pt100_measure
  *
  * \internal
  * \par Modification history
@@ -28,11 +28,11 @@
  */
 
 /**
- * \addtogroup demo_aml166_core_cs1239_pt100_measure
- * \copydoc demo_aml166_core_cs1239_pt100_measure.c
+ * \addtogroup demo_aml166_core_adc24_pt100_measure
+ * \copydoc demo_aml166_core_adc24_pt100_measure.c
  */
 
-/** [src_aml166_core_cs1239_pt100_measure] */
+/** [src_aml166_core_adc24_pt100_measure] */
 
 #include "string.h"
 #include "am_zml166_adc.h"
@@ -63,6 +63,6 @@ void demo_aml166_core_zml166_adc_pt100_measure (void)
     demo_zml166_adc_pt100_measure_entry((void *)handle, para);
 }
 
-/** [src_aml166_core_cs1239_pt100_measure] */
+/** [src_aml166_core_adc24_pt100_measure] */
 
 /* end of file */

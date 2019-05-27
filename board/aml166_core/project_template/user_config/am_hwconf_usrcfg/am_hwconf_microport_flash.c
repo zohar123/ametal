@@ -23,7 +23,7 @@
 #include "ametal.h"
 #include "am_mtd.h"
 #include "am_mx25xx.h"
-#include "am_zlg116_inst_init.h"
+#include "am_aml166_inst_init.h"
 #include "zlg116_pin.h"
 
 /**

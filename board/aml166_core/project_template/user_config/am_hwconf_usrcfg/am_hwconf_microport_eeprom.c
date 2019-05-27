@@ -23,7 +23,7 @@
 #include "ametal.h"
 #include "am_i2c.h"
 #include "am_ep24cxx.h"
-#include "am_zlg116_inst_init.h"
+#include "am_aml166_inst_init.h"
 
 /**
  * \addtogroup am_if_src_hwconf_microport_eeprom

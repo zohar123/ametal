@@ -21,7 +21,7 @@
  *   1. 串口将会打印测量温度。
  *
  * \par 源代码
- * \snippet demo_aml166_core_cs1239_thermistor_measure.c src_aml166_core_cs1239_thermistor_measure
+ * \snippet demo_aml166_core_adc24_thermistor_measure.c src_aml166_core_adc24_thermistor_measure
  *
  * \internal
  * \par Modification history
@@ -30,11 +30,11 @@
  */
 
 /**
- * \addtogroup demo_aml166_core_cs1239_thermistor_measure
- * \copydoc demo_aml166_core_cs1239_thermistor_measure.c
+ * \addtogroup demo_aml166_core_adc24_thermistor_measure
+ * \copydoc demo_aml166_core_adc24_thermistor_measure.c
  */
 
-/** [src_aml166_core_cs1239_thermistor_measure] */
+/** [src_aml166_core_adc24_thermistor_measure] */
 
 #include <am_aml166_inst_init.h>
 #include "am_hwconf_zml166_adc.h"
@@ -72,6 +72,6 @@ void demo_aml166_core_zml166_adc_thermocouple_measure (void)
                                                        AM_THERMOCOUPLIE_K);
 }
 
-/** [src_aml166_core_cs1239_thermistor_measure] */
+/** [src_aml166_core_adc24_thermistor_measure] */
 
 /* end of file */
