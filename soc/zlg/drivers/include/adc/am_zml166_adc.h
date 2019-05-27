@@ -112,13 +112,15 @@ extern "C" {
 *******************************************************************************/
 
 #define AM_ZML166_ADC_DR_MASK          (7 << 5)   /**< \brief ADC 输出速率掩码 */
-
 #define AM_ZML166_ADC_DR_200           (4 << 5)   /**< \brief ADC 输出速率为 200 Hz */
 #define AM_ZML166_ADC_DR_100           (3 << 5)   /**< \brief ADC 输出速率为 100 Hz */
 #define AM_ZML166_ADC_DR_50            (2 << 5)   /**< \brief ADC 输出速率为 50 Hz */
 #define AM_ZML166_ADC_DR_25            (1 << 5)   /**< \brief ADC 输出速率为 25 Hz */
 #define AM_ZML166_ADC_DR_12_5          (0 << 5)   /**< \brief ADC 输出速率为 12.5 Hz */
 
+#define AM_ZML166_ADC_BUFBP_MASK       (1 << 4)   /**< \brief Buffer 控制位掩码 */
+#define AM_ZML166_ADC_BUFBP_DISABLE    (1 << 4)   /**< \brief Buffer 开启 */
+#define AM_ZML166_ADC_BUFBP_ENABLE     (0 << 4)   /**< \brief Buffer 开启 */
 
 #define AM_ZML166_ADC_PGA_MASK         (3 << 2)   /**< \brief PGA 增益掩码 */
 #define AM_ZML166_ADC_PGA_32           (3 << 2)   /**< \brief PGA 增益为 32 */
@@ -172,17 +174,6 @@ extern "C" {
 #define AM_ZML166_ADC_FIL_CON2_2       (1 << 0) /**< \brief 使用滤波器系数 2 */
 #define AM_ZML166_ADC_FIL_CON2_1       (0 << 0) /**< \brief 使用滤波器系数 1 */
 
-/*******************************************************************************
-  AM_ZML166_ADC 增益参数
-******************************************************************************/
-#define AM_ZML166_ADC_PGA_SET_1         0      /**< \brief 1倍增益选择参数 */
-#define AM_ZML166_ADC_PGA_SET_2         1      /**< \brief 2倍增益选择参数 */
-#define AM_ZML166_ADC_PGA_SET_4         2      /**< \brief 4倍增益选择参数 */
-#define AM_ZML166_ADC_PGA_SET_8         3      /**< \brief 8倍增益选择参数 */
-#define AM_ZML166_ADC_PGA_SET_16        4      /**< \brief 16倍增益选择参数 */
-#define AM_ZML166_ADC_PGA_SET_32        5      /**< \brief 32倍增益选择参数 */
-#define AM_ZML166_ADC_PGA_SET_64        6      /**< \brief 64倍增益选择参数 */
-#define AM_ZML166_ADC_PGA_SET_128       7      /**< \brief 128倍增益选择参数 */
 
 /** \brief ADC转换结果值 */
 typedef uint32_t am_adc_val_t;
@@ -205,15 +196,15 @@ typedef struct am_zml166_adc_dev {
     /** \brief ADC 标准服务 */
     am_adc_serv_t                   adc_serve;
     
-    /** \brief ADC 配置 */
-    uint8_t                         dr;
+    /** \brief ADC 输出速率 */
+    uint8_t                         speed;
+
+    /** \brief ADC 增益倍数 */
+    uint8_t                         gain;
 
     /** \brief 中断是否使能 */
     am_bool_t                       irq_en;
     
-    /** \brief 当前 ADC 时钟频率 */
-    uint32_t                        clk_freq;
-
     /** \brief 数据转换完成等待 */
     am_wait_t                       ready_wait;
 
@@ -265,101 +256,121 @@ typedef am_zml166_adc_dev_t *am_zml166_adc_handle_t;
 /**
  * \brief AM_ZML166_ADC 寄存器设置
  *
- * \param[in] p_dev 指向 AM_ZML166_ADC 设备结构体的指针
- * \param[in] addr  寄存器地址，只有 SYS 和 ADC 寄存器可写
- * \param[in] data  待写入的数据
+ * \param[in] p_dev   :指向 AM_ZML166_ADC 设备结构体的指针
+ * \param[in] addr    :寄存器地址，只有 SYS 和 ADC 寄存器可写
+ * \param[in] data    :待写入的数据
  *
- * \retval  AM_OK     写入成功
- * \retval -AM_EINVAL 无效参数
- * \retval -AM_EBUSY  设备忙
+ * \retval  AM_OK     :写入成功
+ * \retval -AM_EINVAL :无效参数
+ * \retval -AM_EBUSY  :设备忙
  */
 am_err_t am_zml166_adc_reg_set (am_zml166_adc_dev_t *p_dev,
                                 uint8_t              addr,
                                 uint32_t             data);
 
 /**
- * \brief AM_ZML166_ADC 寄存器读取
+ * \brief ZML166 ADC 寄存器读取
  *
- * \param[in]  p_dev  指向 AM_ZML166_ADC 设备结构体的指针
- * \param[in]  addr   待读取的寄存器地址
- * \param[out] p_data 指向接收缓冲区的指针，大小不能小于被读取的寄存器大小
+ * \param[in]  p_dev  :指向 AM_ZML166_ADC 设备结构体的指针
+ * \param[in]  addr   :待读取的寄存器地址
+ * \param[out] p_data :指向接收缓冲区的指针，大小不能小于被读取的寄存器大小
  *
- * \retval  AM_OK     读取成功
- * \retval -AM_EINVAL 无效参数
- * \retval -AM_EBUSY  设备忙
+ * \retval  AM_OK     :读取成功
+ * \retval -AM_EINVAL :无效参数
+ * \retval -AM_EBUSY  :设备忙
  */
 am_err_t am_zml166_adc_reg_get (am_zml166_adc_dev_t *p_dev,
                                 uint8_t              addr,
                                 void                *p_data);
 
 /**
- * \brief AM_ZML166_ADC 前置放大器增益设置
+ * \brief ZML166 ADC 前置放大器增益设置
  *
- * \param[in] p_dev 指向 AM_ZML166_ADC 设备结构体的指针
- * \param[in] gain  增益，可设置为 1、2、4、8、16、32、64、128、256
+ * \param[in] p_dev   :指向 AM_ZML166_ADC 设备结构体的指针
+ * \param[in] gain    :增益，可设置为 1、2、4、8、16、32、64、128、256
  *
- * \retval  AM_OK     设置成功
- * \retval -AM_EINVAL 无效参数
- * \retval -AM_EBUSY  设备忙
- *
- * \note 当增益配置为 4 和 32 时，ADC 输出速率降低为 1 / 2，
- *       当增益配置为 8、64、128 和 256 时，ADC 输出速率降低为 1 / 4
+ * \retval  AM_OK     :设置成功
+ * \retval -AM_EINVAL :无效参数
+ * \retval -AM_EBUSY  :设备忙
  */
 am_err_t am_zml166_adc_gain_set (am_zml166_adc_dev_t *p_dev,
                                  uint16_t             gain);
 
 /**
- * \brief AM_ZML166_ADC 前置放大器增益获取
+ * \brief ZML166 ADC 前置放大器增益获取
  *
- * \param[in]  p_dev  指向 AM_ZML166_ADC 设备结构体的指针
- * \param[out] p_gain 指向保存获取到的增益的指针
+ * \param[in]  p_dev  :指向 AM_ZML166_ADC 设备结构体的指针
+ * \param[out] p_gain :指向保存获取到的增益的指针
  *
- * \retval  AM_OK     获取成功
- * \retval -AM_EINVAL 无效参数
+ * \retval  AM_OK     :获取成功
+ * \retval -AM_EINVAL :无效参数
  */
 am_err_t am_zml166_adc_gain_get (am_zml166_adc_dev_t *p_dev,
                                  uint8_t             *p_gain);
 
 /**
- * \brief zml166_adc  进入powerdown模式
- * \param[in]  p_dev  指向 AM_ZML166_ADC 设备结构体的指针
+ * \brief ZML166 ADC 数据输出速率设置
  *
- * \retval  AM_OK     进入成功
+ * \param[in]  p_dev  :指向 AM_ZML166_ADC 设备结构体的指针
+ * \param[out] speed  :设置速率值    参数可选 : AM_ZML166_ADC_DR_200
+ *                                     AM_ZML166_ADC_DR_100
+ *                                     AM_ZML166_ADC_DR_50
+ *                                     AM_ZML166_ADC_DR_25
+ *                                     AM_ZML166_ADC_DR_12_5
+ *
+ * \retval  AM_OK     :获取成功
+ * \retval -AM_EINVAL :无效参数
+ */
+am_err_t am_zml166_adc_speed_set(am_zml166_adc_dev_t *p_dev,
+                                 uint8_t              speed);
+
+/**
+ * \brief ZML166 ADC 数据输出速率设置
+ *
+ * \param[in]  p_dev    :指向 AM_ZML166_ADC 设备结构体的指针
+ * \param[out] p_speed  :返回的速率设置值，具体意义见该头文件
+ * \retval  AM_OK     :获取成功
+ */
+am_err_t am_zml166_adc_speed_get(am_zml166_adc_dev_t *p_dev,
+                                 uint8_t             *p_speed);
+/**
+ * \brief zml166_adc  进入powerdown模式
+ * \param[in]  p_dev  :指向 AM_ZML166_ADC 设备结构体的指针
+ *
+ * \retval  AM_OK     :进入成功
  */
 am_err_t am_zml166_adc_power_down_entry(am_zml166_adc_dev_t *p_dev);
 
 /**
- * \brief zml166_adc  退出powerdown模式
- * \param[in]  p_dev  指向 AM_ZML166_ADC 设备结构体的指针
- *
- * \retval  AM_OK     退出成功
+ * \brief ZML166 ADC 退出powerdown模式
+ * \param[in]  p_dev  :指向 AM_ZML166_ADC 设备结构体的指针
+ * \retval  AM_OK     :退出成功
  */
 am_err_t am_zml166_adc_power_down_exit(am_zml166_adc_dev_t *p_dev);
 
 /**
- * \brief zml166_adc  使能buffer
- * \param[in]  p_dev  指向 AM_ZML166_ADC 设备结构体的指针
+ * \brief ZML166 ADC 使能buffer
+ * \param[in]  p_dev  :指向 AM_ZML166_ADC 设备结构体的指针
  *
- * \retval  AM_OK     使能成功
+ * \retval  AM_OK     :使能成功
  */
 am_err_t am_zml166_adc_buffer_enable(am_zml166_adc_dev_t *p_dev);
 
 /**
- * \brief zml166_adc  禁能Buffer
- * \param[in]  p_dev  指向 AM_ZML166_ADC 设备结构体的指针
+ * \brief ZML166 ADC 禁能Buffer
+ * \param[in]  p_dev  :指向 AM_ZML166_ADC 设备结构体的指针
  *
- * \retval  AM_OK     禁能成功
+ * \retval  AM_OK     :禁能成功
  */
 am_err_t am_zml166_adc_buffer_disable(am_zml166_adc_dev_t *p_dev);
 
 /**
- * \brief AM_ZML166_ADC MUX 通道获取
+ * \brief ZML166 ADC MUX 通道获取
  *
- * \param[in]  p_dev  指向 AM_ZML166_ADC 设备结构体的指针
- * \param[out] p_chan 指向保存获取到的 MUX 通道的指针
- *
- * \retval  AM_OK     获取成功
- * \retval -AM_EINVAL 无效参数
+ * \param[in]  p_dev  :指向 AM_ZML166_ADC 设备结构体的指针
+ * \param[out] p_chan :指向保存获取到的 MUX 通道的指针
+ * \retval  AM_OK     :获取成功
+ * \retval -AM_EINVAL :无效参数
  */
 am_err_t am_zml166_adc_mux_get (am_zml166_adc_dev_t *p_dev,
                                 uint8_t             *p_chan);
@@ -367,31 +378,44 @@ am_err_t am_zml166_adc_mux_get (am_zml166_adc_dev_t *p_dev,
 /**
  * \brief AM_ZML166_ADC MUX 通道设置
  *
- * \param[in] p_dev 指向 AM_ZML166_ADC 设备结构体的指针
- * \param[in] chan  MUX 通道，0~2 位为 MUXP，3~5 位为 MUXN
+ * \param[in] p_dev :指向 AM_ZML166_ADC 设备结构体的指针
+ * \param[in] chan  :MUX 通道， 0~2 位为 MUXP   可选参数为   AM_ZML166_ADC_INPS_1_2_VS
+ *                                                AM_ZML166_ADC_INPS_AIN3
+ *                                                AM_ZML166_ADC_INPS_AIN2
+ *                                                AM_ZML166_ADC_INPS_AIN1
+ *                                                AM_ZML166_ADC_INPS_AIN0
+ *                          3~5 位为 MUXN   可选参数为    AM_ZML166_ADC_INNS_1_2_VS
+ *                                                AM_ZML166_ADC_INNS_GND
+ *                                                AM_ZML166_ADC_INNS_AIN4
+ *                                                AM_ZML166_ADC_INNS_AIN3
+ *                                                AM_ZML166_ADC_INNS_AIN2
+ *                                                AM_ZML166_ADC_INNS_AIN1
  *
- * \retval  AM_OK     设置成功
- * \retval -AM_EINVAL 无效参数
- * \retval -AM_EBUSY  设备忙
+ *ex:  am_zml166_adc_mux_set(p_dev, AM_ZML166_ADC_INPS_AIN3 | AM_ZML166_ADC_INNS_AIN4);
+ *
+ * \retval  AM_OK     :设置成功
+ * \retval -AM_EINVAL :无效参数
+ * \retval -AM_EBUSY  :设备忙
  */
 am_err_t am_zml166_adc_mux_set (am_zml166_adc_dev_t *p_dev,
                                 uint8_t              chan);
 
+
 /**
- * \brief AM_ZML166_ADC 初始化寄存器函数
+ * \brief ZML166 ADC  初始化寄存器函数
  *
- * \param[in] p_dev     指向 AM_ZML166_ADC 设备结构体的指针
+ * \param[in] p_dev   :指向 AM_ZML166_ADC 设备结构体的指针
  *
- * \retval  AM_OK     初始化成功
- * \retval  AM_ERROR  初始化失败
+ * \retval  AM_OK     :初始化成功
+ * \retval  AM_ERROR  :初始化失败
  */
 am_err_t am_zml166_adc_reg_init(am_zml166_adc_dev_t           *p_dev);
 
 /**
- * \brief AM_ZML166_ADC 初始化函数
+ * \brief ZML166 ADC 初始化函数
  *
- * \param[in] p_dev     指向 AM_ZML166_ADC 设备结构体的指针
- * \param[in] p_devinfo 指向 AM_ZML166_ADC 设备信息结构体的指针
+ * \param[in] p_dev     :指向 AM_ZML166_ADC 设备结构体的指针
+ * \param[in] p_devinfo :指向 AM_ZML166_ADC 设备信息结构体的指针
  *
  * \return AM_ZML166_ADC 句柄，若为 NULL，表明初始化失败
  */
@@ -399,9 +423,9 @@ am_zml166_adc_handle_t am_zml166_adc_init (am_zml166_adc_dev_t           *p_dev,
                                            const am_zml166_adc_devinfo_t *p_devinfo);
 
 /**
- * \brief AM_ZML166_ADC 解初始化函数
+ * \brief ZML166 ADC 解初始化函数
  *
- * \param[in] handle AM_ZML166_ADC 句柄
+ * \param[in] handle :ZML166 ADC  句柄
  *
  * \return 无
  */

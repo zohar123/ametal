@@ -25,7 +25,7 @@
 #include "am_time.h"
 #include "am_pcf85063.h"
 #include "am_alarm_clk.h"
-#include "am_zlg116_inst_init.h"
+#include "am_aml166_inst_init.h"
 #include "zlg116_pin.h"
 
 /**

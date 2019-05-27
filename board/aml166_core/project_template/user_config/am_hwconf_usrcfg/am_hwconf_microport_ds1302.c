@@ -24,7 +24,7 @@
 #include "ametal.h"
 #include "am_time.h"
 #include "am_ds1302.h"
-#include "am_zlg116_inst_init.h"
+#include "am_aml166_inst_init.h"
 #include "zlg116_pin.h"
 
 /**
