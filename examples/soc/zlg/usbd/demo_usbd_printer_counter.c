@@ -44,10 +44,8 @@
 #include "am_vdebug.h"
 #include "am_rngbuf.h"
 #include "am_softimer.h"
-#include "am_zmf159_usbd.h"
 #include "am_usbd_printer.h"
-#include "am_zmf159_inst_init.h"
-#include "demo_zmf159_core_entries.h"
+#include "demo_zlg_entries.h"
 
 #define __RNG_BUFF_SIZE    1024                      /**< \brief 缓冲区大小. */
 
@@ -125,14 +123,12 @@ static void  __softimer_callback_func(void * p_arg)
 /**
  * \brief usb device printer 流量计数例程入口
  */
-void demo_zmf159_usbd_printer_counter_entry (void)
+void demo_usbd_printer_counter_entry (am_usbd_printer_handle handle)
 {
     uint32_t key = 0;
-    am_kprintf("printer counter demo\n");
 
     am_mdelay(3000);                                  /* 模拟USB设备拔出的动作 */
     am_softimer_t soft_time;                          /* 软件定时器handle*/
-    am_usbd_printer_handle handle = NULL;
 
     /* 初始化环形缓冲区*/
     am_rngbuf_init(&__g_rngbuff, __g_rng_buff, __RNG_BUFF_SIZE);
@@ -140,8 +136,6 @@ void demo_zmf159_usbd_printer_counter_entry (void)
     /* 初始化软件定时器. */
     am_softimer_init(&soft_time, __softimer_callback_func, handle);
     am_softimer_start(&soft_time, 1);                 /* 开始软件定时器布局 1ms*/
-
-    handle = am_zmf159_usbd_printer_inst_init();      /* usb打印机实例初始化*/
 
     /* 定义软件定时器接收和发送请求回调函数*/
     am_usbd_printer_recv_request_callback(handle, __printer_recv_callback, handle);

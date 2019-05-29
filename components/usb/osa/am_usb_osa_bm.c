@@ -89,12 +89,12 @@ void *am_usb_osa_memory_allocate(uint32_t length)
 
 void am_usb_osa_memory_free(void *p)
 {
-	am_memheap_free(p);
+    am_memheap_free(p);
 }
 
 void am_usb_osa_enter_critical(uint8_t *sr)
 {
-	*sr = am_int_cpu_lock();
+    *sr = am_int_cpu_lock();
 }
 
 void am_usb_osa_exit_critical(uint8_t sr)

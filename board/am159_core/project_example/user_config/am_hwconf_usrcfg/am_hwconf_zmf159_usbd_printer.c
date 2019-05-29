@@ -13,8 +13,8 @@
 
 /**
  * \file
- * \brief zlg227 USB_printer 用户配置文件
- * \sa am_zlg227_hwconfig_usb_printer.c
+ * \brief zmf159 USB_printer 用户配置文件
+ * \sa am_zmf159_hwconfig_usb_printer.c
  *
  * \internal
  * \par Modification history
@@ -64,7 +64,7 @@
 #define __USBD_PRINTER_ENDPOINT_IN_ATTRIBUTE      AM_USB_ENDPOINT_BULK          /**< \brief 设置端点属性为批量传输*/
 #define __USBD_PRINTER_ENDPOINT_IN_QUERY_TIME    (0x06)                         /**< \brief 设置端点查询时间为10ms,单位为1ms*/
 
-#define __USBD_PRINTER_ENDPOINT_OUT               3
+#define __USBD_PRINTER_ENDPOINT_OUT               2
 #define __USBD_PRINTER_ENDPOINT_OUT_PACKSIZE      AM_USBD_MAX_EP_DATA_CNT
 #define __USBD_PRINTER_ENDPOINT_OUT_ATTRIBUTE     AM_USB_ENDPOINT_BULK
 #define __USBD_PRINTER_ENDPOINT_OUT_QUERY_TIME   (0x06)
@@ -140,8 +140,8 @@ static uint8_t __g_am_usbd_printer_desc_conf[AM_USB_DESC_LENGTH_ALL(__USBD_PRINT
     __USBD_PRINTER_DEVICE_POWER,            /* 从总线获取的最大电流：100mA， 2mA一个单位 */
 
     /* 接口描述符 */
-    AM_USB_DESC_LENGTH_INTERFACE,     /* 接口描述符字节数 */
-    AM_USB_DESC_TYPE_INTERFACE,       /* 接口描述符类型编号，固定为0x04 */
+    AM_USB_DESC_LENGTH_INTERFACE,           /* 接口描述符字节数 */
+    AM_USB_DESC_TYPE_INTERFACE,             /* 接口描述符类型编号，固定为0x04 */
     0x00,                                   /* 该接口编号 */
     0x00,                                   /* 可选设置的索引值（该接口的备用编号） */
     __USBD_PRINTER_ENDPOINT_COUNT,          /* 该接口使用的端点数（不包括端点0） */
@@ -152,7 +152,7 @@ static uint8_t __g_am_usbd_printer_desc_conf[AM_USB_DESC_LENGTH_ALL(__USBD_PRINT
 
     /* 输入端点描述符 */
     AM_USB_DESC_LENGTH_ENDPOINT,            /* 端点描述符字节数 */
-    AM_USB_DESC_TYPE_ENDPOINT,        /* 端点描述符类型编号，固定为0x05 */
+    AM_USB_DESC_TYPE_ENDPOINT,              /* 端点描述符类型编号，固定为0x05 */
 
     /* D7 1:USB_IN  0:USB_OUT D3:D0 端点号 */
     (__USBD_PRINTER_ENDPOINT_IN | (AM_USB_IN << AM_USB_REQ_TYPE_DIR_SHIFT)),
@@ -165,7 +165,7 @@ static uint8_t __g_am_usbd_printer_desc_conf[AM_USB_DESC_LENGTH_ALL(__USBD_PRINT
 
     /* 输出端点描述符 */
     AM_USB_DESC_LENGTH_ENDPOINT,            /* 端点描述符字节数 */
-    AM_USB_DESC_TYPE_ENDPOINT,        /* 端点描述符类型编号，固定为0x05 */
+    AM_USB_DESC_TYPE_ENDPOINT,              /* 端点描述符类型编号，固定为0x05 */
 
     /* 端点地址及输出属性 */
     (__USBD_PRINTER_ENDPOINT_OUT | (AM_USB_OUT << AM_USB_REQ_TYPE_DIR_SHIFT)),
@@ -270,9 +270,9 @@ static const am_usbd_descriptor_t __g_am_usbd_printer_descriptor[] = {
  * \brief 平台初始化
  */
 static void __am_usbd_printer_init (void) {
-	//    /* 使能时钟 */
-	    am_clk_enable(CLK_USB);
-	    amhw_zmf159_rcc_ahb2_enable(AMHW_ZMF159_RCC_AHB2_USBFS);
+    /* 使能时钟 */
+    am_clk_enable(CLK_USB);
+    amhw_zmf159_rcc_ahb2_enable(AMHW_ZMF159_RCC_AHB2_USBFS);
 }
 
 /**
@@ -289,9 +289,9 @@ static const am_usbd_devinfo_t __g_usbd_info = {
 };
 
 /**< \brief 定义USB设备信息 */
-static const am_zmf159_usbd_devinfo_t  __g_zlg227_usbd_printer_info = {
+static const am_zmf159_usbd_devinfo_t  __g_zmf159_usbd_printer_info = {
     ZMF159_USB_BASE,                  /**< \brief 寄存器基地址 */
-	INUM_USB_FS,                      /**< \brief 中断号 */
+    INUM_USB_FS,                      /**< \brief 中断号 */
     __am_usbd_printer_init,           /**< \brief 平台初始化 */
     __am_usbd_printer_deinit,         /**< \brief 平台去初始化 */
     &__g_usbd_info,
@@ -307,7 +307,7 @@ static am_usbd_printer_info_t __g_usbd_printer_info = {
 /** \brief 打印机使用handle(USB设备类) */
 static am_usbd_printer_t     __g_usb_printer_dev;
 
-/** \brief 用于zlg227 的USB handle*/
+/** \brief 用于zmf159 的USB handle*/
 static am_zmf159_usbd_dev_t  __g_zmf159_usb_printer_dev;
 
 /** \brief usb_printer实例初始化，获得usb_printer标准服务句柄 */
@@ -315,7 +315,8 @@ am_usbd_printer_handle am_zmf159_usbd_printer_inst_init (void)
 {
     return am_usbd_printer_init(&__g_usb_printer_dev,
                                 &__g_usbd_printer_info,
-                                 am_zmf159_usbd_init(&__g_zmf159_usb_printer_dev, &__g_zlg227_usbd_printer_info));
+                                 am_zmf159_usbd_init(&__g_zmf159_usb_printer_dev,
+                                                     &__g_zmf159_usbd_printer_info));
 }
 
 /** \brief usb_printer解初始化，获得usb_printer标准服务句柄 */

@@ -32,7 +32,7 @@
  */
 
 /** \brief 定义 LED 相关的 GPIO 管脚信息 */
-static const int __g_led_pins[] = {PIOB_8, PIOB_9};
+static const int __g_led_pins[] = {PIOC_10, PIOA_15};
 
 /** \brief 设备信息 */
 static const am_led_gpio_info_t __g_led_gpio_info = {

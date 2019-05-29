@@ -72,11 +72,11 @@ extern "C" {
 #define AM_DATE_LB(Y,M,D) ((((Y)-1980)<<9)|((M)<<5)|(D))
 
 //#define AM_BULK_MAX_PACKET_SIZE           (0x40)    /**< \brief 定义批量传输的最大字节数 */
-#define AM_SCSI_COMMAND_SIZE              (0x20)      /**< \brief 定义SISI命令字节数 */
+#define AM_SCSI_COMMAND_SIZE              (0x1f)      /**< \brief 定义SISI命令字节数 */
 
-#define AM_USBD_MSC_DISD_SIZE             (256 * 1024U)
+#define AM_USBD_MSC_DISD_SIZE             (1024 * 1024U)
 #define AM_USBD_MSC_SECTOR_SIZE           (512U)      /**< \brief 扇区大小 */
-#define AM_USBD_MSC_RAMDISK_SIZE          (15*1024U)  /**< \brief 放FAT表及用户数据*/
+#define AM_USBD_MSC_RAMDISK_SIZE          (10 * 1024U)  /**< \brief 放FAT表及用户数据*/
 #define AM_USBD_MSC_USE_DATE_OFST         (2048U)     /**< \brief 用户数据在FAT数据区偏移位置 */
 #define AM_USBD_MSC_FAT1_OFST             (512U)      /**< \brief FAT1在FAT表中的偏移位置 */
 
@@ -193,17 +193,19 @@ typedef struct am_bulk_only_csw {
  * \note 不同容量的u盘 各个区的地址不一样
  */
 typedef struct am_usb_msc_diskinfo {
-	uint8_t      is_win10;
+    uint8_t        is_win10;
 
-    uint32_t     memory_size;        /**< \brief U盘容量大小 */
-    uint16_t     block_size;         /**< \brief U盘扇区大小 */
-    uint32_t     block_count;        /**< \brief U盘扇区总数 */
-    uint32_t     fat2_addr;          /**< \brief FAT2 的地址 */
-    uint32_t     rootdir_addr;       /**< \brief 根目录 的地址 */
-    uint32_t     data_addr;          /**< \brief 数据区 的地址 */
+    uint8_t        max_lun;
 
-    uint8_t     *p_cmd_buffer;
-    uint8_t     *p_ram_buffer;
+    uint32_t       memory_size;        /**< \brief U盘容量大小 */
+    uint16_t       block_size;         /**< \brief U盘扇区大小 */
+    uint32_t       block_count;        /**< \brief U盘扇区总数 */
+    uint32_t       fat2_addr;          /**< \brief FAT2 的地址 */
+    uint32_t       rootdir_addr;       /**< \brief 根目录 的地址 */
+    uint32_t       data_addr;          /**< \brief 数据区 的地址 */
+
+    uint8_t       *p_cmd_buffer;
+    uint8_t       *p_ram_buffer;
 
     const uint8_t *p_root_file;
     uint32_t       root_file_len;
@@ -236,8 +238,8 @@ typedef struct am_usbd_msc_endpoint {
 typedef void (*am_usbd_msc_recv_cb_t)(void *p_arg, uint8_t *p_buff, uint16_t len);
 
 typedef struct am_usbd_msc_cb {
-	am_usbd_msc_recv_cb_t   pfn_recv;
-	void                   *p_arg;
+    am_usbd_msc_recv_cb_t   pfn_recv;
+    void                   *p_arg;
 }am_usbd_msc_cb_t;
 
 /** \brief usb device msc class struct */
@@ -271,7 +273,7 @@ typedef am_usbd_msc_t *am_usbd_msc_handle;
  *
  * \return 无
  */
-void am_zlg217_usb_msc_enpoint2_bulk_out (am_usbd_msc_handle handle);
+void am_usb_msc_enpoint2_bulk_out (void *p_arg);
 
 /**
  * \brief usb批量输入端点1中断函数处理
@@ -280,7 +282,7 @@ void am_zlg217_usb_msc_enpoint2_bulk_out (am_usbd_msc_handle handle);
  *
  * \return 无
  */
-void am_zlg217_usb_msc_enpoint1_bulk_in (am_usbd_msc_handle handle);
+void am_usb_msc_enpoint1_bulk_in (void *p_arg);
 
 
 
@@ -288,15 +290,15 @@ am_usbd_msc_handle am_usbd_msc_init (am_usbd_msc_t                    *p_dev,
                                      const am_usbd_msc_diskinfo_t     *p_info,
                                      am_usbd_dev_t                    *p_usbd);
 
-void am_zlg217_usb_msc_deinit (am_usbd_msc_t *p_dev);
+void am_usb_msc_deinit (am_usbd_msc_t *p_dev);
 
 am_usb_status_t am_usbd_msc_vendor_request_callback(am_usbd_msc_handle    handle,
                                                     am_vendor_request_t   pfn_cb,
                                                     void                 *p_arg);
 
 am_usb_status_t am_usbd_msc_recv_callback (am_usbd_msc_handle    handle,
-										   am_usbd_msc_recv_cb_t pfun,
-										   void                 *p_arg);
+                                           am_usbd_msc_recv_cb_t pfun,
+                                           void                 *p_arg);
 
 #ifdef __cplusplus
 }

@@ -43,11 +43,10 @@
 #include "am_rngbuf.h"
 #include "am_vdebug.h"
 #include "am_softimer.h"
-#include "am_zmf159_usbd.h"
 #include "am_usbd_printer.h"
-#include "am_zmf159_inst_init.h"
+#include "demo_zlg_entries.h"
 
-#define __RNG_BUFF_SIZE    512                   /**< 缓冲区大小. */
+#define __RNG_BUFF_SIZE    1024                  /**< 缓冲区大小. */
 
 static char __g_rng_buff[__RNG_BUFF_SIZE] = {0}; /**< \brief 环形缓冲区buff*/
 
@@ -84,23 +83,18 @@ static void __printer_send_callback(void *p_arg)
 /**
  * \brief 例程入口
  */
-void demo_zmf159_usbd_printer_entry (void)
+void demo_usbd_printer_entry (am_usbd_printer_handle handle)
 {
     uint32_t key = 0;
-    am_kprintf("printer demo\n");
 
     am_mdelay(3000);                               /* 模拟USB设备拔出的动作 */
-    am_usbd_printer_handle handle = NULL;
 
     /* 初始化环形缓冲区*/
     am_rngbuf_init(&__g_rngbuff, __g_rng_buff, __RNG_BUFF_SIZE);
 
-    handle = am_zmf159_usbd_printer_inst_init();    /* usb打印机实例初始化*/
-
     /* 定义软件定时器接收和发送请求回调函数*/
     am_usbd_printer_recv_request_callback(handle, __printer_recv_callback, handle);
     am_usbd_printer_send_request_callback(handle, __printer_send_callback, handle);
-
 
     while (1) {
         /* 如果环形缓冲区不为空，处理数据*/

@@ -483,5 +483,24 @@ void demo_zlg217_core_boot_kft_bootloader_entry (void);
  * \brief 基于KinetisFlashTool上位机的bootloader的测试应用程序例程
  */
 void demo_zlg217_core_boot_kft_application_entry (void);
-                                
+
+/**
+ * \brief USBD键盘例程
+ */
+void demo_zlg227_usbd_keyboard_entry (void);
+
+/**
+ * \brief USBD打印机 例程
+ */
+void demo_zlg227_usbd_printer_entry (void);
+
+/**
+ * \brief USBD U盘 例程
+ */
+void demo_zlg227_usbd_msc_entry (void);
+
+/**
+ * \brief USBD 虚拟串口  例程
+ */
+void demo_zlg227_usbd_vcom_entry (void);
 /* end of file */

@@ -74,11 +74,11 @@ extern "C" {
 #define AM_USB_REQ_TYPE_DIR_OUT                  (0x00U)
 #define AM_USB_REQ_TYPE_DIR_IN                   (0x80U)
 
-#define AM_USB_REQ_TYPE_TYPE_MASK                (0x60U)
-#define AM_USB_REQ_TYPE_TYPE_SHIFT               (5U)
-#define AM_USB_REQ_TYPE_TYPE_STANDARD            (0U)
-#define AM_USB_REQ_TYPE_TYPE_CLASS               (0x20U)
-#define AM_USB_REQ_TYPE_TYPE_VENDOR              (0x40U)
+#define AM_USB_REQ_TYPE_MASK                     (0x60U)
+#define AM_USB_REQ_TYPE_SHIFT                    (5U)
+#define AM_USB_REQ_TYPE_STANDARD                 (0U)
+#define AM_USB_REQ_TYPE_CLASS                    (0x20U)
+#define AM_USB_REQ_TYPE_VENDOR                   (0x40U)
 
 #define AM_USB_REQ_TYPE_RECIPIENT_MASK           (0x1FU)
 #define AM_USB_REQ_TYPE_RECIPIENT_SHIFT          (0U)

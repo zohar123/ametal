@@ -41,7 +41,10 @@
 #include "hw/amhw_zlg_uart.h"
 #include "hw/amhw_zlg_iwdg.h"
 #include "hw/amhw_zlg_wwdg.h"
-
+#include "am_usbd_printer.h"
+#include "am_usbd_cdc_vcom.h"
+#include "am_usbd_keyboard.h"
+#include "am_usbd_msc.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -412,6 +415,44 @@ void dome_zml166_adc_thermocouple_measure_entry(void              *p_handle,
 void demo_zml166_adc_vol_para_adjuet_entry(void                   *p_handle,
                                            am_uart_handle_t        uart_handle,
                                            float                  *p_para);
+
+
+/**
+ * \brief USB打印机例程   该例程带打印时间以及打印数据量显示
+ * \param[in] handle      USB打印机服务句柄
+ * \return 无
+ */
+void demo_usbd_printer_counter_entry (am_usbd_printer_handle handle);
+
+/**
+ * \brief USB打印机例程   该例程仅打印相关信息
+ * \param[in] handle      USB打印机服务句柄
+ * \return 无
+ */
+void demo_usbd_printer_entry (am_usbd_printer_handle handle);
+
+/**
+ * \brief USB模拟串口例程
+ * \param[in] handle      USB模拟串口服务句柄
+ * \return 无
+ */
+void demo_usbd_vcom_entry (am_usbd_cdc_vcom_handle handle);
+
+/**
+ * \brief USB模拟按键例程
+ * \param[in] handle      USB模拟键盘服务句柄
+ * \return 无
+ */
+void demo_usbd_keyboard_entry (am_usbd_keyboard_handle handle);
+
+
+/**
+ * \brief USB模拟U盘例程
+ * \param[in] handle      USB模拟键盘服务句柄
+ * \return 无
+ */
+void demo_usbd_msc_entry (am_usbd_msc_handle handle);
+
 #ifdef __cplusplus
 }
 #endif

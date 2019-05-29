@@ -51,15 +51,15 @@ typedef enum am_usb_status {
     AM_USB_STATUS_CONTROLLER_NOT_FOUND,         /**< \brief 控制接口无法找到 */
     AM_USB_STATUS_INVALID_CONTROLLER_INTERFACE, /**< \brief 非法接口 */
 
-    AM_USB_STATUS_NOT_SUPPORTED,     /**< \brief 不支持 */
-    AM_USB_STATUS_RETRY,             /**< \brief 重试 */
-    AM_USB_STATUS_TRANSFER_STALL,    /**< \brief 端口阻塞 */
-    AM_USB_STATUS_TRANSFER_FAILED,   /**< \brief 传输失败 */
-    AM_USB_STATUS_ALLOC_FAIL,        /**< \brief 分配失败 */
-    AM_USB_STATUS_LACK_SWAP_BUFFER,  /**< \brief Insufficient swap buffer for KHCI */
-    AM_USB_STATUS_TRANSFER_CANCEL,   /**< \brief 传输取消 */
-    AM_USB_STATUS_BAND_WIDTH_FAIL,   /**< \brief 带宽分配失败 */
-    AM_USB_STATUS_MSD_STATUS_FAIL,   /**< \brief For MSD, the CSW status means fail */
+    AM_USB_STATUS_NOT_SUPPORTED,                /**< \brief 不支持 */
+    AM_USB_STATUS_RETRY,                        /**< \brief 重试 */
+    AM_USB_STATUS_TRANSFER_STALL,               /**< \brief 端口阻塞 */
+    AM_USB_STATUS_TRANSFER_FAILED,              /**< \brief 传输失败 */
+    AM_USB_STATUS_ALLOC_FAIL,                   /**< \brief 分配失败 */
+    AM_USB_STATUS_LACK_SWAP_BUFFER,             /**< \brief Insufficient swap buffer for KHCI */
+    AM_USB_STATUS_TRANSFER_CANCEL,              /**< \brief 传输取消 */
+    AM_USB_STATUS_BAND_WIDTH_FAIL,              /**< \brief 带宽分配失败 */
+    AM_USB_STATUS_MSD_STATUS_FAIL,              /**< \brief For MSD, the CSW status means fail */
 } am_usb_status_t;
 
 /** \brief USB host handle type define */
