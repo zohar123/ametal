@@ -37,7 +37,7 @@
  * 4 - UART4; 5 - UART5; 6 - UART6;
  * 7 - UART7; 8 - UART8
  */
-#define __DEBUG_UART            2
+#define __DEBUG_UART            1
 
 /** \brief 配置调试串口输出的波特率 */
 #define __DEBUG_BAUDRATE        115200

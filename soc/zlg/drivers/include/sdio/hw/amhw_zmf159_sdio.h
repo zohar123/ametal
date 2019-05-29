@@ -29,6 +29,28 @@ extern "C" {
 #include "am_types.h"
 #include "am_bitops.h"
 
+#define ZMF159_SDIO_CMDCRC          (0x01 << 7)
+#define ZMF159_SDIO_DATCRC          (0x01 << 6)
+#define ZMF159_SDIO_AUTOCRC         (0x01 << 5)
+#define ZMF159_SDIO_READ_MRBLOCK    (0x01 << 4)
+#define ZMF159_SDIO_CMDRCRCE_RO     (0x01 << 1)
+#define ZMF159_SDIO_DATRCRCE_RO     (0x01 << 0)
+
+
+#define ZMF159_SDIO_INT_ALL            0x1ff
+#define ZMF159_SDIO_INT_DATA1          (0x01 << 8)
+#define ZMF159_SDIO_INT_CRC            (0x01 << 7)
+#define ZMF159_SDIO_INT_CR_TIMEOUT     (0x01 << 6)
+#define ZMF159_SDIO_INT_MB_TIMEOUT     (0x01 << 5)
+#define ZMF159_SDIO_INT_MB_COMPLE      (0x01 << 4)
+#define ZMF159_SDIO_INT_CMD_ERR        (0x01 << 3)
+#define ZMF159_SDIO_INT_DAT_ERR        (0x01 << 2)
+#define ZMF159_SDIO_INT_DAT_COMPLE     (0x01 << 1)
+#define ZMF159_SDIO_INT_CMD_COMPLE     (0x01 << 0)
+
+
+
+
 /**
  * \addtogroup amhw_zlg_sdio
  * \copydoc amhw_zlg_sdio.h
@@ -47,6 +69,7 @@ typedef struct amhw_zlg_sdio {
     __IO uint32_t  cmd_crc;         /**< \brief sdio cmd_crc register*/
     __IO uint32_t  dat_crcl;        /**< \brief sdio dat_crcl control */
     __IO uint32_t  dat_crch;        /**< \brief sdio dat_crch register */
+    __IO uint32_t  mmc_port;
     __IO uint32_t  mmc_int_mask;    /**< \brief sdio mmc_int_mask number */
     __IO uint32_t  clr_mmc_int;     /**< \brief sdio clr_mmc_int register */
     __IO uint32_t  mmc_cardsel;     /**< \brief sdio mmc_cardsel control */
@@ -65,15 +88,15 @@ typedef struct amhw_zlg_sdio {
  */
 typedef enum amhw_zlg_sdio_width {
     AMHW_ZLG_ADIO_WIDTH_1BIT      = 0x0,   /**< \brief 1位 */
-	AMHW_ZLG_ADIO_WIDTH_4BIT      = 0x1,   /**< \brief 4位 */
+	AMHW_ZLG_ADIO_WIDTH_4BIT      = 0x2,   /**< \brief 4位 */
 } amhw_zlg_sdio_width_t;
 
 /**
  * \brief sdio速度模式配置
  */
 typedef enum amhw_zlg_sdio_speed_mode {
-    AMHW_ZLG_ADIO_SPEED_MODE_LOW      = 0x0,   /**< \brief 低速模式 */
-	AMHW_ZLG_ADIO_SPEED_MODE_HIGH     = 0x1,   /**< \brief 高速模式 */
+    AMHW_ZLG_SDIO_SPEED_MODE_LOW      = 0x0,   /**< \brief 低速模式 */
+	AMHW_ZLG_SDIO_SPEED_MODE_HIGH     = 0x1,   /**< \brief 高速模式 */
 } amhw_zlg_sdio_speed_mode_t;
 
 /**
@@ -126,8 +149,8 @@ typedef enum amhw_zlg_sdio_pclkg_mode {
  * \brief sdio端口操作模式选择
  */
 typedef enum amhw_zlg_resive_or_send_mode {
-	AMHW_ZLG_SDIO_RESIVE_MODE     = 0x0,   /**< \brief 使用接收模式 */
-	AMHW_ZLG_SDIO_SEND_MODE       = 0x1,   /**< \brief 使用发送模式*/
+    AMHW_ZLG_SDIO_SEND_MODE       = 0x0,   /**< \brief 使用发送模式*/
+	AMHW_ZLG_SDIO_RESIVE_MODE     = 0x1,   /**< \brief 使用接收模式 */
 } amhw_zlg_resive_or_send_mode_t;
 
 
@@ -138,6 +161,15 @@ typedef enum amhw_zlg_transfer_mode {
 	AMHW_ZLG_SDIO_WRITE_MODE      = 0x0,   /**< \brief 写模式 */
 	AMHW_ZLG_SDIO_READ_MODE       = 0x1,   /**< \brief 读模式*/
 } amhw_zlg_transfer_mode_t;
+
+/**
+ * \brief sdio端口操作模式选择
+ */
+typedef enum amhw_zlg_clk_selete_bety {
+	AMHW_ZLG_SDIO_UP_PUSH_DOWN_PULL      = 0x0,   /**< \brief 写模式 */
+	AMHW_ZLG_SDIO_UP_PULL_DOWN_PUSH      = 0x1,   /**< \brief 读模式*/
+} amhw_zlg_clk_selete_bety_t;
+
 
 /**
  * \brief 读等待使能函数
@@ -421,6 +453,7 @@ void amhw_zlg_sdio_attoclkg_disable (amhw_zlg_sdio_t *p_hw_sdio)
 	p_hw_sdio->mmc_io &= ~(1 << 7);
 }
 
+
 /**
  * \brief 启动命令后自动接收响应
  *
@@ -447,6 +480,21 @@ void amhw_zlg_sdio_enrresp_disable (amhw_zlg_sdio_t *p_hw_sdio)
 	p_hw_sdio->mmc_io &= ~(1 << 6);
 }
 
+
+
+am_static_inline
+void amhw_zlg_sdio_out_8nullclk (amhw_zlg_sdio_t *p_hw_sdio)
+{
+	p_hw_sdio->mmc_io |= ((1 << 5));
+}
+
+
+am_static_inline
+void amhw_zlg_sdio_get_cid_csd(amhw_zlg_sdio_t *p_hw_sdio)
+{
+	p_hw_sdio->mmc_io |= (1 << 4);
+}
+
 /**
  * \brief 设置端口时钟线
  *
@@ -458,24 +506,20 @@ void amhw_zlg_sdio_enrresp_disable (amhw_zlg_sdio_t *p_hw_sdio)
 am_static_inline
 void amhw_zlg_sdio_pclkg_set (amhw_zlg_sdio_t *p_hw_sdio, amhw_zlg_resive_or_send_mode_t mode)
 {
-	if (mode == AMHW_ZLG_SDIO_SEND_MODE) {
-	    p_hw_sdio->mmc_io |= (1 << 3);
-	} else {
-		p_hw_sdio->mmc_io &= ~(1 << 3);
-	}
+	AM_BIT_MODIFY(p_hw_sdio->mmc_io, 3, mode);
 }
 
 /**
- * \brief 使能自动响应传输
+ * \brief 是否使能自动响应传输
  *
  * \param[in] p_hw_sdio 指向 amhw_zlg_sdio_t 结构的指针
  *
  * \return 无
  */
 am_static_inline
-void amhw_zlg_sdio_autotr_enable (amhw_zlg_sdio_t *p_hw_sdio)
+void amhw_zlg_sdio_autotr_enable (amhw_zlg_sdio_t *p_hw_sdio, am_bool_t flg)
 {
-	    p_hw_sdio->mmc_io |= (1 << 2);
+    AM_BIT_MODIFY(p_hw_sdio->mmc_io, 2, flg);
 }
 
 /**
@@ -535,9 +579,336 @@ void amhw_zlg_sdio_autodattr_disable (amhw_zlg_sdio_t *p_hw_sdio)
 		p_hw_sdio->mmc_io &= ~(1 << 0);
 }
 
-/* 未完待续 。。。 */
+
+/**
+ * \brief 设置初始传输字节计数值
+ *
+ * \param[in] p_hw_sdio 指向 amhw_zlg_sdio_t 结构的指针
+ *
+ * \return 无
+ */
+am_static_inline
+void amhw_zlg_sdio_set_cnt (amhw_zlg_sdio_t *p_hw_sdio, uint16_t cnt)
+{
+	p_hw_sdio->mmc_bytecntl = cnt;
+}
+
+/**
+ * \brief 获取传输字节计数值
+ *
+ * \param[in] p_hw_sdio 指向 amhw_zlg_sdio_t 结构的指针
+ *
+ * \return 获取到的计数值
+ */
+am_static_inline
+uint16_t amhw_zlg_sdio_get_cnt (amhw_zlg_sdio_t *p_hw_sdio)
+{
+	return p_hw_sdio->mmc_bytecntl & 0xffff ;
+}
+
+/**
+ * \brief 获取传输字节计数值
+ *
+ * \param[in] p_hw_sdio 指向 amhw_zlg_sdio_t 结构的指针
+ *
+ * \return 无
+ */
+am_static_inline
+void amhw_zlg_sdio_get_blockcnt (amhw_zlg_sdio_t *p_hw_sdio, uint16_t *cnt)
+{
+	*cnt = p_hw_sdio->mmc_blockcnt & 0xffff ;
+}
+
+/**
+ * \brief 设置CRC控制
+ *
+ * \param[in] p_hw_sdio 指向 amhw_zlg_sdio_t 结构的指针
+ *
+ * \return 无
+ */
+am_static_inline
+void amhw_zlg_sdio_set_crcctl_enable (amhw_zlg_sdio_t *p_hw_sdio, uint8_t flags)
+{
+	p_hw_sdio->mmc_crcctl = (p_hw_sdio->mmc_crcctl & (~flags)) | flags;
+}
+
+/**
+ * \brief 设置CRC控制
+ *
+ * \param[in] p_hw_sdio 指向 amhw_zlg_sdio_t 结构的指针
+ *
+ * \return 无
+ */
+am_static_inline
+void amhw_zlg_sdio_set_crcctl_disable (amhw_zlg_sdio_t *p_hw_sdio, uint8_t flags)
+{
+	p_hw_sdio->mmc_crcctl = (p_hw_sdio->mmc_crcctl & (~flags));
+}
 
 
+/**
+ * \brief 设置CRC控制
+ *
+ * \param[in] p_hw_sdio 指向 amhw_zlg_sdio_t 结构的指针
+ *
+ * \return 无
+ */
+am_static_inline
+void amhw_zlg_sdio_get_cmdcrc (amhw_zlg_sdio_t *p_hw_sdio, uint8_t *cmdcrc)
+{
+	*cmdcrc = p_hw_sdio->cmd_crc & 0x7f ;
+}
 
+/**
+ * \brief 设置CRC控制
+ *
+ * \param[in] p_hw_sdio 指向 amhw_zlg_sdio_t 结构的指针
+ *
+ * \return 无
+ */
+am_static_inline
+void amhw_zlg_sdio_get_datcrc (amhw_zlg_sdio_t *p_hw_sdio, uint16_t *dat_crc)
+{
+	*dat_crc = (p_hw_sdio->dat_crcl | 0xff) | ((p_hw_sdio->dat_crch | 0xff) << 8);
+}
+
+/**
+ * \brief 设置CRC控制
+ *
+ * \param[in] p_hw_sdio 指向 amhw_zlg_sdio_t 结构的指针
+ *
+ * \return 无
+ */
+am_static_inline
+void amhw_zlg_sdio_set_autotime_enable (amhw_zlg_sdio_t *p_hw_sdio, am_bool_t is_enable)
+{
+	is_enable? (p_hw_sdio->mmc_port |= (1 << 4)) : (p_hw_sdio->mmc_port &= ~(1 << 4));
+}
+
+/**
+ * \brief 设置初始传输字节计数值
+ *
+ * \param[in] p_hw_sdio 指向 amhw_zlg_sdio_t 结构的指针
+ *
+ * \return 无
+ */
+am_static_inline
+void amhw_zlg_sdio_set_outtime_cnt (amhw_zlg_sdio_t *p_hw_sdio, uint8_t cnt)
+{
+	cnt = cnt | 0xf;
+	p_hw_sdio->mmc_port = (p_hw_sdio->mmc_port & (~cnt)) | cnt;
+}
+
+/**
+ * \brief 设置初始传输字节计数值
+ *
+ * \param[in] p_hw_sdio 指向 amhw_zlg_sdio_t 结构的指针
+ *
+ * \return 无
+ */
+am_static_inline
+void amhw_zlg_sdio_get_outtime_cnt (amhw_zlg_sdio_t *p_hw_sdio, uint8_t *cnt)
+{
+	*cnt = p_hw_sdio->mmc_port & 0xf;
+}
+
+/**
+ * \brief 设置CRC控制
+ *
+ * \param[in] p_hw_sdio 指向 amhw_zlg_sdio_t 结构的指针
+ *
+ * \return 无
+ */
+am_static_inline
+void amhw_zlg_sdio_set_int_enable (amhw_zlg_sdio_t *p_hw_sdio, uint8_t flags)
+{
+	p_hw_sdio->mmc_int_mask = (p_hw_sdio->mmc_int_mask & (~flags)) | flags;
+}
+
+/**
+ * \brief 设置CRC控制
+ *
+ * \param[in] p_hw_sdio 指向 amhw_zlg_sdio_t 结构的指针
+ *
+ * \return 无
+ */
+am_static_inline
+void amhw_zlg_sdio_set_int_disable (amhw_zlg_sdio_t *p_hw_sdio, uint8_t flags)
+{
+	p_hw_sdio->mmc_int_mask = (p_hw_sdio->mmc_int_mask & (~flags));
+}
+
+/**
+ * \brief 设置CRC控制
+ *
+ * \param[in] p_hw_sdio 指向 amhw_zlg_sdio_t 结构的指针
+ *
+ * \return 无
+ */
+am_static_inline
+void amhw_zlg_sdio_get_int_status (amhw_zlg_sdio_t *p_hw_sdio, uint16_t *status)
+{
+	*status = p_hw_sdio->clr_mmc_int & 0x1ff;
+}
+
+/**
+ * \brief 设置CRC控制
+ *
+ * \param[in] p_hw_sdio 指向 amhw_zlg_sdio_t 结构的指针
+ *
+ * \return 无
+ */
+am_static_inline
+void amhw_zlg_sdio_clr_int_status (amhw_zlg_sdio_t *p_hw_sdio, uint16_t flags)
+{
+	p_hw_sdio->clr_mmc_int = (p_hw_sdio->clr_mmc_int | (flags));
+}
+
+/**
+ * \brief 设置CRC控制
+ *
+ * \param[in] p_hw_sdio 指向 amhw_zlg_sdio_t 结构的指针
+ *
+ * \return 无
+ */
+am_static_inline
+void amhw_zlg_sdio_set_cardctrl_enable (amhw_zlg_sdio_t *p_hw_sdio, am_bool_t is_enable)
+{
+	is_enable? (p_hw_sdio->mmc_cardsel |= (1 << 7)) : (p_hw_sdio->mmc_cardsel &= ~(1 << 7));
+}
+
+/**
+ * \brief 设置CRC控制
+ *
+ * \param[in] p_hw_sdio 指向 amhw_zlg_sdio_t 结构的指针
+ *
+ * \return 无
+ */
+am_static_inline
+void amhw_zlg_sdio_set_cardclk_enable (amhw_zlg_sdio_t *p_hw_sdio, am_bool_t is_enable)
+{
+	is_enable? (p_hw_sdio->mmc_cardsel |= (1 << 6)) : (p_hw_sdio->mmc_cardsel &= ~(1 << 6));
+}
+
+/**
+ * \brief 设置CRC控制
+ *
+ * \param[in] p_hw_sdio 指向 amhw_zlg_sdio_t 结构的指针
+ *
+ * \return 无
+ */
+am_static_inline
+void amhw_zlg_sdio_set_cardclk_div (amhw_zlg_sdio_t *p_hw_sdio, uint8_t clk_div)
+{
+	clk_div &= 0x3f;
+
+	p_hw_sdio->mmc_cardsel = (p_hw_sdio->mmc_cardsel & (~clk_div)) | clk_div;
+}
+
+/**
+ * \brief 设置CRC控制
+ *
+ * \param[in] p_hw_sdio 指向 amhw_zlg_sdio_t 结构的指针
+ *
+ * \return 无
+ */
+am_static_inline
+void amhw_zlg_sdio_set_clk_selete_bety (amhw_zlg_sdio_t *p_hw_sdio, amhw_zlg_clk_selete_bety_t flag)
+{
+	flag? (p_hw_sdio->mmc_io_mbctl |= (1 << 3)) : (p_hw_sdio->mmc_io_mbctl &= ~(1 << 3));
+}
+
+am_static_inline
+void amhw_zlg_sdio_set_auto_cmdblock_tranfer (amhw_zlg_sdio_t *p_hw_sdio, am_bool_t flag)
+{
+	flag? (p_hw_sdio->mmc_io_mbctl |= (1 << 2)) : (p_hw_sdio->mmc_io_mbctl &= ~(1 << 2));
+}
+
+am_static_inline
+void amhw_zlg_sdio_set_auto_block_tranfer (amhw_zlg_sdio_t *p_hw_sdio, am_bool_t flag)
+{
+	flag? (p_hw_sdio->mmc_io_mbctl |= (1 << 0)) : (p_hw_sdio->mmc_io_mbctl &= ~(1 << 0));
+}
+
+am_static_inline
+void amhw_zlg_sdio_set_read (amhw_zlg_sdio_t *p_hw_sdio)
+{
+	p_hw_sdio->mmc_io_mbctl = (p_hw_sdio->mmc_io_mbctl & (~0x2)) | 0x2;
+}
+
+am_static_inline
+void amhw_zlg_sdio_set_write (amhw_zlg_sdio_t *p_hw_sdio)
+{
+	p_hw_sdio->mmc_io_mbctl = (p_hw_sdio->mmc_io_mbctl & (~0x2));
+}
+
+am_static_inline
+void amhw_zlg_sdio_set_tranfer_block_cnt (amhw_zlg_sdio_t *p_hw_sdio, uint16_t cnt)
+{
+	p_hw_sdio->mmc_blockcnt = cnt;
+}
+
+am_static_inline
+void amhw_zlg_sdio_set_tranfer_timeout (amhw_zlg_sdio_t *p_hw_sdio, uint8_t time)
+{
+	p_hw_sdio->mmc_timeoutcnt = time;
+}
+
+am_static_inline
+void amhw_zlg_sdio_write_cmd (amhw_zlg_sdio_t *p_hw_sdio, uint8_t i,  uint8_t cmd_data)
+{
+    p_hw_sdio->cmd_bufx[i] = cmd_data;
+}
+
+am_static_inline
+uint8_t amhw_zlg_sdio_read_cmd (amhw_zlg_sdio_t *p_hw_sdio, uint8_t i)
+{
+    return (uint8_t)(p_hw_sdio->cmd_bufx[i] & 0xff);
+}
+
+
+am_static_inline
+void amhw_zlg_sdio_clr_databuf (amhw_zlg_sdio_t *p_hw_sdio)
+{
+	p_hw_sdio->buf_ctll |= (1 << 15) ;
+}
+
+am_static_inline
+void amhw_zlg_sdio_dma_disable (amhw_zlg_sdio_t *p_hw_sdio)
+{
+	p_hw_sdio->buf_ctll |= (1 << 14);
+}
+
+am_static_inline
+void amhw_zlg_sdio_dma_enable (amhw_zlg_sdio_t *p_hw_sdio)
+{
+	p_hw_sdio->buf_ctll &= ~(1 << 14);
+}
+
+am_static_inline
+void amhw_zlg_sdio_fifo_status_enable (amhw_zlg_sdio_t *p_hw_sdio)
+{
+	p_hw_sdio->buf_ctll &= ~(1 << 12);
+}
+
+am_static_inline
+void amhw_zlg_sdio_fifo_status_disable (amhw_zlg_sdio_t *p_hw_sdio)
+{
+	p_hw_sdio->buf_ctll &= ~(1 << 12);
+}
+
+am_static_inline
+am_bool_t amhw_zlg_sdio_check_fifo_isempty (amhw_zlg_sdio_t *p_hw_sdio)
+{
+	return (p_hw_sdio->buf_ctll & 0x2)? AM_TRUE : AM_FALSE;
+}
+
+am_static_inline
+am_bool_t amhw_zlg_sdio_check_fifo_isfull (amhw_zlg_sdio_t *p_hw_sdio)
+{
+	return (p_hw_sdio->buf_ctll & 0x1)? AM_TRUE : AM_FALSE;
+}
+
+#endif
 
 /* end of file */
