@@ -36,17 +36,26 @@
  * @{
  */
 
+
+
 /** \brief ADC平台初始化 */
 static void __zlg_plfm_adc1_init (void)
 {
-    am_gpio_pin_cfg(PIOA_4, PIOA_4_AIN);
+    am_gpio_pin_cfg(PIOA_0, PIOA_0_ADC1_IN0 | PIOA_0_AIN);     /* ADC1通道0 */
+    am_gpio_pin_cfg(PIOA_1, PIOA_1_ADC1_IN1 | PIOA_1_AIN);     /* ADC1通道1 */
+    am_gpio_pin_cfg(PIOA_2, PIOA_2_ADC1_IN2 | PIOA_2_AIN);     /* ADC1通道2 */
+    am_gpio_pin_cfg(PIOA_3, PIOA_3_ADC1_IN3 | PIOA_3_AIN);     /* ADC1通道3 */
+    am_gpio_pin_cfg(PIOA_4, PIOA_4_ADC1_IN4 | PIOA_4_AIN);     /* ADC1通道4 */
+    am_gpio_pin_cfg(PIOA_5, PIOA_5_ADC1_IN5 | PIOA_5_AIN);     /* ADC1通道5 */
+    am_gpio_pin_cfg(PIOA_6, PIOA_6_ADC1_IN6 | PIOA_6_AIN);     /* ADC1通道6 ，温度传感器通道*/
+    am_gpio_pin_cfg(PIOA_7, PIOA_7_ADC1_IN7 | PIOA_7_AIN);     /* ADC1通道7 ，电压传感器通道*/
+
     am_clk_enable(CLK_ADC1);
 }
 
 /** \brief 解除ADC平台初始化 */
 static void __zlg_plfm_adc1_deinit (void)
 {
-    am_gpio_pin_cfg(PIOA_4, PIOA_4_INPUT_FLOAT);
     am_clk_disable (CLK_ADC1);
 }
 
@@ -83,14 +92,21 @@ void am_zlg217_adc1_inst_deinit (am_adc_handle_t handle)
 /** \brief ADC2平台初始化 */
 static void __zlg_plfm_adc2_init (void)
 {
-    am_gpio_pin_cfg(PIOB_0, PIOB_0_AIN);
+    am_gpio_pin_cfg(PIOB_0, PIOB_0_AIN);/* ADC2通道0 */
+    am_gpio_pin_cfg(PIOB_1, PIOB_1_AIN);/* ADC2通道1 */
+    am_gpio_pin_cfg(PIOC_0, PIOC_0_AIN);/* ADC2通道2 */
+    am_gpio_pin_cfg(PIOC_1, PIOC_1_AIN);/* ADC2通道3 */
+    am_gpio_pin_cfg(PIOC_2, PIOC_2_AIN);/* ADC2通道4 */
+    am_gpio_pin_cfg(PIOC_3, PIOC_3_AIN);/* ADC2通道5 */
+    am_gpio_pin_cfg(PIOC_4, PIOC_4_AIN);/* ADC2通道6 */
+    am_gpio_pin_cfg(PIOC_5, PIOC_5_AIN);/* ADC2通道7 */
     am_clk_enable(CLK_ADC2);
 }
 
 /** \brief 解除ADC平台初始化 */
 static void __zlg_plfm_adc2_deinit (void)
 {
-    am_gpio_pin_cfg(PIOB_0, PIOB_0_INPUT_FLOAT);
+//    am_gpio_pin_cfg(PIOB_0, PIOB_0_INPUT_FLOAT);
     am_clk_disable (CLK_ADC2);
 }
 
