@@ -93,13 +93,13 @@ void am_zlg217_adc1_inst_deinit (am_adc_handle_t handle)
 static void __zlg_plfm_adc2_init (void)
 {
     am_gpio_pin_cfg(PIOB_0, PIOB_0_AIN);/* ADC2通道0 */
-	  am_gpio_pin_cfg(PIOB_1, PIOB_1_AIN);/* ADC2通道1 */
+    am_gpio_pin_cfg(PIOB_1, PIOB_1_AIN);/* ADC2通道1 */
     am_gpio_pin_cfg(PIOC_0, PIOC_0_AIN);/* ADC2通道2 */
-	  am_gpio_pin_cfg(PIOC_1, PIOC_1_AIN);/* ADC2通道3 */
-	  am_gpio_pin_cfg(PIOC_2, PIOC_2_AIN);/* ADC2通道4 */
-	  am_gpio_pin_cfg(PIOC_3, PIOC_3_AIN);/* ADC2通道5 */
-		am_gpio_pin_cfg(PIOC_4, PIOC_4_AIN);/* ADC2通道6 */
-	  am_gpio_pin_cfg(PIOC_5, PIOC_5_AIN);/* ADC2通道7 */
+    am_gpio_pin_cfg(PIOC_1, PIOC_1_AIN);/* ADC2通道3 */
+    am_gpio_pin_cfg(PIOC_2, PIOC_2_AIN);/* ADC2通道4 */
+    am_gpio_pin_cfg(PIOC_3, PIOC_3_AIN);/* ADC2通道5 */
+    am_gpio_pin_cfg(PIOC_4, PIOC_4_AIN);/* ADC2通道6 */
+    am_gpio_pin_cfg(PIOC_5, PIOC_5_AIN);/* ADC2通道7 */
     am_clk_enable(CLK_ADC2);
 }
 
