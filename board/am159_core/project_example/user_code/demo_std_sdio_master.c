@@ -73,6 +73,11 @@ void demo_std_sdio_master_entry ()
 
     sdcard_handle = am_sdcard_inst_init();
 
+    if (sdcard_handle == NULL) {
+        am_kprintf( "sd card init failed\r\n");
+        while(1);
+    }
+
 //    len = am_sdcard_write(sdcard_handle, wr_buf, 0x00 , 1);
 
     len = am_sdcard_read(sdcard_handle, rd_buf, 0x00, 1);

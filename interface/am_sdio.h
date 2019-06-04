@@ -146,17 +146,22 @@ struct am_sdio_cmd;           /**< \brief 声明SDIO消息的结构体类型     */
  */
 struct am_sdio_drv_funcs {
 
-//    /** \brief 获取SDIO控制器信息 */
-    int (*pfn_sdio_msg_send) (void *p_drv, struct am_sdio_message *p_buf, uint16_t len);
+    /** \brief SDIO消息发送 */
+    int (*pfn_sdio_msg_send) (void                   *p_drv,
+                              struct am_sdio_message *p_buf,
+                              uint16_t                len);
 
-    //    /** \brief 获取SDIO控制器信息 */
-    int (*pfn_sdio_msg_recv) (void *p_drv, struct am_sdio_message *p_msg, uint16_t len);
+    /** \brief SDIO消息接收 */
+    int (*pfn_sdio_msg_recv) (void                   *p_drv,
+                              struct am_sdio_message *p_msg,
+                              uint16_t                len);
 
-    /** \brief 设置SDIO从机设备   */
-    int (*pfn_sdio_send_cmd) (void *p_drv,  struct am_sdio_cmd *p_cmd);
+    /** \brief SDIO命令发送   */
+    int (*pfn_sdio_send_cmd) (void               *p_drv,
+                              struct am_sdio_cmd *p_cmd);
 
     /** \brief 启动SDIO消息传输，完成后调用回调函数  */
-    int (*pfn_sdio_msg_start)(void                   *p_drv);
+    int (*pfn_sdio_msg_start)(void *p_drv);
 };
 
 /**
@@ -204,26 +209,34 @@ typedef struct am_sdio_cmd {
  * \brief SDIO 传输结构体 (推荐使用 am_sdio_mktrans() 设置本数据结构)
  */
 typedef struct am_sdio_message {
-//    am_sdio_cmd_t       *p_cmd;    /**< \brief 命令的组成区 */
     uint8_t             *p_data;     /**< \brief 数据缓冲区 */
     uint32_t             blk_size;   /**< \brief 传输块大小 */
     uint32_t             nblock;     /**< \brief 传输块数量 */
-//    uint8_t              opt;      /**< \brief 传输操作 */
 } am_sdio_message_t;
 
-///**
-// * \brief SDIO 消息 (推荐使用 am_sdio_mkmsg() 设置本数据结构)
-// */
-//typedef struct am_sdio_message{
-//    am_sdio_transfer_t *p_transfers;  /**< \brief 组成消息的传输              */
-//    uint16_t            trans_num;    /**< \brief 请求处理的传输个数          */
-//    uint16_t            done_num;     /**< \brief 成功处理的传输个数          */
-//    am_pfnvoid_t        pfn_complete; /**< \brief 传输完成回调函数            */
-//    void               *p_arg;        /**< \brief 传递给 pfn_complete 的参数  */
-//    int                 status;       /**< \brief 消息的状态                  */
-//    void               *ctlrdata[2];  /**< \brief 控制器使用                  */
-//}am_sdio_message_t;
+/** \brief SDIO timeout obj */
+typedef struct am_sdio_timeout_obj {
+    am_tick_t   ticks;
+    am_tick_t   timeout;
+} am_sdio_timeout_obj_t;
 
+am_static_inline
+void am_adio_timeout_set (am_sdio_timeout_obj_t *p_t,
+                          uint32_t              ms)
+{
+    p_t->timeout = am_ms_to_ticks(ms);
+    p_t->ticks   = am_sys_tick_get();
+}
+
+/**
+ * \brief check if timeout
+ * \param[in] t     timeout obj
+ */
+am_static_inline
+am_bool_t am_sdio_timeout (am_sdio_timeout_obj_t *p_t)
+{
+    return ((am_sys_tick_diff(p_t->ticks, am_sys_tick_get())) >= p_t->timeout);
+}
 
 /**
  * \brief SDIO传输命令结构体信息参数设置
@@ -239,7 +252,7 @@ am_static_inline
 void am_sdio_mkcmd (am_sdio_cmd_t *p_cmd,
                     uint32_t       cmd,
                     uint32_t       arg,
-					uint8_t        rsp_type)
+                    uint8_t        rsp_type)
 {
     p_cmd->cmd = cmd;
     p_cmd->arg = arg;
@@ -273,63 +286,6 @@ void am_sdio_mkdev (am_sdio_device_t *p_dev,
 }
 
 /**
- * \brief SDIO传输结构体信息参数设置
- *
- * \param[in] p_trans  : 指向传输结构体的指针
- * \param[in] p_data   : 数据缓冲区
- * \param[in] p_cmd    : 传输的命令结构体指针
- * \param[in] blk_size : 传输块的大小
- * \param[in] nblock   : 传输块的个数
- * \param[in] opt      : 传输的类型
- *
- * \retval  AM_OK     : 传输结构体参数设置完成
- * \retval -AM_EINVAL : 参数错误
- */
-
-//am_static_inline
-//void am_sdio_mktrans (am_sdio_transfer_t *p_trans,
-//                      uint8_t            *p_data,
-//                      am_sdio_cmd_t      *p_cmd,
-//                      uint32_t            blk_size,
-//                      uint32_t            nblock,
-//                      uint8_t             opt)
-//{
-//    p_trans->p_data   = p_data;
-//    p_trans->blk_size = blk_size;
-//    p_trans->nblock   = nblock;
-//    p_trans->opt      = opt;
-//    p_trans->p_cmd    = p_cmd;
-//}
-
-/**
- * \brief 初始化消息
- *
- * \param[in] p_msg        : SDIO消息描述符指针
- * \param[in] p_transfers  : 组成消息的传输
- * \param[in] trans_num    : 请求处理的传输个数
- * \param[in] pfn_complete : 传输完成回调函数
- * \param[in] p_arg        : 传递给回调函数的参数
- *
- * \return 无
- */
-//am_static_inline
-//void am_sdio_mkmsg (am_sdio_message_t  *p_msg,
-//                   am_sdio_transfer_t  *p_transfers,
-//                   uint16_t             trans_num,
-//                   am_pfnvoid_t         pfn_complete,
-//                   void                *p_arg)
-//{
-//
-//    p_msg->p_transfers  = p_transfers;  /**< \brief 组成消息的传输              */
-//
-//    p_msg->trans_num    = trans_num;    /**< \brief 请求处理的传输个数          */
-//    p_msg->done_num     = 0;            /**< \brief 成功处理的传输个数          */
-//    p_msg->pfn_complete = pfn_complete; /**< \brief 传输完成回调函数            */
-//    p_msg->p_arg        = p_arg;        /**< \brief 传递给 pfn_complete 的参数  */
-//    p_msg->status       = 0;            /**< \brief 消息的状态                  */
-//}
-
-/**
  * \brief 开始处理一个消息
  *
  *     以异步的方式处理消息，若当前SDIO控制器空闲，则该消息会得到立即执行，
@@ -357,25 +313,31 @@ int (*pfn_sdio_send_cmd) (void *p_drv,  am_sdio_cmd_t *p_cmd);
 
 am_static_inline
 int am_sdio_send_cmd (am_sdio_handle_t    handle,
-		              am_sdio_cmd_t      *p_cmd)
+                      am_sdio_cmd_t      *p_cmd)
 {
     return handle->p_funcs->pfn_sdio_send_cmd(handle->p_drv,
-    		                                  p_cmd);
+                                              p_cmd);
 }
 
 am_static_inline
-int am_sdio_msg_send (am_sdio_handle_t handle,  struct am_sdio_message  *p_msg, uint16_t len)
+int am_sdio_msg_send (am_sdio_handle_t        handle,
+                      struct am_sdio_message *p_msg,
+                      uint16_t                len)
 {
-	 return handle->p_funcs->pfn_sdio_msg_send(handle->p_drv, p_msg, len);
+     return handle->p_funcs->pfn_sdio_msg_send(handle->p_drv,
+                                               p_msg,
+                                               len);
 }
 
 am_static_inline
-int am_sdio_msg_recv (am_sdio_handle_t handle,   struct am_sdio_message  *p_msg, uint16_t len)
+int am_sdio_msg_recv (am_sdio_handle_t        handle,
+                      struct am_sdio_message *p_msg,
+                      uint16_t                len)
 {
-	return handle->p_funcs->pfn_sdio_msg_recv(handle->p_drv, p_msg, len);
+    return handle->p_funcs->pfn_sdio_msg_recv(handle->p_drv,
+                                              p_msg,
+                                              len);
 }
-
-
 
 /**
  * @}

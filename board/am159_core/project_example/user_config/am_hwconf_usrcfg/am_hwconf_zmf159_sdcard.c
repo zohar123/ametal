@@ -38,10 +38,9 @@
 /*******************************************************************************
    Public functions
 *******************************************************************************/
-static  am_sd_card_devinfo_t __g_sdcard_info = {
-		AMHW_ZLG_ADIO_WIDTH_4BIT,
-		0x200
-
+static  am_sdcard_devinfo_t __g_sdcard_info = {
+        AMHW_ZLG_ADIO_WIDTH_4BIT,
+        0x200
 };
 static am_sdcard_dev_t    __g_sdcard_dev;
 
@@ -51,7 +50,7 @@ am_sdcard_handle_t am_sdcard_inst_init (void)
 
     return  am_sdcard_sdio_init(&__g_sdcard_dev,
                                 &__g_sdcard_info,
-							    am_zmf159_sdio_inst_init());
+                                am_zmf159_sdio_inst_init());
 
 }
 

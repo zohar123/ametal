@@ -48,11 +48,6 @@
 #define __SDIO_ST_M_SEND_DATA      (0x14u)          /* 发送数据状态 */
 #define __SDIO_ST_M_RECV_DATA      (0x15u)          /* 接收数据状态 */
 
-///* check if transfers empty */
-//#define __SDIO_TRANS_EMPTY(p_dev) \
-//    ((p_dev)->p_cur_trans >= (p_dev)->p_cur_msg->p_transfers \
-//                             + (p_dev)->p_cur_msg->trans_num)
-
 /** \brief SDIO 消息处理函数 */
 static int __sdio_msg_start (void *p_drv);
 
@@ -67,8 +62,6 @@ static int __sdio_send_cmd (void *p_drv, am_sdio_cmd_t *cmd_msg);
 static int __sdio_msg_send(void *p_drv,  struct am_sdio_message  *p_msg  , uint16_t len);
 static int __sdio_msg_recv(void *p_drv,  struct am_sdio_message  *p_msg  , uint16_t len);
 
-static int __sdio_mst_sm_event(am_zlg_sdio_dev_t *p_dev, uint32_t event);
-
 /**
  * \brief SDIO 驱动函数定义
  */
@@ -78,38 +71,6 @@ static am_const struct am_sdio_drv_funcs __g_sdio_drv_funcs = {
      __sdio_send_cmd,
      __sdio_msg_start
 };
-
-/**
- * \brief 添加一条 message 到控制器传输列表末尾
- *
- * \attention 调用此函数必须锁定控制器
- */
-//am_static_inline
-//void __sdio_msg_in (am_zlg_sdio_dev_t *p_dev, struct am_sdio_message *p_msg)
-//{
-//    am_list_add_tail((struct am_list_head *)(&p_msg->ctlrdata),
-//                    &(p_dev->msg_list));
-//}
-
-///**
-// * \brief 从控制器传输列表表头取出一条 message
-// *
-// * \attention 调用此函数必须锁定控制器
-// */
-//am_static_inline
-//struct am_sdio_message *__sdio_msg_out (am_zlg_sdio_dev_t *p_dev)
-//{
-//    if (am_list_empty_careful(&(p_dev->msg_list))) {
-//        return NULL;
-//    } else {
-//        struct am_list_head *p_node = p_dev->msg_list.next;
-//        am_list_del(p_node);
-//        return am_list_entry(p_node, struct am_sdio_message, ctlrdata);
-//    }
-//}
-
-
-//static uint32_t  f_hclk = 6000000;
 
 /** \brief SDIO 中断处理函数 */
 static void __sdio_irq_handler (void *p_arg)
@@ -207,8 +168,7 @@ static int __sdio_hard_init (am_zlg_sdio_dev_t *p_dev)
 
     amhw_zlg_sdio_port_operation_set(p_hw_sdio, AMHW_ZLG_SDIO_PORT_OPER_SDIO_MODE);
 
-    amhw_zlg_sdio_set_int_enable (p_hw_sdio, ZMF159_SDIO_INT_CMD_COMPLE |
-                                             ZMF159_SDIO_INT_DAT_COMPLE);
+    amhw_zlg_sdio_set_int_enable (p_hw_sdio, ZMF159_SDIO_INT_CMD_COMPLE);
 
 //    amhw_zlg_sdio_out_8nullclk(p_hw_sdio);
 
@@ -233,7 +193,7 @@ static int __sdio_send_cmd (void *p_drv, am_sdio_cmd_t *cmd_msg)
     amhw_zlg_sdio_autotr_enable(p_hw_sdio, 1);
 
     p_dev->int_status = ZMF159_SDIO_INT_CMD_COMPLE;
-    if ((ret = am_wait_on_timeout(&p_dev->wait, 500)) != AM_OK) {
+    if ((ret = am_wait_on_timeout(&p_dev->wait, 10)) != AM_OK) {
         return ret;
     }
 //    while(1) {
@@ -249,7 +209,7 @@ static int __sdio_send_cmd (void *p_drv, am_sdio_cmd_t *cmd_msg)
         amhw_zlg_sdio_autotr_enable(p_hw_sdio, 1);
 
         p_dev->int_status = ZMF159_SDIO_INT_CMD_COMPLE;
-        if ((ret = am_wait_on_timeout(&p_dev->wait, 500)) != AM_OK) {
+        if ((ret = am_wait_on_timeout(&p_dev->wait, 10)) != AM_OK) {
             return ret;
         }
 //        while(1) {
@@ -273,7 +233,7 @@ static int __sdio_send_cmd (void *p_drv, am_sdio_cmd_t *cmd_msg)
         amhw_zlg_sdio_autotr_enable(p_hw_sdio, 1);
 
         p_dev->int_status = ZMF159_SDIO_INT_CMD_COMPLE;
-        if ((ret = am_wait_on_timeout(&p_dev->wait, 500)) != AM_OK) {
+        if ((ret = am_wait_on_timeout(&p_dev->wait, 10)) != AM_OK) {
             return ret;
         }
 //        while(1) {
@@ -313,17 +273,23 @@ static int __sdio_msg_recv(void *p_drv, struct am_sdio_message  *p_msg, uint16_t
     uint8_t           *p_buf     = p_msg->p_data;
     am_zlg_sdio_dev_t *p_dev     = (am_zlg_sdio_dev_t *)p_drv;
     amhw_zlg_sdio_t   *p_hw_sdio = (amhw_zlg_sdio_t *)p_dev->p_devinfo->regbase;
-    uint8_t n;
+    am_sdio_timeout_obj_t timeout;
+    am_bool_t             timeout_flg;
 
     p_hw_sdio->mmc_io |= 0x02;
 
-    while(1) {                                   //wait FIFO full interrupt
-        n = 100;
-        while(n--);
+    am_adio_timeout_set(&timeout, 10);
+    do {                                                 //wait FIFO full interrupt
         if((p_hw_sdio->buf_ctll & 0x1)) {                //judge which interrupt generation
             break;
         }
+        timeout_flg = am_sdio_timeout(&timeout);
+    } while(!timeout_flg);
+
+    if (timeout_flg) {
+        return -AM_ETIME;
     }
+
     p_hw_sdio->buf_ctll = 0x000;
 
     for (i = 0; i < len ;) {
@@ -352,7 +318,7 @@ static int __sdio_msg_send(void *p_drv, struct am_sdio_message  *p_msg, uint16_t
     }
 
     p_dev->int_status = ZMF159_SDIO_INT_DAT_COMPLE;
-    return am_wait_on_timeout(&p_dev->wait, 500);
+    return am_wait_on_timeout(&p_dev->wait, 10);
 
 }
 
@@ -363,269 +329,9 @@ static int __sdio_msg_send(void *p_drv, struct am_sdio_message  *p_msg, uint16_t
         new_event = (e); \
     } while(0)
 
-//__sdio_mst_sm_event(am_zlg_sdio_dev_t *p_dev, uint32_t event)
-//{
-//
-//    volatile uint32_t  new_event = __SDIO_EVT_NONE;
-//    amhw_zlg_sdio_t *p_hw_sdio  = NULL;
-//
-//    if (p_dev == NULL) {
-//        return -AM_EINVAL;
-//    }
-//
-//    p_hw_sdio = (amhw_zlg_sdio_t *)p_dev->p_devinfo->regbase;
-//
-//    while(1) {
-//
-//        /* 检查是否有新的事件在状态机内部产生 */
-//        if (new_event != __SDIO_EVT_NONE) {
-//            event      = new_event;
-//            new_event  = __SDIO_EVT_NONE;
-//        }
-//
-//        /* 以设备的状态为基准进行状态的设置 */
-//        switch (p_dev->state) {
-//            case __SDIO_ST_IDLE:
-//            case __SDIO_ST_MSG_START:
-//            {
-//                am_sdio_message_t *p_cur_msg = NULL;
-//
-//                int key;
-//
-//                key = am_int_cpu_lock();
-//                p_cur_msg        = __sdio_msg_out(p_dev);
-//                p_dev->p_cur_msg = p_cur_msg;
-//
-//                if (p_cur_msg) {
-//
-//                    p_cur_msg->status = -AM_EINPROGRESS;
-//
-//                } else {
-//
-//                    /* 关闭中断 */
-////                    amhw_zlg_i2c_intr_mask_clear (p_hw_sdio, 0xfff);
-//
-//                    p_dev->busy = AM_FALSE;
-//                }
-//
-//                am_int_cpu_unlock(key);
-//
-//                /* 无需要处理的消息 */
-//                if (p_cur_msg == NULL) {
-//
-//                    __SDIO_NEXT_STATE(__SDIO_ST_IDLE, __SDIO_EVT_NONE);
-//
-//                    break;
-//                } else {
-//
-//                    p_cur_msg->done_num = 0;
-//                    p_dev->p_cur_trans  = p_cur_msg->p_transfers;
-//                    p_dev->data_ptr     = 0;
-//
-//                    __SDIO_NEXT_STATE(__SDIO_ST_TRANS_START,
-//                                        __SDIO_EVT_TRANS_LAUNCH);
-//
-//                    /* 直接进入下一个状态，开始一个传输，此处无需break */
-//                    event     = new_event;
-//                    new_event = __SDIO_EVT_NONE;
-//                }
-//            }
-//                /* no break */
-//
-//            case __SDIO_ST_TRANS_START:
-//            {
-//                struct am_sdio_message *p_cur_msg = p_dev->p_cur_msg;
-//                if (NULL == p_cur_msg) {
-////                    __sdio_re_init(p_dev);
-//                    return -AM_EINVAL;
-//                }
-//
-//                /* 当前消息传输完成 */
-//                if (__SDIO_TRANS_EMPTY(p_dev)) {
-//
-//                    /* 消息正在处理中 */
-//                    if (p_cur_msg->status == -AM_EINPROGRESS) {
-//                        p_cur_msg->status = AM_OK;
-//                    }
-//
-//                    p_dev->is_complete = AM_TRUE;
-//                    //amhw_zlg_i2c_con_set(p_hw_sdio, 1 << 9); /* 产生一个停止信号 */
-//                    __SDIO_NEXT_STATE(__SDIO_ST_IDLE,
-//                                     __SDIO_EVT_NONE);
-//                } else {                    /* 获取到一个传输，正确处理该传输即可 */
-//
-//                        /* 继续接受数据 */
-//                        __SDIO_NEXT_STATE(__SDIO_ST_SEND_CMD,
-//                                         __SDIO_EVT_NONE);
-//
-////                    struct am_sdio_transfer *p_cur_trans = p_dev->p_cur_trans;
-////
-////                    if (NULL == p_cur_trans && ) {
-//////                        __softimer_stop(p_dev);
-//////                        __i2c_re_init(p_dev);
-////
-////                        return -AM_EINVAL;
-////                    }
-////
-////                    p_dev->data_ptr = 0;
-//
-//
-////                    am_bool_t is_read = (p_cur_trans->opt & AM_SDIO_M_RD) ?
-////                                     AM_TRUE : AM_FALSE;
-////
-////
-////                    if (is_read == AM_TRUE) {
-////
-////                        /* 继续接受数据 */
-////                        __SDIO_NEXT_STATE(__SDIO_ST_M_RECV_DATA,
-////                                         __SDIO_EVT_NONE);
-////
-//////                        amhw_zlg_i2c_intr_mask_set(p_hw_i2c,
-//////                                                  AMHW_ZLG_INT_FLAG_RX_FULL);
-////                    } else {
-////
-////                        /* 继续发送数据 */
-////                        __SDIO_NEXT_STATE(__SDIO_ST_M_SEND_DATA,
-////                                         __SDIO_EVT_NONE);
-//////                        amhw_zlg_i2c_intr_mask_set(p_hw_i2c,
-//////                                                   AMHW_ZLG_INT_FLAG_TX_EMPTY);
-////                    }
-//
-//
-//                    /*
-//                     * 不需要启动信号，直接传输，必须同时满足以下三个条件：
-//                     * 1.设置了标志 AM_SDIO_M_NOSTART
-//                     * 2.当前传输不是一个消息中的第一个传输
-//                     * 3.当前传输与上一个传输的方向一致
-//                     */
-////                    if ((p_cur_trans->flags & AM_SDIO_M_NOSTART) &&
-////                        (p_cur_trans != p_cur_msg->p_transfers) &&
-////                        ((p_cur_trans->flags & AM_SDIO_M_RD) ==
-////                        ((p_cur_trans - 1)->flags & AM_SDIO_M_RD))) {
-////
-////                        am_bool_t is_read = (p_cur_trans->flags & AM_SDIO_M_RD) ?
-////                                         AM_TRUE : AM_FALSE;
-////
-////                        p_dev->trans_state = 1;
-////                        if (is_read == AM_TRUE) {
-////
-////                            /* 继续接受数据 */
-////                            __SDIO_NEXT_STATE(__SDIO_ST_M_RECV_DATA,
-////                                             __SDIO_EVT_NONE);
-////
-////                            amhw_zlg_i2c_intr_mask_set(p_hw_i2c,
-////                                                      AMHW_ZLG_INT_FLAG_RX_FULL);
-////                        } else {
-////
-////                            /* 继续发送数据 */
-////                            __SDIO_NEXT_STATE(__SDIO_ST_M_SEND_DATA,
-////                                             __SDIO_EVT_NONE);
-////                            amhw_zlg_i2c_intr_mask_set(p_hw_i2c,
-////                                                       AMHW_ZLG_INT_FLAG_TX_EMPTY);
-////                        }
-////
-////                    /* 发送从机地址 */
-////                    } else {
-////                        p_dev->trans_state = 0;
-////
-////                        /* 下一步操作是发送从机地址 */
-////                        __SDIO_NEXT_STATE(__SDIO_ST_SEND_SLA_ADDR,
-////                                         __SDIO_EVT_MST_IDLE);
-////                    }
-////                }
-//
-//                }
-//            }
-//
-//            case __SDIO_ST_SEND_CMD:
-//            {
-//                struct am_sdio_message  *p_cur_msg   = p_dev->p_cur_msg;
-//                //struct am_sdio_transfer *p_cur_trans = p_dev->p_cur_trans;
-//
-//                if (NULL == p_cur_msg) {
-////                    __sdio_re_init(p_dev);
-//                    return -AM_EINVAL;
-//                }
-//
-//                /** \brief SDIO 中断处理函数 */
-//                __sdio_send_cmd (p_dev, p_cur_msg->p_transfers->p_cmd);
-//
-//                break;
-//            }
-//            case __SDIO_ST_M_SEND_DATA:
-//
-//                break;
-//            case __SDIO_ST_M_RECV_DATA:
-//
-//                break;
-//            default:
-//                break;
-//        }
-//
-//            if (p_dev->is_abort != AM_FALSE) {
-//                p_dev->is_abort = AM_FALSE;
-//                return -AM_EINVAL;
-//            }
-//
-//            /* 内部没有新事件产生，跳出 */
-//            if (new_event == __SDIO_EVT_NONE) {
-//                break;
-//            }
-//    }
-//
-//    p_dev->busy   = AM_FALSE;
-//    return AM_OK;
-//}
-
-
 static int __sdio_msg_start (void *p_drv)
 {
-    am_zlg_sdio_dev_t *p_dev    = (am_zlg_sdio_dev_t *)p_drv;
-    amhw_zlg_sdio_t   *p_hw_sdio = (amhw_zlg_sdio_t *)p_dev->p_devinfo->regbase;
-
- //   amhw_zlg_sdio_autotr_enable(p_hw_sdio);
-
-//    amhw_zlg_sdio_transfdir_set(p_hw_sdio, AMHW_ZLG_SDIO_READ_MODE);
-//
-//    amhw_zlg_sdio_autodattr_enable(p_hw_sdio);
-
-    p_hw_sdio->mmc_io          = 0x2;
-    //SDIO1->BUF_CTL |= 0x20 << 2;
-    p_hw_sdio->mmc_io          |= 0x1;
-
-//    int key;
-//
-//    if ( (p_dev              == NULL)   ||
-//         (p_trans              == NULL) ||
-//         (p_trans->p_transfers == NULL) ||
-//         ((p_trans->trans_num   == 0)   &&
-//         (p_trans->p_transfers == NULL))) {
-//
-//        return -AM_EINVAL;
-//    }
-//
-//    key = am_int_cpu_lock();
-//    __sdio_msg_in(p_dev, p_trans);
-//    /* 当前正在处理消息，只需要将新的消息加入链表即可 */
-//    if (p_dev->busy == AM_TRUE) {
-//
-//        __sdio_msg_in(p_dev, p_trans);
-//
-//        am_int_cpu_unlock(key);
-//
-//        return AM_OK;
-//
-//    } else {
-//        p_dev->busy = AM_TRUE;
-//        __sdio_msg_in(p_dev, p_trans);
-//        p_trans->status = -AM_EISCONN; /* 正在排队中 */
-//        am_int_cpu_unlock(key);
-//
-//        /* 清除所有中断 */
-//        amhw_zlg_sdio_clr_int_status(p_hw_sdio, ZMF159_SDIO_INT_ALL);
-//
-//        return __sdio_mst_sm_event(p_dev, __SDIO_EVT_MSG_LAUNCH);
-//    }
+    return AM_OK;
 }
 
 
@@ -639,7 +345,6 @@ am_sdio_handle_t am_zmf159_sdio_init (am_zlg_sdio_dev_t           *p_dev,
     p_dev->sdio_serv.p_funcs = (struct am_sdio_drv_funcs *)&__g_sdio_drv_funcs;
     p_dev->sdio_serv.p_drv   = p_dev;
 
-//    p_dev->p_cur_trans       = NULL;
     p_dev->p_cur_msg         = NULL;
     p_dev->p_devinfo         = p_devinfo;
     p_dev->sdio_serv.p_drv   = p_dev;
