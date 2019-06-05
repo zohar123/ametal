@@ -24,8 +24,8 @@
 #include "am_sdio.h"
 #include "am_delay.h"
 #include "am_vdebug.h"
-//#include "zmf159_regbase.h"
-//#include "hw/amhw_zmf159_sdio.h"
+#include "zmf159_regbase.h"
+#include "hw/amhw_zmf159_sdio.h"
 
 
 static void __sdcard_csdinfo_get(am_sdcard_info_t *p_sd_card_info, uint32_t *p_response)
@@ -232,44 +232,50 @@ static int __sdcard_hard_init (am_sdcard_dev_t *p_dev)
 {
     int           ret;
     int           current_status;
-    am_sdio_cmd_t cmd;
-    am_bool_t     timeout_flg  = 0;
+    am_sdio_cmd_t cmd = {0};
+    am_bool_t     timeout_flg;
     am_sdio_timeout_obj_t timeout;
 
-//    int      error_status;
-//    uint32_t sd_type  = AM_SD_STD_CAPACITY;
+    uint32_t sd_type  = AM_SD_STD_CAPACITY;
 
     ret = am_sdcard_rest(p_dev);
     if (ret != AM_OK) {
         return ret;
     }
 
-    am_sdio_mkcmd (&cmd, 8, 0x1AA, SDIO_RESPONSE_SHORT);
+    am_sdio_mkcmd (&cmd, 8, 0x1AA, AM_SDIO_RESPONSE_SHORT);
     ret = am_sdio_send_cmd(p_dev->sdio_handle, &cmd);
     if (ret != AM_OK) {
         return ret;
     }
 
-    //sd_type = AM_SD_HIGH_CAPACITY;
+    sd_type = AM_SD_HIGH_CAPACITY;
 
+    timeout_flg = 0;
     am_adio_timeout_set(&timeout, 10);
     do {
-        am_sdio_mkcmd (&cmd, 55, 0, SDIO_RESPONSE_SHORT);
+        timeout_flg = am_sdio_timeout(&timeout);
+
+        am_sdio_mkcmd (&cmd, 55, 0, AM_SDIO_RESPONSE_SHORT);
         ret = am_sdio_send_cmd(p_dev->sdio_handle, &cmd);
         if (ret != AM_OK) {
             return ret;
         }
 
-        am_sdio_mkcmd (&cmd, 41, 0xC0100000, SDIO_RESPONSE_SHORT);
+        am_kprintf("cmd55 rsp0 %d  rsp1 %d\r\n", cmd.p_rsp[0], cmd.p_rsp[1]);
+
+        am_sdio_mkcmd (&cmd,
+                       41,
+                       AM_SD_VOLTAGE_WINDOW_SD | sd_type,
+                       AM_SDIO_RESPONSE_SHORT);
         ret = am_sdio_send_cmd(p_dev->sdio_handle, &cmd);
         if (ret != AM_OK) {
             return ret;
         }
-
+        am_kprintf("cmd41 rsp0 %d  rsp1 %d\r\n", cmd.p_rsp[0], cmd.p_rsp[1]);
         if((cmd.p_rsp[0] >> 31 & 0x1)) {
             break;
         }
-        timeout_flg = am_sdio_timeout(&timeout);
     } while(!timeout_flg);
 
     if (timeout_flg) {
@@ -287,7 +293,7 @@ static int __sdcard_hard_init (am_sdcard_dev_t *p_dev)
 
     if (SDIO_SECURE_DIGITAL_IO_CARD != p_dev->sdcard_info.card_type) {
 
-        am_sdio_mkcmd (&cmd, 2, 0, SDIO_RESPONSE_LONG);
+        am_sdio_mkcmd (&cmd, 2, 0, AM_SDIO_RESPONSE_LONG);
         ret = am_sdio_send_cmd(p_dev->sdio_handle, &cmd);
         if (ret != AM_OK) {
             return ret;
@@ -303,7 +309,7 @@ static int __sdcard_hard_init (am_sdcard_dev_t *p_dev)
         (SDIO_SECURE_DIGITAL_IO_COMBO_CARD == p_dev->sdcard_info.card_type) ||
         (SDIO_HIGH_CAPACITY_SD_CARD        == p_dev->sdcard_info.card_type)) {
 
-        am_sdio_mkcmd (&cmd, 3, 0, SDIO_RESPONSE_SHORT);
+        am_sdio_mkcmd (&cmd, 3, 0, AM_SDIO_RESPONSE_SHORT);
         ret = am_sdio_send_cmd(p_dev->sdio_handle, &cmd);
         if (ret != AM_OK) {
             return ret;
@@ -315,7 +321,7 @@ static int __sdcard_hard_init (am_sdcard_dev_t *p_dev)
 
     if (SDIO_SECURE_DIGITAL_IO_CARD != p_dev->sdcard_info.card_type) {
 
-        am_sdio_mkcmd (&cmd, 9, (p_dev->sdcard_info.rca) << 16, SDIO_RESPONSE_LONG);
+        am_sdio_mkcmd (&cmd, 9, (p_dev->sdcard_info.rca) << 16, AM_SDIO_RESPONSE_LONG);
         ret = am_sdio_send_cmd(p_dev->sdio_handle, &cmd);
         if (ret != AM_OK) {
             return ret;
@@ -325,10 +331,13 @@ static int __sdcard_hard_init (am_sdcard_dev_t *p_dev)
         am_kprintf("get sd card csd ... \r\n");
     }
 
+    timeout_flg = 0;
     am_adio_timeout_set(&timeout, 10);
     do {
 
-        am_sdio_mkcmd (&cmd, 13, (p_dev->sdcard_info.rca) << 16, SDIO_RESPONSE_SHORT);
+        timeout_flg = am_sdio_timeout(&timeout);
+
+        am_sdio_mkcmd (&cmd, 13, (p_dev->sdcard_info.rca) << 16, AM_SDIO_RESPONSE_SHORT);
         ret = am_sdio_send_cmd(p_dev->sdio_handle, &cmd);
         if (ret != AM_OK) {
             return ret;
@@ -340,7 +349,7 @@ static int __sdcard_hard_init (am_sdcard_dev_t *p_dev)
         if(current_status == 3) {
             break;
         }
-        timeout_flg = am_sdio_timeout(&timeout);
+
     } while(!timeout_flg);
 
     if (timeout_flg) {
@@ -351,7 +360,7 @@ static int __sdcard_hard_init (am_sdcard_dev_t *p_dev)
 //cmd 4 设置频率
 //======================================================
 
-    am_sdio_mkcmd (&cmd, 4, 0x04040000, SDIO_RESPONSE_SHORT);
+    am_sdio_mkcmd (&cmd, 4, 0x04040000, AM_SDIO_RESPONSE_SHORT);
     ret = am_sdio_send_cmd(p_dev->sdio_handle, &cmd);
     if (ret != AM_OK) {
         return ret;
@@ -360,7 +369,7 @@ static int __sdcard_hard_init (am_sdcard_dev_t *p_dev)
     am_kprintf("RESPONSE1 = %x.\r\nRESPONSE2 = %x.\r\n", cmd.p_rsp[0], cmd.p_rsp[1]);
 
     /* 选择 SD Card RCA地址 */
-    am_sdio_mkcmd (&cmd, 7, (p_dev->sdcard_info.rca) << 16, SDIO_RESPONSE_SHORT);
+    am_sdio_mkcmd (&cmd, 7, (p_dev->sdcard_info.rca) << 16, AM_SDIO_RESPONSE_SHORT);
     ret = am_sdio_send_cmd(p_dev->sdio_handle, &cmd);
     if (ret != AM_OK) {
         return ret;
@@ -368,9 +377,13 @@ static int __sdcard_hard_init (am_sdcard_dev_t *p_dev)
 
     am_kprintf("RESPONSE1 = %x.\r\nRESPONSE2 = %x.\r\n", cmd.p_rsp[0], cmd.p_rsp[1]);
 
+    timeout_flg = 0;
     am_adio_timeout_set(&timeout, 10);
     do {
-        am_sdio_mkcmd (&cmd, 13, (p_dev->sdcard_info.rca) << 16, SDIO_RESPONSE_SHORT);
+
+        timeout_flg = am_sdio_timeout(&timeout);
+
+        am_sdio_mkcmd (&cmd, 13, (p_dev->sdcard_info.rca) << 16, AM_SDIO_RESPONSE_SHORT);
         ret = am_sdio_send_cmd(p_dev->sdio_handle, &cmd);
         if (ret != AM_OK) {
             return ret;
@@ -385,7 +398,6 @@ static int __sdcard_hard_init (am_sdcard_dev_t *p_dev)
             break;
         }
 
-        timeout_flg = am_sdio_timeout(&timeout);
     } while(!timeout_flg);
 
     if (timeout_flg) {
@@ -397,13 +409,13 @@ static int __sdcard_hard_init (am_sdcard_dev_t *p_dev)
 //cmd 6  设置bus宽度
 //======================================================
 
-    am_sdio_mkcmd (&cmd, 55, p_dev->sdcard_info.rca << 16, SDIO_RESPONSE_SHORT);
+    am_sdio_mkcmd (&cmd, 55, p_dev->sdcard_info.rca << 16, AM_SDIO_RESPONSE_SHORT);
     ret = am_sdio_send_cmd(p_dev->sdio_handle, &cmd);
     if (ret != AM_OK) {
         return ret;
     }
 
-    am_sdio_mkcmd (&cmd, 6, p_dev->p_devinfo->mode, SDIO_RESPONSE_SHORT);
+    am_sdio_mkcmd (&cmd, 6, p_dev->p_devinfo->mode, AM_SDIO_RESPONSE_SHORT);
     ret = am_sdio_send_cmd(p_dev->sdio_handle, &cmd);
     if (ret != AM_OK) {
         return ret;
@@ -418,7 +430,7 @@ static int __sdcard_hard_init (am_sdcard_dev_t *p_dev)
 
 int am_sdcard_rest (am_sdcard_handle_t handle)
 {
-    am_sdio_cmd_t cmd = { 0, 0, SDIO_RESPONSE_NO, {0}};
+    am_sdio_cmd_t cmd = { 0, 0, AM_SDIO_RESPONSE_NO, {0}};
 
     if (handle == NULL) {
         return AM_ERROR;
@@ -435,19 +447,20 @@ int am_sdcard_read (am_sdcard_handle_t handle,
     int                     current_status ;
     am_sdio_cmd_t           cmd;
     struct am_sdio_message  p_msg;
+    int                     ret;
+    uint32_t                len;
     uint16_t                BlockSize;
+
+    amhw_zlg_sdio_t  *p_hw_sdio = (amhw_zlg_sdio_t *)ZMF159_SDIO_BASE;
 
     if (handle == NULL || p_buf == NULL) {
         return AM_ERROR;
     }
 
 //    am_sdio_msg_start(p_dev->sdio_handle);
-//
-//    amhw_zlg_sdio_t  *p_hw_sdio = (amhw_zlg_sdio_t *)ZMF159_SDIO_BASE;
-//
-//    p_hw_sdio->mmc_io = 0x2;
-//    p_hw_sdio->buf_ctll  = 0x20 << 2;
-//    p_hw_sdio->mmc_io |= 0x01;
+
+//    amhw_zlg_sdio_transfdir_set(p_hw_sdio, AMHW_ZLG_SDIO_READ_MODE);
+//    amhw_zlg_sdio_autodattr_enable(p_hw_sdio);
 
     if (handle->sdcard_info.card_type == SDIO_HIGH_CAPACITY_SD_CARD)
       {
@@ -456,20 +469,30 @@ int am_sdcard_read (am_sdcard_handle_t handle,
       }
 
     /* Set Block Size for Card */
-    am_sdio_mkcmd (&cmd, 16, BlockSize, SDIO_RESPONSE_SHORT);
-    am_sdio_send_cmd(handle->sdio_handle, &cmd);
+    am_sdio_mkcmd (&cmd, 16, BlockSize, AM_SDIO_RESPONSE_SHORT);
+    ret = am_sdio_send_cmd(handle->sdio_handle, &cmd);
+    if (ret != AM_OK) {
+        return ret;
+    }
 
+    am_sdio_mkcmd (&cmd, 17, addr, AM_SDIO_RESPONSE_SHORT);
+    ret = am_sdio_send_cmd(handle->sdio_handle, &cmd);
+    if (ret != AM_OK) {
+        return ret;
+    }
 
-    am_sdio_mkcmd (&cmd, 17, addr, SDIO_RESPONSE_SHORT);
-    am_sdio_send_cmd(handle->sdio_handle, &cmd);
+    p_msg.p_data   = p_buf;
+    p_msg.blk_size = block_size;
 
-    am_mdelay(2);
-    am_sdio_mkcmd(&cmd, 12, 0, SDIO_RESPONSE_SHORT);
+    len = am_sdio_msg_recv(handle->sdio_handle, &p_msg, 512);
+
+    //am_mdelay(4);
+    am_sdio_mkcmd(&cmd, 12, 0, AM_SDIO_RESPONSE_SHORT);
     am_sdio_send_cmd(handle->sdio_handle, &cmd);
     am_kprintf("RESPONSE1 = %x.\r\nRESPONSE2 = %x.\r\n", cmd.p_rsp[0], cmd.p_rsp[1]);
 
     while(1) {
-        am_sdio_mkcmd (&cmd, 13, (handle->sdcard_info.rca) << 16, SDIO_RESPONSE_SHORT);
+        am_sdio_mkcmd (&cmd, 13, (handle->sdcard_info.rca) << 16, AM_SDIO_RESPONSE_SHORT);
         am_sdio_send_cmd(handle->sdio_handle, &cmd);
         am_kprintf("RESPONSE1 = %x.\r\nRESPONSE2 = %x.\r\n", cmd.p_rsp[0], cmd.p_rsp[1]);
 
@@ -481,10 +504,8 @@ int am_sdcard_read (am_sdcard_handle_t handle,
         }
 
     }
-    p_msg.p_data   = p_buf;
-    p_msg.blk_size = block_size;
 
-    return am_sdio_msg_recv(handle->sdio_handle, &p_msg, 512);
+    return len;
 }
 
 int am_sdcard_write (am_sdcard_handle_t  handle,
@@ -493,7 +514,7 @@ int am_sdcard_write (am_sdcard_handle_t  handle,
                      uint16_t            block_size)
 {
     int               ret       = 0;
-    am_sdio_cmd_t     cmd       = { 0, 0, SDIO_RESPONSE_NO, {0}};
+    am_sdio_cmd_t     cmd       = { 0, 0, AM_SDIO_RESPONSE_NO, {0}};
     uint16_t          BlockSize = 512;
     int               current_status;
 
@@ -510,14 +531,14 @@ int am_sdcard_write (am_sdcard_handle_t  handle,
       }
 
       /* Set Block Size for Card */
-      am_sdio_mkcmd (&cmd, 16, BlockSize, SDIO_RESPONSE_SHORT);
+      am_sdio_mkcmd (&cmd, 16, BlockSize, AM_SDIO_RESPONSE_SHORT);
       ret = am_sdio_send_cmd(handle->sdio_handle, &cmd);
       if (ret != AM_OK) {
           return ret;
       }
 
       /*!< Send CMD24 WRITE_SINGLE_BLOCK */
-      am_sdio_mkcmd (&cmd, 24, addr, SDIO_RESPONSE_SHORT);
+      am_sdio_mkcmd (&cmd, 24, addr, AM_SDIO_RESPONSE_SHORT);
       ret = am_sdio_send_cmd(handle->sdio_handle, &cmd);
       if (ret != AM_OK) {
           return ret;
@@ -527,28 +548,15 @@ int am_sdcard_write (am_sdcard_handle_t  handle,
       p_msg.p_data   = p_buf;
       p_msg.blk_size = block_size;
 
-//      am_sdio_msg_send(p_dev->sdio_handle, &p_msg, 512);
-//
-//      p_hw_sdio->buf_ctll = 0x820;
-//      p_hw_sdio->mmc_io = 0x01;
-
       am_sdio_msg_send(handle->sdio_handle, &p_msg, 512);
 
-//      while(p_hw_sdio->mmc_io & 0x01);
-
-//        while(1) {
-//            if(p_hw_sdio->clr_mmc_int & 0x2) {                               //judge which interrupt generation
-//                p_hw_sdio->clr_mmc_int = 0x2;                                //write 1 clear interrup
-//                break;
-//            }
-//        }
-
-      am_sdio_mkcmd (&cmd, 12, 0, SDIO_RESPONSE_SHORT);
+      //am_mdelay(4);
+      am_sdio_mkcmd (&cmd, 12, 0, AM_SDIO_RESPONSE_SHORT);
       am_sdio_send_cmd(handle->sdio_handle, &cmd);
       am_kprintf("RESPONSE1 = %x.\r\nRESPONSE2 = %x.\r\n", cmd.p_rsp[0], cmd.p_rsp[1]);
 
     while(1) {
-        am_sdio_mkcmd (&cmd, 13, (handle->sdcard_info.rca) << 16, SDIO_RESPONSE_SHORT);
+        am_sdio_mkcmd (&cmd, 13, (handle->sdcard_info.rca) << 16, AM_SDIO_RESPONSE_SHORT);
         ret = am_sdio_send_cmd(handle->sdio_handle, &cmd);
         if (ret != AM_OK) {
             return ret;
@@ -565,19 +573,21 @@ int am_sdcard_write (am_sdcard_handle_t  handle,
     }
 
     return AM_OK;
-
 }
 
 int am_sdcard_erase (am_sdcard_handle_t handle,
                      uint32_t           addr_start,
-                     uint32_t           addr_end)
+                     uint32_t           blocks)
 {
-    am_sdio_cmd_t    cmd      = { 0, 0, SDIO_RESPONSE_NO, {0}};
     int              current_status;
+    uint32_t         addr_end;
+    am_sdio_cmd_t    cmd      = { 0, 0, AM_SDIO_RESPONSE_NO, {0}};
 
     if (handle == NULL) {
         return AM_ERROR;
     }
+
+    addr_end = blocks * handle->sdcard_info.card_block_size + addr_start;
 
       if (handle->sdcard_info.card_type == SDIO_HIGH_CAPACITY_SD_CARD)
       {
@@ -591,7 +601,7 @@ int am_sdcard_erase (am_sdcard_handle_t handle,
          (SDIO_HIGH_CAPACITY_SD_CARD      == handle->sdcard_info.card_type)) {
         /*!< Send CMD32 SD_ERASE_GRP_START with argument as addr  */
 
-          am_sdio_mkcmd (&cmd, 32, addr_start, SDIO_RESPONSE_SHORT);
+          am_sdio_mkcmd (&cmd, 32, addr_start, AM_SDIO_RESPONSE_SHORT);
           am_sdio_send_cmd(handle->sdio_handle, &cmd);
 
           if (cmd.p_rsp[1] != 32) {
@@ -599,7 +609,7 @@ int am_sdcard_erase (am_sdcard_handle_t handle,
           }
 
           /*!< Send CMD33 SD_ERASE_GRP_END with argument as addr  */
-          am_sdio_mkcmd (&cmd, 33, addr_end, SDIO_RESPONSE_SHORT);
+          am_sdio_mkcmd (&cmd, 33, addr_end, AM_SDIO_RESPONSE_SHORT);
           am_sdio_send_cmd(handle->sdio_handle, &cmd);
 
           if (cmd.p_rsp[1] != 33) {
@@ -609,28 +619,28 @@ int am_sdcard_erase (am_sdcard_handle_t handle,
 
       /*!< Send CMD38 ERASE */
       /*!< Send CMD33 SD_ERASE_GRP_END with argument as addr  */
-      am_sdio_mkcmd (&cmd, 38, 0, SDIO_RESPONSE_SHORT);
+      am_sdio_mkcmd (&cmd, 38, 0, AM_SDIO_RESPONSE_SHORT);
       am_sdio_send_cmd(handle->sdio_handle, &cmd);
 
       if (cmd.p_rsp[1] != 38) {
           return -AM_SD_ERASE_SEQ_ERR;
       }
 
+      am_mdelay(10);
+
     while(1) {
-            am_sdio_mkcmd (&cmd, 13, (handle->sdcard_info.rca) << 16, SDIO_RESPONSE_SHORT);
+            am_sdio_mkcmd (&cmd, 13, (handle->sdcard_info.rca) << 16, AM_SDIO_RESPONSE_SHORT);
             am_sdio_send_cmd(handle->sdio_handle, &cmd);
             am_kprintf("RESPONSE1 = %x.\r\nRESPONSE2 = %x.\r\n", cmd.p_rsp[0], cmd.p_rsp[1]);
 
             current_status = (cmd.p_rsp[0] >> 9) & 0xf;
             am_kprintf("current_status = %x.\r\n", current_status);
 
-            if ((AM_SD_OCR_ERRORBITS & cmd.p_rsp[0]) == 0) {
-                if(current_status == AM_SD_CARD_PROGRAMMING ||
-                   current_status == AM_SD_CARD_RECEIVING) {
-                    break;
-                }
+            if (((AM_SD_OCR_ERRORBITS & cmd.p_rsp[0]) != 0) ||
+                (current_status != AM_SD_CARD_PROGRAMMING)  ||
+                (current_status != AM_SD_CARD_RECEIVING)) {
+                break;
             }
-
         }
       return AM_OK;
 }
@@ -638,7 +648,7 @@ int am_sdcard_erase (am_sdcard_handle_t handle,
 int am_sdcard_sdinfo_get (am_sdcard_handle_t handle,
                           am_sdcard_info_t  *p_sdinfo)
 {
-    am_sdio_cmd_t      cmd = { 0, 0, SDIO_RESPONSE_NO, {0}};
+    am_sdio_cmd_t      cmd = { 0, 0, AM_SDIO_RESPONSE_NO, {0}};
 
     if (handle == NULL || p_sdinfo == NULL) {
         return AM_ERROR;
@@ -649,7 +659,7 @@ int am_sdcard_sdinfo_get (am_sdcard_handle_t handle,
 
 int am_sdcard_stop (am_sdcard_handle_t handle)
 {
-    am_sdio_cmd_t      cmd = { 0, 0, SDIO_RESPONSE_NO, {0}};
+    am_sdio_cmd_t      cmd = { 0, 0, AM_SDIO_RESPONSE_NO, {0}};
 
     if (handle == NULL) {
         return AM_ERROR;

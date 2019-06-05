@@ -191,9 +191,9 @@ typedef struct am_sdio_device {
 } am_sdio_device_t;
 
 /**< \brief 响应类型 */
-#define SDIO_RESPONSE_NO                    0
-#define SDIO_RESPONSE_SHORT                 1
-#define SDIO_RESPONSE_LONG                  2
+#define AM_SDIO_RESPONSE_NO                    0
+#define AM_SDIO_RESPONSE_SHORT                 1
+#define AM_SDIO_RESPONSE_LONG                  2
 
 /**
  * \brief SDIO 传输的命令结构体

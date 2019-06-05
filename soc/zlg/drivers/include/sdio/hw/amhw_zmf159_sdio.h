@@ -888,13 +888,28 @@ void amhw_zlg_sdio_dma_enable (amhw_zlg_sdio_t *p_hw_sdio)
 am_static_inline
 void amhw_zlg_sdio_fifo_status_enable (amhw_zlg_sdio_t *p_hw_sdio)
 {
-	p_hw_sdio->buf_ctll &= ~(1 << 12);
+	p_hw_sdio->buf_ctll |= (1u << 12);
 }
 
 am_static_inline
 void amhw_zlg_sdio_fifo_status_disable (amhw_zlg_sdio_t *p_hw_sdio)
 {
-	p_hw_sdio->buf_ctll &= ~(1 << 12);
+	p_hw_sdio->buf_ctll &= ~(1u << 12);
+}
+
+/**
+ * \brief sdio端口操作模式选择
+ */
+typedef enum {
+    AMHW_ZLG_SDIO_BUF_DIR_READ       = 0x0,   /**< \brief 读模式*/
+    AMHW_ZLG_SDIO_BUF_DIR_WRITE      = 0x1,   /**< \brief 写模式 */
+} amhw_zlg_sdio_buf_dir_t;
+
+am_static_inline
+void amhw_zlg_sdio_buf_dir_set (amhw_zlg_sdio_t        *p_hw_sdio,
+                                amhw_zlg_sdio_buf_dir_t dir)
+{
+    AM_BIT_MODIFY(p_hw_sdio->buf_ctll, 11, dir);
 }
 
 am_static_inline

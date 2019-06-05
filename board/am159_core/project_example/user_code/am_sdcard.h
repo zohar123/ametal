@@ -252,7 +252,7 @@ typedef struct am_sdcard_devinfo{
  */
 typedef struct am_sdcard_dev{
     am_sdio_handle_t        sdio_handle;
-    am_sdcard_devinfo_t   *p_devinfo;
+    am_sdcard_devinfo_t    *p_devinfo;
     am_sdcard_info_t        sdcard_info;
     am_wait_t               wait;
 }am_sdcard_dev_t;
@@ -276,7 +276,7 @@ int am_sdcard_write (am_sdcard_handle_t  handle,
 
 int am_sdcard_erase (am_sdcard_handle_t handle,
                      uint32_t           addr_start,
-                     uint32_t           addr_end);
+                     uint32_t           blocks);
 
 int am_sdcard_sdinfo_get (am_sdcard_handle_t handle,
                           am_sdcard_info_t  *p_sdinfo);
