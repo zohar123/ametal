@@ -551,6 +551,12 @@ void demo_am845_core_bootloader_entry(void);
  * \brief bootloader固件升级的测试应用程序例程
  */
 void demo_am845_core_application_entry(void);
+
+/**
+ * \brief FM25CLxx F-RAM例程
+ */
+void demo_am845_core_fm25clxx_entry(void);
+
 #ifdef __cplusplus
 }
 #endif
