@@ -27,10 +27,87 @@
 extern "C" {
 #endif
 
-
 #include "ametal.h"
 #include "am_sdio.h"
 #include "am_wait.h"
+
+/**
+ * \name SD 命令
+ * @{
+ */
+#define AM_SD_CMD0               0
+#define AM_SD_CMD1               1
+#define AM_SD_CMD2               2
+#define AM_SD_CMD3               3
+#define AM_SD_CMD4               4
+#define AM_SD_CMD5               5
+#define AM_SD_CMD6               6
+#define AM_SD_CMD7               7
+#define AM_SD_CMD8               8
+#define AM_SD_CMD9               9
+#define AM_SD_CMD10              10
+#define AM_SD_CMD11              11
+#define AM_SD_CMD12              12
+#define AM_SD_CMD13              13
+#define AM_SD_CMD14              14
+#define AM_SD_CMD15              15
+#define AM_SD_CMD16              16
+#define AM_SD_CMD17              17
+#define AM_SD_CMD18              18
+#define AM_SD_CMD19              19
+#define AM_SD_CMD20              20
+#define AM_SD_CMD21              21
+#define AM_SD_CMD22              22
+#define AM_SD_CMD23              23
+#define AM_SD_CMD24              24
+#define AM_SD_CMD25              25
+#define AM_SD_CMD26              26
+#define AM_SD_CMD27              27
+#define AM_SD_CMD28              28
+#define AM_SD_CMD29              29
+#define AM_SD_CMD31              31
+#define AM_SD_CMD32              32
+#define AM_SD_CMD33              33
+#define AM_SD_CMD34              34
+#define AM_SD_CMD35              35
+#define AM_SD_CMD36              36
+#define AM_SD_CMD37              37
+#define AM_SD_CMD38              38
+#define AM_SD_CMD39              39
+#define AM_SD_CMD40              40
+#define AM_SD_CMD41              41
+#define AM_SD_CMD42              42
+#define AM_SD_CMD43              43
+#define AM_SD_CMD44              44
+#define AM_SD_CMD45              45
+#define AM_SD_CMD46              46
+#define AM_SD_CMD47              47
+#define AM_SD_CMD48              48
+#define AM_SD_CMD49              49
+#define AM_SD_CMD50              50
+#define AM_SD_CMD51              51
+#define AM_SD_CMD52              52
+#define AM_SD_CMD53              53
+#define AM_SD_CMD54              54
+#define AM_SD_CMD55              55
+#define AM_SD_CMD56              56
+#define AM_SD_CMD57              57
+#define AM_SD_CMD57              57
+#define AM_SD_CMD58              58
+#define AM_SD_CMD59              59
+
+#define AM_SD_ACMD6              6
+#define AM_SD_ACMD13             13
+#define AM_SD_ACMD14             14
+#define AM_SD_ACMD15             15
+#define AM_SD_ACMD16             16
+#define AM_SD_ACMD22             22
+#define AM_SD_ACMD23             23
+#define AM_SD_ACMD28             28
+#define AM_SD_ACMD41             41
+#define AM_SD_ACMD42             42
+#define AM_SD_ACMD51             51
+/** @} */
 
 /** @defgroup EVAL_SDIO_SD_Exported_Types
   * @{
@@ -104,16 +181,46 @@ typedef enum {
 /**
   * @brief Supported SD Memory Cards
   */
-#define SDIO_STD_CAPACITY_SD_CARD_V1_1             ((uint32_t)0x00000000)
-#define SDIO_STD_CAPACITY_SD_CARD_V2_0             ((uint32_t)0x00000001)
-#define SDIO_HIGH_CAPACITY_SD_CARD                 ((uint32_t)0x00000002)
-#define SDIO_MULTIMEDIA_CARD                       ((uint32_t)0x00000003)
-#define SDIO_SECURE_DIGITAL_IO_CARD                ((uint32_t)0x00000004)
-#define SDIO_HIGH_SPEED_MULTIMEDIA_CARD            ((uint32_t)0x00000005)
-#define SDIO_SECURE_DIGITAL_IO_COMBO_CARD          ((uint32_t)0x00000006)
-#define SDIO_HIGH_CAPACITY_MMC_CARD                ((uint32_t)0x00000007)
+#define AM_SDIO_STD_CAPACITY_SD_CARD_V1_1             ((uint32_t)0x00000000)
+#define AM_SDIO_STD_CAPACITY_SD_CARD_V2_0             ((uint32_t)0x00000001)
+#define AM_SDIO_HIGH_CAPACITY_SD_CARD                 ((uint32_t)0x00000002)
+#define AM_SDIO_MULTIMEDIA_CARD                       ((uint32_t)0x00000003)
+#define AM_SDIO_SECURE_DIGITAL_IO_CARD                ((uint32_t)0x00000004)
+#define AM_SDIO_HIGH_SPEED_MULTIMEDIA_CARD            ((uint32_t)0x00000005)
+#define AM_SDIO_SECURE_DIGITAL_IO_COMBO_CARD          ((uint32_t)0x00000006)
+#define AM_SDIO_HIGH_CAPACITY_MMC_CARD                ((uint32_t)0x00000007)
 
 #define AM_SD_OCR_ERRORBITS                        ((uint32_t)0xFDFFE008)
+
+
+/**
+  * @brief  Masks for R6 Response
+  */
+#define AM_SD_R6_GENERAL_UNKNOWN_ERROR     ((uint32_t)0x00002000)
+#define AM_SD_R6_ILLEGAL_CMD               ((uint32_t)0x00004000)
+#define AM_SD_R6_COM_CRC_FAILED            ((uint32_t)0x00008000)
+
+#define AM_SD_VOLTAGE_WINDOW_SD            ((uint32_t)0x80100000)
+#define AM_SD_HIGH_CAPACITY                ((uint32_t)0x40000000)
+#define AM_SD_STD_CAPACITY                 ((uint32_t)0x00000000)
+#define AM_SD_CHECK_PATTERN                ((uint32_t)0x000001AA)
+
+#define AM_SD_MAX_VOLT_TRIAL               ((uint32_t)0x0000FFFF)
+#define AM_SD_ALLZERO                      ((uint32_t)0x00000000)
+
+#define AM_SD_WIDE_BUS_SUPPORT             ((uint32_t)0x00040000)
+#define AM_SD_SINGLE_BUS_SUPPORT           ((uint32_t)0x00010000)
+#define AM_SD_CARD_LOCKED                  ((uint32_t)0x02000000)
+
+#define AM_SD_DATATIMEOUT                  ((uint32_t)0xFFFFFFFF)
+#define AM_SD_0TO7BITS                     ((uint32_t)0x000000FF)
+#define AM_SD_8TO15BITS                    ((uint32_t)0x0000FF00)
+#define AM_SD_16TO23BITS                   ((uint32_t)0x00FF0000)
+#define AM_SD_24TO31BITS                   ((uint32_t)0xFF000000)
+#define AM_SD_MAX_DATA_LENGTH              ((uint32_t)0x01FFFFFF)
+
+#define AM_SD_HALFFIFO                     ((uint32_t)0x00000008)
+#define AM_SD_HALFFIFOBYTES                ((uint32_t)0x00000020)
 
 /**
   * @brief  SD Card States
@@ -133,7 +240,7 @@ typedef enum {
 /**
   * @brief  Card Specific Data: CSD Register
   */
-typedef struct am_sd_csd {
+typedef struct am_sdcard_csd {
    uint8_t  csd_struct;             /*!< CSD structure */
    uint8_t  sys_specversion;        /*!< System specification version */
    uint8_t  Reserved1;              /*!< Reserved */
@@ -171,12 +278,12 @@ typedef struct am_sd_csd {
    uint8_t  ecc;                    /*!< ECC code */
    uint8_t  csd_crc;                /*!< CSD CRC */
    uint8_t  reserved4;              /*!< always 1*/
-} am_sd_csd_t;
+} am_sdcard_csd_t;
 
 /**
   * @brief  Card Identification Data: CID Register
   */
-typedef struct am_sd_cid {
+typedef struct am_sdcard_cid {
    uint8_t  manu_facturer_id;      /*!< ManufacturerID */
    uint16_t oem_appli_id;          /*!< OEM/Application ID */
    uint32_t prod_name1;            /*!< Product Name part1 */
@@ -187,18 +294,18 @@ typedef struct am_sd_cid {
    uint16_t manufact_date;         /*!< Manufacturing Date */
    uint8_t  cid_crc;               /*!< CID CRC */
    uint8_t  reserved2;             /*!< always 1 */
-} am_sd_cid_t;
+} am_sdcard_cid_t;
 
 /**
   * @brief SD Card information
   */
 typedef struct {
-    am_sd_csd_t sd_csd;
-    am_sd_cid_t sd_cid;
-    uint64_t    card_capacity;   /*!< Card Capacity */
-    uint32_t    card_block_size; /*!< Card Block Size */
-    uint16_t    rca;
-    uint32_t    card_type;
+    am_sdcard_csd_t csd;
+    am_sdcard_cid_t cid;
+    uint64_t        capacity;     /*!< Card Capacity */
+    uint32_t        block_size;   /*!< Card Block Size */
+    uint16_t        rca;
+    uint32_t        type;
 } am_sdcard_info_t;
 
 /** \brief SDIO host 信息  */
@@ -209,7 +316,6 @@ typedef struct awbl_sdio_host_info {
     am_bool_t               crc_en;           /**< \brief CRC校验使能 */
     uint32_t                ocr_valid;        /**< \brief 支持的ORC（电压范围） */
 }awbl_sdio_host_info_t;
-
 
 /**
  * \brief sdio驱动函数结构体
@@ -260,28 +366,87 @@ typedef struct am_sdcard_dev{
 /** \brief SDIO 标准服务操作句柄定义 */
 typedef am_sdcard_dev_t *am_sdcard_handle_t;
 
-/** \brief 获取SDIO控制器信息 */
+/**
+ * \brief SD Card 复位
+ *
+ * \param[in]  handle       : SD Card 句柄
+ *
+ * \retval AM_OK            : 复位成功
+ */
 int am_sdcard_rest (am_sdcard_handle_t handle);
 
-/** \brief 获取SDIO控制器信息 */
-int am_sdcard_read (am_sdcard_handle_t handle,
-                    uint8_t           *p_buf,
-                    uint32_t           addr,
-                    uint16_t           block_size);
+/**
+ * \brief 读单个块(CMD17)
+ *
+ * \param[in]  handle       : SD Card 句柄
+ * \param[out] p_buf        : 数据缓冲区
+ * \param[in]  blk          : 块号
+ * \param[in]  blk_size     : 块大小
+ *
+ * \retval AM_OK            : 传输成功
+ */
+int am_sdcard_single_block_read (am_sdcard_handle_t handle,
+                                 uint8_t           *p_buf,
+                                 uint32_t           blk,
+                                 uint16_t           blk_size);
 
-int am_sdcard_write (am_sdcard_handle_t  handle,
-                     uint8_t            *p_buf,
-                     uint32_t            addr,
-                     uint16_t            block_size);
+/**
+ * \brief 写单个块(CMD24)
+ *
+ * \param[in]  handle       : SD Card 句柄
+ * \param[in]  p_buf        : 数据缓冲区
+ * \param[in]  blk          : 块号
+ * \param[in]  blk_size     : 块大小
+ *
+ * \retval AM_OK            : 传输成功
+ */
+int am_sdcard_single_block_write (am_sdcard_handle_t  handle,
+                                  uint8_t            *p_buf,
+                                  uint32_t            blk,
+                                  uint16_t            blk_size);
 
-int am_sdcard_erase (am_sdcard_handle_t handle,
-                     uint32_t           addr_start,
-                     uint32_t           blocks);
+/**
+ * \brief 写多个块(CMD25 + (CMD12))
+ *
+ * \param[in]  handle       : SD Card 句柄
+ * \param[in]  p_buf        : 数据缓冲区
+ * \param[in]  blk          : 块号
+ * \param[in]  blk_size     : 块大小
+ *
+ * \retval AM_OK            : 传输成功
+ */
+int am_sdcard_multiple_blocks_write (am_sdcard_handle_t  handle,
+                                     uint8_t            *p_buf,
+                                     uint32_t            blk_start,
+                                     uint32_t            blk_num,
+                                     uint16_t            blk_size);
+
+/**
+ * \brief 擦除块(CMD38)
+ *
+ * \param[in]  handle       : SD Card 句柄
+ * \param[in]  blk_start    : 需要擦除的起始块号
+ * \param[in]  blk_num      : 需要擦除的块数量
+ * \param[in]  blk_size     : 块大小（单位：字节）
+ *
+ * \retval AM_OK            : 擦除成功
+ */
+int am_sdcard_block_erase (am_sdcard_handle_t handle,
+                           uint32_t           blk_start,
+                           uint32_t           blk_num,
+                           uint16_t           blk_size);
+
+/**
+ * \brief 停止传输(CMD12)
+ *
+ * \param[in]  handle       : SD Card 句柄
+ *
+ * \retval AM_OK            : 成功
+ */
+int am_sdcard_transmission_stop (am_sdcard_handle_t handle);
 
 int am_sdcard_sdinfo_get (am_sdcard_handle_t handle,
                           am_sdcard_info_t  *p_sdinfo);
-
-int am_sdcard_stop (am_sdcard_handle_t handle);
 
 am_sd_card_state am_sd_getstate(am_sdcard_handle_t  handle);
 

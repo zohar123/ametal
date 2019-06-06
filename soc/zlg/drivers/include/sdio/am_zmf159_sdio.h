@@ -85,9 +85,6 @@ typedef struct am_zlg_sdio_dev {
 //    /** \brief 指向SDIO传输结构体的指针,同一时间只能处理一个传输 */
 //    am_sdio_transfer_t                      *p_cur_trans;
 
-    /** \brief 当前正在处理的消息 */
-    am_sdio_message_t                       *p_cur_msg;
-
     /** \brief 是否完成本次消息 */
     volatile am_bool_t                       is_complete;
 

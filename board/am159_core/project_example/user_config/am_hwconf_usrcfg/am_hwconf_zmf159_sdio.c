@@ -82,7 +82,7 @@ static const am_zlg_sdio_devinfo_t __g_sdio_devinfo = {
 static am_zlg_sdio_dev_t __g_sdio_dev;           /**< \brief  设备实例 */
 static am_sdio_handle_t  __g_sdio_handle = NULL; /**< \brief  标准服务句柄 */
 
-/** \brief I2C1 实例初始化，获得I2C标准服务句柄 */
+/** \brief SDIO 实例初始化，获得SDIO标准服务句柄 */
 am_sdio_handle_t am_zmf159_sdio_inst_init (void)
 {
     if (NULL == __g_sdio_handle) {

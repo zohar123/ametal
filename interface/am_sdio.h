@@ -36,62 +36,6 @@ extern "C" {
  * @{
  */
 
-/**
- * \name SDIO模式标志，用于am_sdio_mkdev()函数的mode参数
- * @{
- */
-
-/**
-  * @brief SDIO Commands  Index
-  */
-#define AM_SD_CMD_GO_IDLE_STATE           ((uint8_t)0)
-#define AM_SD_CMD_SEND_OP_COND            ((uint8_t)1)
-#define AM_SD_CMD_ALL_SEND_CID            ((uint8_t)2)
-#define AM_SD_CMD_SET_REL_ADDR            ((uint8_t)3) /*!< SDIO_SEND_REL_ADDR for SD Card */
-#define AM_SD_CMD_SET_DSR                 ((uint8_t)4)
-#define AM_SD_CMD_SDIO_SEN_OP_COND        ((uint8_t)5)
-#define AM_SD_CMD_HS_SWITCH               ((uint8_t)6)
-#define AM_SD_CMD_SEL_DESEL_CARD          ((uint8_t)7)
-#define AM_SD_CMD_HS_SEND_EXT_CSD         ((uint8_t)8)
-#define AM_SD_CMD_SEND_CSD                ((uint8_t)9)
-#define AM_SD_CMD_SEND_CID                ((uint8_t)10)
-#define AM_SD_CMD_READ_DAT_UNTIL_STOP     ((uint8_t)11) /*!< SD Card doesn't support it */
-#define AM_SD_CMD_STOP_TRANSMISSION       ((uint8_t)12)
-#define AM_SD_CMD_SEND_STATUS             ((uint8_t)13)
-#define AM_SD_CMD_HS_BUSTEST_READ         ((uint8_t)14)
-#define AM_SD_CMD_GO_INACTIVE_STATE       ((uint8_t)15)
-#define AM_SD_CMD_SET_BLOCKLEN            ((uint8_t)16)
-#define AM_SD_CMD_READ_SINGLE_BLOCK       ((uint8_t)17)
-#define AM_SD_CMD_READ_MULT_BLOCK         ((uint8_t)18)
-#define AM_SD_CMD_HS_BUSTEST_WRITE        ((uint8_t)19)
-#define AM_SD_CMD_WRITE_DAT_UNTIL_STOP    ((uint8_t)20) /*!< SD Card doesn't support it */
-#define AM_SD_CMD_SET_BLOCK_COUNT         ((uint8_t)23) /*!< SD Card doesn't support it */
-#define AM_SD_CMD_WRITE_SINGLE_BLOCK      ((uint8_t)24)
-#define AM_SD_CMD_WRITE_MULT_BLOCK        ((uint8_t)25)
-#define AM_SD_CMD_PROG_CID                ((uint8_t)26) /*!< reserved for manufacturers */
-#define AM_SD_CMD_PROG_CSD                ((uint8_t)27)
-#define AM_SD_CMD_SET_WRITE_PROT          ((uint8_t)28)
-#define AM_SD_CMD_CLR_WRITE_PROT          ((uint8_t)29)
-#define AM_SD_CMD_SEND_WRITE_PROT         ((uint8_t)30)
-#define AM_SD_CMD_SD_ERASE_GRP_START      ((uint8_t)32) /*!< To set the address of the first write
-                                                      block to be erased. (For SD card only) */
-#define AM_SD_CMD_SD_ERASE_GRP_END        ((uint8_t)33) /*!< To set the address of the last write block of the
-                                                      continuous range to be erased. (For SD card only) */
-#define AM_SD_CMD_ERASE_GRP_START         ((uint8_t)35) /*!< To set the address of the first write block to be erased.
-                                                      (For MMC card only spec 3.31) */
-
-#define AM_SD_CMD_ERASE_GRP_END           ((uint8_t)36) /*!< To set the address of the last write block of the
-                                                      continuous range to be erased. (For MMC card only spec 3.31) */
-
-#define AM_SD_CMD_ERASE                   ((uint8_t)38)
-#define AM_SD_CMD_FAST_IO                 ((uint8_t)39) /*!< SD Card doesn't support it */
-#define AM_SD_CMD_GO_IRQ_STATE            ((uint8_t)40) /*!< SD Card doesn't support it */
-#define AM_SD_CMD_LOCK_UNLOCK             ((uint8_t)42)
-#define AM_SD_CMD_APP_CMD                 ((uint8_t)55)
-#define AM_SD_CMD_GEN_CMD                 ((uint8_t)56)
-#define AM_SD_CMD_NO_CMD                  ((uint8_t)64)
-
-
 #define AM_SD_VOLTAGE_WINDOW_SD            ((uint32_t)0x80100000)
 #define AM_SD_HIGH_CAPACITY                ((uint32_t)0x40000000)
 #define AM_SD_STD_CAPACITY                 ((uint32_t)0x00000000)
@@ -138,7 +82,6 @@ extern "C" {
  */
 
 struct am_sdio_transfer;      /**< \brief 声明SDIO传输的结构体类型     */
-struct am_sdio_message;       /**< \brief 声明SDIO消息的结构体类型     */
 struct am_sdio_cmd;           /**< \brief 声明SDIO消息的结构体类型     */
 
 /**
@@ -146,15 +89,15 @@ struct am_sdio_cmd;           /**< \brief 声明SDIO消息的结构体类型     */
  */
 struct am_sdio_drv_funcs {
 
-    /** \brief SDIO消息发送 */
-    int (*pfn_sdio_msg_send) (void                   *p_drv,
-                              struct am_sdio_message *p_buf,
-                              uint16_t                len);
+    /** \brief SDIO数据发送 */
+    int (*pfn_sdio_data_send) (void     *p_drv,
+                              uint8_t  *p_buf,
+                              uint16_t  len);
 
-    /** \brief SDIO消息接收 */
-    int (*pfn_sdio_msg_recv) (void                   *p_drv,
-                              struct am_sdio_message *p_msg,
-                              uint16_t                len);
+    /** \brief SDIO数据接收 */
+    int (*pfn_sdio_data_recv) (void    *p_drv,
+                              uint8_t *p_buf,
+                              uint16_t len);
 
     /** \brief SDIO命令发送   */
     int (*pfn_sdio_send_cmd) (void               *p_drv,
@@ -205,15 +148,6 @@ typedef struct am_sdio_cmd {
     uint32_t             p_rsp[4];   /**< \brief 响应数据 */
 } am_sdio_cmd_t;
 
-/**
- * \brief SDIO 传输结构体 (推荐使用 am_sdio_mktrans() 设置本数据结构)
- */
-typedef struct am_sdio_message {
-    uint8_t             *p_data;     /**< \brief 数据缓冲区 */
-    uint32_t             blk_size;   /**< \brief 传输块大小 */
-    uint32_t             nblock;     /**< \brief 传输块数量 */
-} am_sdio_message_t;
-
 /** \brief SDIO timeout obj */
 typedef struct am_sdio_timeout_obj {
     am_tick_t   ticks;
@@ -259,6 +193,8 @@ void am_sdio_mkcmd (am_sdio_cmd_t *p_cmd,
     p_cmd->rsp_type = rsp_type;
     p_cmd->p_rsp[0] = 0;
     p_cmd->p_rsp[1] = 0;
+    p_cmd->p_rsp[2] = 0;
+    p_cmd->p_rsp[3] = 0;
 }
 
 /**
@@ -309,33 +245,31 @@ int am_sdio_msg_start (am_sdio_handle_t    handle)
     return handle->p_funcs->pfn_sdio_msg_start(handle->p_drv);
 }
 
-int (*pfn_sdio_send_cmd) (void *p_drv,  am_sdio_cmd_t *p_cmd);
-
 am_static_inline
-int am_sdio_send_cmd (am_sdio_handle_t    handle,
-                      am_sdio_cmd_t      *p_cmd)
+int am_sdio_send_cmd (am_sdio_handle_t handle,
+                      am_sdio_cmd_t   *p_cmd)
 {
     return handle->p_funcs->pfn_sdio_send_cmd(handle->p_drv,
                                               p_cmd);
 }
 
 am_static_inline
-int am_sdio_msg_send (am_sdio_handle_t        handle,
-                      struct am_sdio_message *p_msg,
-                      uint16_t                len)
+int am_sdio_msg_send (am_sdio_handle_t handle,
+                      uint8_t         *p_buf,
+                      uint16_t         len)
 {
-     return handle->p_funcs->pfn_sdio_msg_send(handle->p_drv,
-                                               p_msg,
+     return handle->p_funcs->pfn_sdio_data_send(handle->p_drv,
+                                               p_buf,
                                                len);
 }
 
 am_static_inline
-int am_sdio_msg_recv (am_sdio_handle_t        handle,
-                      struct am_sdio_message *p_msg,
-                      uint16_t                len)
+int am_sdio_msg_recv (am_sdio_handle_t handle,
+                      uint8_t         *p_buf,
+                      uint16_t         len)
 {
-    return handle->p_funcs->pfn_sdio_msg_recv(handle->p_drv,
-                                              p_msg,
+    return handle->p_funcs->pfn_sdio_data_recv(handle->p_drv,
+                                              p_buf,
                                               len);
 }
 

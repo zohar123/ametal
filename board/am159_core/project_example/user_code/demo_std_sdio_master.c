@@ -43,33 +43,23 @@
 #include "am_vdebug.h"
 #include "am_sdcard.h"
 
-#define __BUF_SIZE 8 /** \brief 缓冲区大小 */
-
-/**
- * \brief SDIO 传输完成回调函数
- */
-static void __sdio_msg_callback (void *p_arg)
-{
-    AM_DBG_INFO("SDIO async transfer complete!\r\n");
-}
-
 extern am_sdcard_handle_t am_sdcard_inst_init (void);
+
+uint8_t            wr_buf[512] = {0}; /* 写数据缓存定义 */
+uint8_t            rd_buf[512] = {0}; /* 读数据缓存定义 */
 
 /**
  * \brief 例程入口
  */
 void demo_std_sdio_master_entry ()
 {
-    uint8_t            wr_buf[512] = {0}; /* 写数据缓存定义 */
     int                i;
-    int                len = 0;
-    uint8_t            rd_buf[512] = {0}; /* 读数据缓存定义 */
     am_err_t           ret;
     am_sdcard_handle_t sdcard_handle;
     uint32_t           count = 0;
 
     for ( i = 0; i < sizeof(wr_buf); i++) {
-        wr_buf[i] = i;
+        wr_buf[i] = 0x55;
     }
 
     sdcard_handle = am_sdcard_inst_init();
@@ -81,38 +71,31 @@ void demo_std_sdio_master_entry ()
         while(1);
     }
 
-//    len = am_sdcard_write(sdcard_handle, wr_buf, 0x80000 , 1);
+    am_kprintf( "sd card init successful\r\n");
 
-    len = am_sdcard_read(sdcard_handle, rd_buf, 0x00, 1);
-
-    for(i = 0; i < len; i++) {
-        am_kprintf( "%02x ", rd_buf[i]);
+    ret = am_sdcard_block_erase(sdcard_handle, 999, 50, 512);
+    if (ret != AM_OK) {
+        am_kprintf( "sdcard block erase failed\r\n");
     }
-    am_kprintf( "\r\n");
 
-//    am_sdcard_erase(sdcard_handle, 0x40000, 1);
+    ret = am_sdcard_single_block_write(sdcard_handle, wr_buf, 1000 , 512);
+    if (ret != AM_OK) {
+        am_kprintf( "sdcard single block write failed\r\n");
+    }
 
-    am_mdelay(10);
     while(1) {
 
-        len = am_sdcard_read(sdcard_handle,
-                            rd_buf,
-                            0x00,
-                            1);
+        ret = am_sdcard_single_block_read(sdcard_handle,
+                                          rd_buf,
+                                          999 + count,
+                                          512);
 
-//        len = am_sdcard_read(sdcard_handle,
-//                            rd_buf,
-//                            0x80000 + (count * sdcard_handle->sdcard_info.card_block_size),
-//                            1);
-
-        am_kprintf( "len = %d \r\n", len);
-
-        for(i = 0; i < len; i++) {
-            am_kprintf( "%02x ", rd_buf[i]);
+        if (ret == AM_OK) {
+            for(i = 0; i < 512; i++) {
+                am_kprintf( "%02x ", rd_buf[i]);
+            }
+            am_kprintf( "\r\n\r\n");
         }
-
-        am_kprintf( "\r\n");
-
         count++;
     }
 

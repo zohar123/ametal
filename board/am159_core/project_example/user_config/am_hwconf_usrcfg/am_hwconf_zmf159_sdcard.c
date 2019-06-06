@@ -28,6 +28,7 @@
 #include "am_zmf159_sdio.h"
 #include "am_zmf159_clk.h"
 #include "hw/amhw_zmf159_sdio.h"
+#include "am_zmf159_inst_init.h"
 
 /**
  * \addtogroup am_if_src_hwconf_miniport_595

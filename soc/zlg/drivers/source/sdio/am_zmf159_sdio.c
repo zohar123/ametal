@@ -59,8 +59,8 @@ static void __sdio_irq_handler (void *p_arg);
 
 /** \brief SDIO 中断处理函数 */
 static int __sdio_send_cmd (void *p_drv, am_sdio_cmd_t *cmd_msg);
-static int __sdio_msg_send(void *p_drv,  struct am_sdio_message  *p_msg  , uint16_t len);
-static int __sdio_msg_recv(void *p_drv,  struct am_sdio_message  *p_msg  , uint16_t len);
+static int __sdio_msg_send(void *p_drv,  uint8_t *p_buf, uint16_t len);
+static int __sdio_msg_recv(void *p_drv,  uint8_t *p_buf, uint16_t len);
 
 /**
  * \brief SDIO 驱动函数定义
@@ -171,10 +171,6 @@ static int __sdio_hard_init (am_zlg_sdio_dev_t *p_dev)
     amhw_zlg_sdio_set_int_enable (p_hw_sdio, ZMF159_SDIO_INT_CMD_COMPLE |
                                              ZMF159_SDIO_INT_DAT_COMPLE);
 
-//    amhw_zlg_sdio_out_8nullclk(p_hw_sdio);
-
-//    amhw_zlg_sdio_autotr_enable(p_hw_sdio);
-
     return AM_OK;
 }
 
@@ -249,17 +245,14 @@ static int __sdio_send_cmd (void *p_drv, am_sdio_cmd_t *cmd_msg)
     return AM_OK;
 }
 
-static int __sdio_msg_recv(void *p_drv, struct am_sdio_message  *p_msg, uint16_t len)
+static int __sdio_msg_recv(void *p_drv, uint8_t *p_buf, uint16_t len)
 {
     int                i         = 0;
     uint32_t           data      = 0;
-    uint8_t           *p_buf     = p_msg->p_data;
     am_zlg_sdio_dev_t *p_dev     = (am_zlg_sdio_dev_t *)p_drv;
     amhw_zlg_sdio_t   *p_hw_sdio = (amhw_zlg_sdio_t *)p_dev->p_devinfo->regbase;
     am_sdio_timeout_obj_t timeout;
     am_bool_t             timeout_flg = 0;
-
-    //p_hw_sdio->mmc_io |= 0x02;
 
     amhw_zlg_sdio_fifo_status_enable(p_hw_sdio);
 
@@ -297,14 +290,13 @@ static int __sdio_msg_recv(void *p_drv, struct am_sdio_message  *p_msg, uint16_t
     return i;
 }
 
-static int __sdio_msg_send(void *p_drv, struct am_sdio_message  *p_msg, uint16_t len)
+static int __sdio_msg_send(void *p_drv, uint8_t *p_buf, uint16_t len)
 {
     am_zlg_sdio_dev_t *p_dev       = (am_zlg_sdio_dev_t *)p_drv;
     amhw_zlg_sdio_t   *p_hw_sdio   = (amhw_zlg_sdio_t *)p_dev->p_devinfo->regbase;
+    uint32_t          *p_data      = (uint32_t *)p_buf;
     int                i           = 0;
-    uint32_t          *p_data      = (uint32_t *)p_msg->p_data;
     am_bool_t          timeout_flg = 0;
-    int                key;
     int                ret;
 
     am_sdio_timeout_obj_t timeout;
@@ -328,7 +320,7 @@ static int __sdio_msg_send(void *p_drv, struct am_sdio_message  *p_msg, uint16_t
         return -AM_ETIME;
     }
 
-    for (i = 0; i < 128; i++) {
+    for (i = 0; i < len / 4; i++) {
 
         if(amhw_zlg_sdio_check_fifo_isfull(p_hw_sdio)) {
             break;
@@ -337,9 +329,7 @@ static int __sdio_msg_send(void *p_drv, struct am_sdio_message  *p_msg, uint16_t
         p_hw_sdio->data_buf[0] = *p_data++;
     }
 
-    key = am_int_cpu_lock();
     p_dev->int_status = ZMF159_SDIO_INT_DAT_COMPLE;
-    am_int_cpu_unlock(key);
 
     ret = am_wait_on_timeout(&p_dev->wait, 10);
 
@@ -372,7 +362,6 @@ am_sdio_handle_t am_zmf159_sdio_init (am_zlg_sdio_dev_t           *p_dev,
     p_dev->sdio_serv.p_funcs = (struct am_sdio_drv_funcs *)&__g_sdio_drv_funcs;
     p_dev->sdio_serv.p_drv   = p_dev;
 
-    p_dev->p_cur_msg         = NULL;
     p_dev->p_devinfo         = p_devinfo;
     p_dev->sdio_serv.p_drv   = p_dev;
     p_dev->is_complete       = AM_FALSE;
