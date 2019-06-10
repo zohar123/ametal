@@ -41,8 +41,8 @@
 am_local void __lpc84x_spi0_int_plfm_init (void)
 {
     am_gpio_pin_cfg(PIO0_17, PIO_FUNC_SPI0_SCK);
-    am_gpio_pin_cfg(PIO0_21, PIO_FUNC_SPI0_MOSI);
-    am_gpio_pin_cfg(PIO0_20, PIO_FUNC_SPI0_MISO);
+    am_gpio_pin_cfg(PIO0_18, PIO_FUNC_SPI0_MOSI);
+    am_gpio_pin_cfg(PIO0_19, PIO_FUNC_SPI0_MISO);
 
     /* CS_Pin 由用户调用 STD 函数时自行传入，此处不需配置 */
     amhw_lpc84x_clk_spi0_clk_sel_set (AMHW_LPC84X_CLK_DEVICE_FRG0CLK);

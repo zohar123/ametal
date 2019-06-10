@@ -59,8 +59,8 @@ am_local void __lpc84x_usart0_plfm_init (void)
 
     amhw_lpc84x_clk_periph_enable(AMHW_LPC84X_CLK_UART0);
     amhw_lpc84x_syscon_periph_reset(AMHW_LPC84X_RESET_UART0);
-    am_gpio_pin_cfg(PIO0_16, PIO_FUNC_U0_TXD);
-    am_gpio_pin_cfg(PIO0_26, PIO_FUNC_U0_RXD);
+    am_gpio_pin_cfg(PIO1_0, PIO_FUNC_U0_TXD);
+    am_gpio_pin_cfg(PIO1_2, PIO_FUNC_U0_RXD);
 
 }
 
