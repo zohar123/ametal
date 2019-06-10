@@ -39,7 +39,7 @@ struct am_fm25clxx_devinfo fm25clxx_devinfo = {
 };
 
 /*******************************************************************************
-  MicroPort FLASH(fm25clxx) 实例初始化
+  FRAM(fm25clxx) 实例初始化
 *******************************************************************************/
 
 /** \brief 设备定义 */
@@ -57,6 +57,25 @@ am_fm25clxx_handle_t am_fm25clxx_inst_init (void)
 void am_fm25clxx_inst_deinit (am_fm25clxx_handle_t handle)
 {
     am_fm25clxx_deinit (handle);
+}
+
+/*******************************************************************************
+  FRAM 实例初始化（将 FM24C02 用作标准的 NVRAM 设备）
+*******************************************************************************/
+
+/** \brief MicroPort-EEPROM 设备实例 */
+am_local am_nvram_dev_t __g_fram_nvram_dev;
+
+/**
+ * \brief MicroPort-EEPROM 实例初始化（将 FM24C02 用作标准的 NVRAM 设备）
+ */
+int am_fm25clxx_fram_nvram_inst_init (void)
+{
+    am_fm25clxx_handle_t handle = am_fm25clxx_inst_init();
+
+    return am_fm25clxx_nvram_init(handle,
+                                 &__g_fram_nvram_dev,
+                                  "fram_nvram");
 }
 /**
  * @}

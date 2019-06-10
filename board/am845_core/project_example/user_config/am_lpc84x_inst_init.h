@@ -568,6 +568,10 @@ am_fm25clxx_handle_t am_fm25clxx_inst_init (void);
 void am_fm25clxx_inst_deinit (am_fm25clxx_handle_t handle);
 
 /**
+ * \brief FM25CLxx NVRAMÊµÀý³õÊ¼»¯
+ */
+int am_fm25clxx_fram_nvram_inst_init(void);
+/**
  * @}
  */
 

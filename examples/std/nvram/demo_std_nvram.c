@@ -68,7 +68,7 @@ void demo_std_nvram_entry (char *p_nvram_name, int32_t nvram_unit, int32_t test_
                        test_lenth);
 
     if (ret != AM_OK) {
-        AM_DBG_INFO("am_ep24cxx_write error(id: %d).\r\n", ret);
+        AM_DBG_INFO("nvram write error(id: %d).\r\n", ret);
         return;
     }
     am_mdelay(5);
@@ -81,7 +81,7 @@ void demo_std_nvram_entry (char *p_nvram_name, int32_t nvram_unit, int32_t test_
                        test_lenth);
 
     if (ret != AM_OK) {
-        AM_DBG_INFO("am_ep24cxx_read error(id: %d).\r\n", ret);
+        AM_DBG_INFO("nvram read error(id: %d).\r\n", ret);
         return;
     }
 

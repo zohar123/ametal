@@ -995,6 +995,11 @@
               <FilePath>..\..\..\..\examples\board\am845_core\fram\demo_am845_core_fm25clxx.c</FilePath>
             </File>
             <File>
+              <FileName>demo_am845_core_fm25clxx_nvram.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\examples\board\am845_core\fram\demo_am845_core_fm25clxx_nvram.c</FilePath>
+            </File>
+            <File>
               <FileName>demo_am845_core_hw_acmp_int.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\examples\board\am845_core\acmp\demo_am845_core_hw_acmp_int.c</FilePath>
@@ -2322,8 +2327,8 @@
         <TargetCommonOption>
           <Device>LPC845M301JBD64</Device>
           <Vendor>NXP</Vendor>
-          <PackID>NXP.LPC845_DFP.11.0.0</PackID>
-          <PackURL>http://mcuxpresso.nxp.com/cmsis_pack/repo/</PackURL>
+          <PackID>Keil.LPC800_DFP.1.7.0</PackID>
+          <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x10000000,0x4000) IROM(0x00000000,0x010000) CPUTYPE("Cortex-M0+") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>
@@ -3300,6 +3305,11 @@
               <FileName>demo_am845_core_fm25clxx.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\examples\board\am845_core\fram\demo_am845_core_fm25clxx.c</FilePath>
+            </File>
+            <File>
+              <FileName>demo_am845_core_fm25clxx_nvram.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\examples\board\am845_core\fram\demo_am845_core_fm25clxx_nvram.c</FilePath>
             </File>
             <File>
               <FileName>demo_am845_core_hw_acmp_int.c</FileName>

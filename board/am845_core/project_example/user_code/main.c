@@ -42,7 +42,7 @@ void am_main (void)
      *
      * 注意：同一时刻只能运行一个 demo，即只能使某一行处于取消注释状态。
      */
-//    demo_am845_core_std_led_entry();
+    demo_am845_core_std_led_entry();
 //    demo_am845_core_std_wwdt_entry();
 //    demo_am845_core_hw_wwdt_entry();
 //    demo_am845_core_hw_acmp_int_entry();
@@ -128,7 +128,8 @@ void am_main (void)
 //    demo_am845_core_fm175xx_picca_read_block ();
 //    demo_am845_core_fm175xx_picca_read_id ();
 //    demo_am845_core_fm175xx_picca_write_block ();
-    demo_am845_core_fm25clxx_entry();
+//    demo_am845_core_fm25clxx_entry();
+//    demo_am845_core_fm25clxx_nvram_entry();
    while(1) {
         ;
     }

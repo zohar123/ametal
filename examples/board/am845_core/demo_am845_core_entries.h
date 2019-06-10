@@ -557,6 +557,11 @@ void demo_am845_core_application_entry(void);
  */
 void demo_am845_core_fm25clxx_entry(void);
 
+/**
+ * \brief FM25CLxx FRAM NVRAM Àý³Ì
+ */
+void demo_am845_core_fm25clxx_nvram_entry(void);
+
 #ifdef __cplusplus
 }
 #endif

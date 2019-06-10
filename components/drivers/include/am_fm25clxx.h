@@ -34,41 +34,7 @@ extern "C" {
 #include "am_types.h"
 #include "am_gpio.h"
 #include "am_spi.h"
-    
-/*******************************************************************************
-  宏定义
-*******************************************************************************/
-
-/**
- * \name SPI FLASH的各个命令
- * @{
- */
-
-#define  __FM25CL64B_WREN  0x06  //设置写使能锁存器
-#define  __FM25CL64B_WRDI  0x04  //写禁能
-#define  __FM25CL64B_RDSR  0x05  //读状态寄存器
-#define  __FM25CL64B_WRSR  0x01  //写状态寄存器
-#define  __FM25CL64B_READ  0x03  //读取内存数据
-#define  __FM25CL64B_WRITE 0x02  //写入内存数据
-/** @} */
-
-
-/**
- * \name 状态寄存器的值
- * @{
- * 寄存器说明：bit7:   WPEN  写保护使能位；
- *            bit3:2  BP1:0 块保护；
- *                          00--无
- *                          01--后1/4
- *                          10--后1/2
- *                          11--全部
- *            bit1    WEL   写使能；
- */
-#define  __PROTECTED_ALL        0x8E //全部地址写保护:0000h-1FFFh
-#define  __PROTECTED_HALF       0x8A //后半部分写保护:1000h-1FFFh
-#define  __PROTECTED_HALF_HALF  0x86 //后1/4写保护   :1800h-1FFFh
-#define  __PROTECTED_NO         0x82 //无写保护
-/** @} */
+#include "am_nvram.h"
 
 /**
  * \addtogroup am_if_fm25clxx
@@ -76,7 +42,7 @@ extern "C" {
  * @{
  */
 
- 
+
 /**
  * \brief FM25CLXX 实例信息
  */
@@ -91,8 +57,16 @@ typedef struct am_fm25clxx_devinfo {
  * \brief FM25CLXX 实例
  */
 typedef struct am_fm25clxx_dev {
-    am_spi_device_t              spi_dev;        /**< \brief SPI设备              */
-    const am_fm25clxx_devinfo_t *p_devinfo;      /**< \brief 实例信息            */
+
+    /**< \brief SPI设备              */
+    am_spi_device_t              spi_dev;
+
+    /**< \brief fm25clxx设备提供的 NVRAM 标准服务 */
+    am_nvram_dev_t               *p_serv;
+
+    /**< \brief 实例信息             */
+    const am_fm25clxx_devinfo_t  *p_devinfo;
+
 } am_fm25clxx_dev_t;
 
 /** \brief 定义 FM25CLXX 的实例句柄类型 */
@@ -187,6 +161,31 @@ int am_fm25clxx_status_write(am_fm25clxx_handle_t  handle,
  */
 void am_fm25clxx_deinit(am_fm25clxx_dev_t *p_dev);
 
+/**
+ * \brief 初始化fm25clxx的NVRAM功能，向系统提供  NVRAM 标准服务
+ * 
+ *   该函数将fm25clxx设备作为标准的NVRAM设备注册到系统中
+ * 
+ * \param[in] handle      : ep24cxx操作句柄
+ * \param[in] p_dev       : NVRAM 标准设备
+ * \param[in] p_dev_name  : NVRAM 标准设备的设备名
+ *
+ * \return AM_OK, 提供NVRAM服务成功；其它值，提供NVRAM服务失败。
+ *
+ * \note 使用该函数后，即可使用NVRAM标准接口 am_nvram_set() 和 am_nvram_get() 访问
+ * fm25clxx存储器，使用的段必须在 am_nvram_cfg.c文件中定义，存储段依赖的设备名即可
+ * 填写为此处 p_name 指定的名字，如 p_name 为  "fm24c02", 这可以向g_nvram_segs[]存
+ * 储段列表中增加如下5个存储段（仅作为示例）：
+ *    {"ip",         0,  0,  4,   "fm24c02"},
+ *    {"ip",         1,  4,  4,   "fm24c02"},
+ *    {"temp_limit", 0,  8,  4,   "fm24c02"},
+ *    {"system",     0,  12, 50,  "fm24c02"},
+ *    {"test",       0,  62, 178, "fm24c02"},
+ */
+int am_fm25clxx_nvram_init (am_fm25clxx_handle_t   handle,
+                            am_nvram_dev_t        *p_dev,
+                            const char            *p_dev_name);
+                                
 /**
  * @}
  */

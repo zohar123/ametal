@@ -35,6 +35,7 @@ extern "C" {
  */
 am_fm175xx_handle_t am_fm25clxx_inst_init (void);
 
+int am_fm25clxx_fram_nvram_inst_init (void);
 #ifdef __cplusplus
 }
 #endif
