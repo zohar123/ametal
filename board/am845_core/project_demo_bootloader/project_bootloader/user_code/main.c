@@ -14,8 +14,9 @@
  * \file
  * \brief LPC84X bootloader工程
  *
- * - 操作步骤：
- *   参考AMmetal-AM845-Core-bootloader操作手册
+ *
+ * \note
+ * 波特率使用9600
  *
  * \internal
  * \par Modification history
@@ -30,9 +31,9 @@
  * \brief AMetal 应用程序入口
  */
 void am_main (void) 
-{ 
+{
 
-    demo_am845_core_bootloader_entry();
+    demo_am845_core_double_bootloader_uart_entry ();
 
 }
 

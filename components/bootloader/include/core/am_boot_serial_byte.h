@@ -39,17 +39,17 @@ extern "C" {
 #endif
 
 /**< \brief 接收回调函数类型声明 */
-typedef void (*serial_byte_receive_func_t)(uint8_t);
+typedef void (*serial_byte_receive_func_t)(uint8_t inchar);
 
 /**
  * \brief 串行设备字节传输驱动函数结构体
  */
 struct am_boot_serial_byte_funcs {
     /**< \brief 发送数据 */
-    int (*pfn_serial_byte_send)(void *p_arg, const uint8_t *p_buffer, uint32_t byte_count);
+    int (*pfn_serial_byte_send)(void *p_arg, const uint8_t *p_buffer, uint32_t size);
 
     /**< \brief 接收数据 */
-    int (*pfn_serial_byte_receive)(void *p_arg, uint8_t *p_buffer, uint32_t requested_bytes);
+    int (*pfn_serial_byte_receive)(void *p_arg, uint8_t *p_buffer, uint32_t size);
 
     /**< \brief 用户中断接收回调函数设置 */
     int (*pfn_serial_int_callback_enable)(void *p_arg, serial_byte_receive_func_t callback_fun);
@@ -69,21 +69,21 @@ typedef am_boot_serial_byte_serv_t  *am_boot_serial_handle_t;
 /**
  * \brief 通过串行设备接口发数据
  *
- * \param[in] handle     : 标准服务句柄
- * \param[in] buffer     : 发送的数据
- * \param[in] byte_count : 发送数据的长度
+ * \param[in] handle : 串行数据操作标准服务句柄
+ * \param[in] p_buffer : 发送的数据
+ * \param[in] size   : 发送数据的长度
  *
  * \retval 发送的字节数
  */
 am_static_inline
 int am_boot_serial_byte_send(am_boot_serial_handle_t handle,
                              const uint8_t          *p_buffer,
-                             uint32_t                byte_count)
+                             uint32_t                size)
 {
     if(handle && handle->p_funcs && handle->p_funcs->pfn_serial_byte_send) {
         return handle->p_funcs->pfn_serial_byte_send(handle->p_drv,
                                                      p_buffer,
-                                                     byte_count);
+                                                     size);
     }
     return -AM_EINVAL;
 }
@@ -91,21 +91,21 @@ int am_boot_serial_byte_send(am_boot_serial_handle_t handle,
 /**
  * \brief 通过串行设备接口收数据
  *
- * \param[in] handle     : 标准服务句柄
- * \param[in] buffer     : 接收的数据
- * \param[in] byte_count : 接收数据的长度
+ * \param[in] handle : 串行数据操作标准服务句柄
+ * \param[in] p_buffer : 接收的数据
+ * \param[in] size   : 接收数据的长度
  *
  * \retval 收到的字节数
  */
 am_static_inline
 int am_boot_serial_byte_receive(am_boot_serial_handle_t handle,
                                 uint8_t                *p_buffer,
-                                uint32_t                requested_bytes)
+                                uint32_t                size)
 {
     if(handle && handle->p_funcs && handle->p_funcs->pfn_serial_byte_receive) {
         return handle->p_funcs->pfn_serial_byte_receive(handle->p_drv,
                                                         p_buffer,
-                                                        requested_bytes);
+                                                        size);
     }
     return -AM_EINVAL;
 }
@@ -115,11 +115,12 @@ int am_boot_serial_byte_receive(am_boot_serial_handle_t handle,
  *
  * 用户可以自己编写自己的回调函数，通过该接口使具体的串行设备中断接收回调里面将收到的数据传给用户回调函数。
  *
- * \param[in] handle       : 标准服务句柄
+ * \param[in] handle       : 串行数据操作标准服务句柄
  * \param[in] callback_fun : 用户的回调处理函数,serial_byte_receive_func_t是一个函数指针类型
  *                           是中断接收到的一个字节，用户可以在回调函数里面处理这个字节
  *
- * \retval AM_OK : 成功
+ * \retval AM_OK    : 成功
+ * \retval AM_ERROR : 失败
  */
 am_static_inline
 int am_boot_serial_int_recev_callback_enable(am_boot_serial_handle_t    handle,

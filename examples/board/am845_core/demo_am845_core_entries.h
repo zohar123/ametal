@@ -543,14 +543,18 @@ void demo_am845_core_eeprom_entry (void);
 void demo_am845_core_hw_capt_entry(void);
 
 /**
- * \brief bootloader固件升级例程
+
+ * \brief bootloader 双区固件升级例程
  */
-void demo_am845_core_bootloader_entry(void);
+
+
+void demo_am845_core_double_bootloader_uart_entry (void);
 
 /**
  * \brief bootloader固件升级的测试应用程序例程
  */
-void demo_am845_core_application_entry(void);
+
+void demo_am845_core_double_application_entry(void);
 
 /**
  * \brief FM25CLxx F-RAM例程

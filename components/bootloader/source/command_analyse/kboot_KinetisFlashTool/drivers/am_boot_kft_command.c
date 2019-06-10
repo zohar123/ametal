@@ -391,11 +391,11 @@ void finalize_data_phase(am_boot_kft_command_dev_t *p_dev,int32_t status)
     p_dev->state_data.data_phase.address = 0;
     p_dev->state_data.data_phase.count = 0;
 
-    // Force to write cached data to target memory
-    if (p_dev->state_data.data_phase.command_tag == AM_BOOT_KFT_COMMAND_TAG_WRITE_MEMORY) {
-
-        am_boot_update_flag_set(AM_BOOTLOADER_FLAG_APP);
-    }
+//    // Force to write cached data to target memory
+//    if (p_dev->state_data.data_phase.command_tag == AM_BOOT_KFT_COMMAND_TAG_WRITE_MEMORY) {
+//
+//        am_boot_update_flag_set(AM_BOOTLOADER_FLAG_APP);
+//    }
 
     // Send final response packet.
     send_generic_response(p_dev, status, p_dev->state_data.data_phase.command_tag);
@@ -446,8 +446,8 @@ int32_t handle_data_consumer(am_boot_kft_command_dev_t *p_dev,am_bool_t *p_has_m
     /* Consumer is memory interface. */
     am_boot_mem_write(p_dev->memory_handle,
                       data_address,
-                      packet_length,
-                      p_packet);
+                      p_packet,
+                      packet_length);
 
     data_address += packet_length;
 
@@ -504,8 +504,8 @@ int32_t handle_data_producer(am_boot_kft_command_dev_t *p_dev, am_bool_t *p_has_
             /* Copy data using memory interface. */
             status = am_boot_mem_read(p_dev->memory_handle,
                                       data_address,
-                                      packet_size,
-                                      packet);
+                                      packet,
+                                      packet_size);
         }
         data_address += packet_size;
     }

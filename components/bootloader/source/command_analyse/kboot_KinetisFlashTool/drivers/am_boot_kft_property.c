@@ -30,7 +30,6 @@
 #include "am_common.h"
 #include "am_boot.h"
 
-static int32_t __bootloader_property_load_user_config(void *p_arg);
 static int32_t __bootloader_property_init(void *p_arg);
 static int32_t __bootloader_property_get(void *p_arg, uint8_t tag, uint8_t id, const void **pp_value, uint32_t *p_value_size);
 static int32_t __bootloader_property_set_uint32(void *p_arg, uint8_t tag, uint32_t value);
@@ -39,7 +38,6 @@ static int32_t __bootloader_property_set_uint32(void *p_arg, uint8_t tag, uint32
 static uint32_t __g_property_return_value;
 
 static struct am_boot_kft_property_funcs __g_property_funcs = {
-    __bootloader_property_load_user_config,
     __bootloader_property_get,
     __bootloader_property_set_uint32,
 };
@@ -54,38 +52,14 @@ am_boot_kft_property_handle_t am_boot_kft_property_init(
 
     am_boot_kft_property_devinfo_t *p_devinfo = &__g_property_dev.property_devinfo;
 
-    p_devinfo->app_start_addr   = p_property_devinfo->app_start_addr;
     p_devinfo->flash_size       = p_property_devinfo->flash_size;
     p_devinfo->flash_start_addr = p_property_devinfo->flash_start_addr;
     p_devinfo->ram_size         = p_property_devinfo->ram_size;
     p_devinfo->ram_start_addr   = p_property_devinfo->ram_start_addr;
 
     __bootloader_property_init(&__g_property_dev);
-    __bootloader_property_load_user_config(&__g_property_dev);
 
     return &__g_property_dev.property_serv;
-}
-
-/**
- * \brief Early initialization function to get user configuration data
- */
-static int32_t __bootloader_property_load_user_config(void *p_arg)
-{
-    am_boot_kft_property_dev_t *p_dev = (am_boot_kft_property_dev_t *)p_arg;
-    am_boot_kft_configuration_data_t *config = &p_dev->property_store.configuration_data;
-
-    /* Copy bootloader configuration data from the flash into the property store. */
-    memcpy((void *)config,
-           (const void *)(p_dev->property_devinfo.app_start_addr + 0x3c0),
-            sizeof(am_boot_kft_configuration_data_t));
-
-    /* Verify tag. If it is invalid, wipe the config data to all 0xff. */
-    if (AM_BOOT_KFT_PROPERTY_STORE_TAG != config->tag) {
-        memset(config, 0xff, sizeof(am_boot_kft_configuration_data_t));
-    }
-
-
-    return AM_BOOT_KFT_STATUS_SUCCESS;
 }
 
 /**

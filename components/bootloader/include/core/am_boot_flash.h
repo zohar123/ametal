@@ -27,7 +27,8 @@
 extern "C" {
 #endif
 
-#include "am_boot.h"
+#include "ametal.h"
+
 typedef struct am_boot_flash_info {
     /**< \brief flash起始地址 */
     uint32_t  flash_start_addr;
@@ -38,11 +39,9 @@ typedef struct am_boot_flash_info {
     /**< \brief flash扇区大小 */
     uint32_t  flash_sector_size;
 
-    /**< \brief flash扇区数 */
-    uint32_t  flash_sector_count;
-	
-    /**< \brief 页大小 */
-//    uint32_t  flash_page_size;      
+    /**< \brief flash页大小 */
+    uint32_t  flash_page_size;
+
 }am_boot_flash_info_t;
 
 struct am_boot_flash_drv_funcs {
@@ -78,6 +77,8 @@ typedef am_boot_flash_serv_t *am_boot_flash_handle_t;
 /**
  * \brief flash区域擦除
  *
+ * 注意：如果擦除的长度小于flash的擦除最小大小，将按照擦除最小大小擦除
+ *
  * \param[in] start_addr : 起始地址
  * \param[in] length     : 擦除长度
  *
@@ -99,7 +100,7 @@ int am_boot_flash_erase_region(am_boot_flash_handle_t handle,
  *
  * \param[in] dst_addr : 目标地址
  * \param[in] p_src    : 数据源地址
- * \param[in] size     : 写入的数据的大小(数据的大小要为4的整数倍)
+ * \param[in] size     : 写入的数据的大小
  *
  * \retval AM_OK    写入成功
  * \retval AM_ERROR 传入的参数有误
@@ -119,25 +120,27 @@ int am_boot_flash_program(am_boot_flash_handle_t handle,
 
 /**
  * \brief 获取flash的信息
+ *
  * \param[in] p_info : 存放获取后的信息
-
  * \retval 无
  */
 am_static_inline
 void am_boot_flash_info_get(am_boot_flash_handle_t  handle,
-                            am_boot_flash_info_t  **p_info)
+                            am_boot_flash_info_t  **pp_info)
 {
     if(handle != NULL &&
        handle->p_funcs != NULL &&
        handle->p_funcs->pfn_flash_info_get != NULL) {
-        handle->p_funcs->pfn_flash_info_get(handle->p_drv, p_info);
+        handle->p_funcs->pfn_flash_info_get(handle->p_drv, pp_info);
     } 
 }
 
 /**
  * \brief 擦除整个flash
  *
- * \retval AM_OK :成功
+ * \retval AM_OK    : 成功
+ * \retval AM_ERROR : 失败
+ *
  */
 am_static_inline
 int am_boot_flash_erase_all(am_boot_flash_handle_t handle)

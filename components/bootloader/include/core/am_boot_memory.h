@@ -48,13 +48,10 @@ extern "C" {
 struct am_boot_mem_drv_funcs {
 
     /** \brief 内存读操作 */
-    int (*pfn_read) (void *p_drv, uint32_t address, uint32_t length, uint8_t *p_buffer);
+    int (*pfn_read) (void *p_drv, uint32_t address,  uint8_t *p_buf, uint32_t length);
 
     /** \brief 内存写操作 */
-    int (*pfn_write) (void *p_drv, uint32_t address, uint32_t length, uint8_t *p_buffer);
-
-    /** \brief 内存擦除操作  */
-    int (*pfn_erase) (void *p_drv, uint32_t address, uint32_t length);
+    int (*pfn_write) (void *p_drv, uint32_t address, uint8_t *p_buf, uint32_t length);
 };
 
 /**
@@ -69,23 +66,24 @@ typedef struct am_boot_mem_serv {
 typedef am_boot_mem_serv_t  *am_boot_mem_handle_t;
 
 /**
- * \brief 内存写
+ * \brief 内存读
  *
- * \param[in] handle   : 内存操作标准服务句柄
- * \param[in] address  : 写入的地址
- * \param[in] length   : 写入的长度
- * \param[in] p_buffer : 写入的数据
+ * \param[in] handle  : 内存操作标准服务句柄
+ * \param[in] address : 读数据的地址
+ * \param[in] p_buf   : 存放读出的数据
+ * \param[in] length  : 读数据的长度
  *
- * \retval AM_OK : 写入成功
+ * \retval AM_OK    : 读取成功
+ * \retval AM_ERROR : 读取失败
  */
 am_static_inline
 int am_boot_mem_read(am_boot_mem_handle_t handle,
                      uint32_t             address,
-                     uint32_t             length,
-                     uint8_t             *p_buffer)
+                     uint8_t             *p_buf,
+                     uint32_t             length)
 {
     if(handle && handle->p_funcs && handle->p_funcs->pfn_read) {
-        return handle->p_funcs->pfn_read(handle->p_drv, address, length, p_buffer);
+        return handle->p_funcs->pfn_read(handle->p_drv, address, p_buf, length);
     }
     return -AM_EINVAL;
 }
@@ -93,44 +91,27 @@ int am_boot_mem_read(am_boot_mem_handle_t handle,
 /**
  * \brief 内存写
  *
- * \param[in] handle   : 内存操作标准服务句柄
- * \param[in] address  : 内存读的地址
- * \param[in] length   : 读出的长度
- * \param[in] p_buffer : 读出数据存放的位置
+ * \param[in] handle  : 内存操作标准服务句柄
+ * \param[in] address : 内存写的起始地址
+ * \param[in] p_buf   : 写入数据存放的位置
+ * \param[in] length  : 写入数据的长度
  *
- * \retval AM_OK : 写入成功
+ *
+ * \retval AM_OK    : 写入成功
+ * \retval AM_ERROR : 写入失败
  */
 am_static_inline
 int am_boot_mem_write(am_boot_mem_handle_t handle,
                       uint32_t             address,
-                      uint32_t             length,
-                      uint8_t             *p_buffer)
+                      uint8_t             *p_buf,
+                      uint32_t             length)
 {
     if(handle && handle->p_funcs && handle->p_funcs->pfn_write) {
-           return handle->p_funcs->pfn_write(handle->p_drv, address, length, p_buffer);
+           return handle->p_funcs->pfn_write(handle->p_drv, address, p_buf, length);
     }
     return -AM_EINVAL;
 }
 
-/**
- * \brief 内存写
- *
- * \param[in] handle   : 内存操作标准服务句柄
- * \param[in] address  : 擦除的起始地址
- * \param[in] length   : 擦除的长度
- *
- * \retval AM_OK : 擦除成功
- */
-am_static_inline
-int am_boot_mem_erase(am_boot_mem_handle_t handle,
-                      uint32_t             address,
-                      uint32_t             length)
-{
-    if(handle && handle->p_funcs && handle->p_funcs->pfn_erase) {
-           return handle->p_funcs->pfn_erase(handle->p_drv, address, length);
-    }
-    return -AM_EINVAL;
-}
 
 #ifdef __cplusplus
 }

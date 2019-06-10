@@ -29,20 +29,9 @@
 extern "C" {
 #endif
 
-typedef struct am_boot_kft_dev_info {
-    uint32_t  app_start_addr;      /**< \brief 应用代码的起始地址*/
-    uint32_t  flash_start_addr;    /**< \brief flash的起始地址*/
-    uint32_t  flash_size;          /**< \brief flash的大小 */
-    uint32_t  ram_start_addr;      /**< \brief ram起始地址 */
-    uint32_t  ram_size;            /**< \brief ram的大小 */
-    void (*pfn_plfm_init)(void);   /**< \brief 平台初始化函数 */
-    void (*pfn_plfm_deinit)(void); /**< \brief 平台去初始化函数 */
-
-}am_boot_kft_dev_info_t;
 
 typedef struct am_boot_kft_dev {
     am_boot_kft_command_handle_t  command_handle;
-    am_boot_kft_dev_info_t       *p_dev_info;
 }am_boot_kft_dev_t;
 
 /**< \brief Bootloader status codes */
@@ -59,10 +48,11 @@ enum am_boot_kft_bootloader_status
 /**
  * \brief bootloader 组件初始化
  */
-int am_boot_kft_init(am_boot_kft_dev_t       *p_dev,
-                     am_boot_kft_dev_info_t  *p_devinfo,
+int am_boot_kft_init(am_boot_mem_handle_t     memory_handle,
                      am_boot_flash_handle_t   flash_handle,
-                     am_boot_serial_handle_t  serial_handle);
+                     am_boot_serial_handle_t  serial_handle,
+                     uint32_t                 ram_start_addr,
+                     uint32_t                 ram_size);
 
 
 /**
