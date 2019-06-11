@@ -58,6 +58,7 @@
  */
 am_local am_const am_nvram_segment_t __g_nvram_cfg_segs[] = {
     {"microport_eeprom", 0, 0, 256, "microport_eeprom"}, /* MicroPort-EEPROM */
+    {"fram_nvram",       0, 0, 256, "fram_nvram"},       /* fm25clxx-fram_nvram */
     {NULL,               0, 0, 0,   NULL}                /* ø’¥Ê¥¢∂Œ£¨±ÿ–Î±£¡Ù */
 };
 

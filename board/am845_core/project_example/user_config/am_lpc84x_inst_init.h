@@ -43,6 +43,7 @@ extern "C" {
 #include "am_timer.h"
 #include "am_dac.h"
 #include "am_ep24cxx.h"
+#include "am_fm25clxx.h"
 #include "am_lpc_sct.h"
 #include "am_hwconf_lm75.h"
 #include "am_hwconf_led_gpio.h"
@@ -556,6 +557,20 @@ am_spi_handle_t am_lpc84x_spi0_poll_inst_init (void);
  */
 void am_lpc84x_spi0_poll_inst_deinit (am_spi_handle_t handle);
 
+/**
+ * \brief FM25CLxx 实例初始化
+ */
+am_fm25clxx_handle_t am_fm25clxx_inst_init (void);
+
+/**
+ * \brief FM25CLxx 实例解初始化
+ */
+void am_fm25clxx_inst_deinit (am_fm25clxx_handle_t handle);
+
+/**
+ * \brief FM25CLxx NVRAM实例初始化
+ */
+int am_fm25clxx_fram_nvram_inst_init(void);
 /**
  * @}
  */

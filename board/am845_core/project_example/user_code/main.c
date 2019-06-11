@@ -128,6 +128,8 @@ void am_main (void)
 //    demo_am845_core_fm175xx_picca_read_block ();
 //    demo_am845_core_fm175xx_picca_read_id ();
 //    demo_am845_core_fm175xx_picca_write_block ();
+//    demo_am845_core_fm25clxx_entry();
+//    demo_am845_core_fm25clxx_nvram_entry();
    while(1) {
         ;
     }

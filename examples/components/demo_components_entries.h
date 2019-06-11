@@ -1,4 +1,4 @@
-﻿/*******************************************************************************
+/*******************************************************************************
 *                                 AMetal
 *                       ----------------------------
 *                       innovating embedded platform
@@ -33,6 +33,7 @@ extern "C" {
 #include "am_mx25xx.h"
 #include "am_ep24cxx.h"
 #include "am_fm175xx.h"
+#include "am_fm25clxx.h"
 #include "am_zm516x.h"
 #include "am_zlg9021.h"
 #include "am_zlg52810.h"
@@ -202,11 +203,17 @@ void demo_zlg9021_led_entry (am_zlg9021_handle_t zlg9021_handle);
 void demo_zlg52810_baudrate_entry (am_zlg52810_handle_t zlg52810_handle);
 /**
  * \brief EEPROM例程
- * \param[in] handle  zlg52810 服务句柄
+ * \param[in] 无
  * \return 无
  */
 void demo_am845_core_eeprom_entry (void);
 
+/**
+ * \brief FM25CLxx例程
+ * \param[in] handle  FM25CLxx 服务句柄
+ * \return 无
+ */
+void demo_fm25clxx_entry(am_fm25clxx_handle_t fm25clxx_handle, int32_t test_lenth);
 #ifdef __cplusplus
 }
 #endif
