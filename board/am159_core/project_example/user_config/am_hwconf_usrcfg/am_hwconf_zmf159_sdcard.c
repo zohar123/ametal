@@ -12,8 +12,8 @@
 
 /**
  * \file
- * \brief Miniport-595 用户配置文件
- * \sa am_hwconf_miniport_595.c
+ * \brief 用户配置文件
+ * \sa am_hwconf_sdcard.c
  *
  * \internal
  * \par Modification history
@@ -40,12 +40,14 @@
    Public functions
 *******************************************************************************/
 static  am_sdcard_devinfo_t __g_sdcard_info = {
-        AMHW_ZLG_ADIO_WIDTH_4BIT,
-        0x200
+        AM_SDIO_SD_4B_M,
+        (AM_SD_OCR_VDD_27_28 | AM_SD_OCR_VDD_28_29 | AM_SD_OCR_VDD_29_30 |
+         AM_SD_OCR_VDD_30_31 | AM_SD_OCR_VDD_31_32 | AM_SD_OCR_VDD_32_33 |
+         AM_SD_OCR_VDD_33_34 | AM_SD_OCR_VDD_34_35 | AM_SD_OCR_VDD_35_36),
 };
 static am_sdcard_dev_t    __g_sdcard_dev;
 
-/* MiniPort-595 实例初始化 */
+/* 实例初始化 */
 am_sdcard_handle_t am_sdcard_inst_init (void)
 {
 

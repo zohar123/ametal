@@ -45,8 +45,8 @@
 
 extern am_sdcard_handle_t am_sdcard_inst_init (void);
 
-uint8_t            wr_buf[512] = {0}; /* 写数据缓存定义 */
-uint8_t            rd_buf[512] = {0}; /* 读数据缓存定义 */
+uint8_t            wr_buf[512 * 5] = {0}; /* 写数据缓存定义 */
+uint8_t            rd_buf[512 * 2] = {0}; /* 读数据缓存定义 */
 
 /**
  * \brief 例程入口
@@ -59,7 +59,7 @@ void demo_std_sdio_master_entry ()
     uint32_t           count = 0;
 
     for ( i = 0; i < sizeof(wr_buf); i++) {
-        wr_buf[i] = 0x55;
+        wr_buf[i] = i;
     }
 
     sdcard_handle = am_sdcard_inst_init();
@@ -73,12 +73,13 @@ void demo_std_sdio_master_entry ()
 
     am_kprintf( "sd card init successful\r\n");
 
-    ret = am_sdcard_block_erase(sdcard_handle, 999, 50, 512);
+    ret = am_sdcard_block_erase(sdcard_handle, 1100, 6, 512);
     if (ret != AM_OK) {
         am_kprintf( "sdcard block erase failed\r\n");
     }
 
-    ret = am_sdcard_single_block_write(sdcard_handle, wr_buf, 1000 , 512);
+    ret = am_sdcard_multiple_blocks_write(sdcard_handle, wr_buf, 1100, 5, 512);
+
     if (ret != AM_OK) {
         am_kprintf( "sdcard single block write failed\r\n");
     }
@@ -86,13 +87,17 @@ void demo_std_sdio_master_entry ()
     while(1) {
 
         ret = am_sdcard_single_block_read(sdcard_handle,
-                                          rd_buf,
-                                          999 + count,
-                                          512);
+                                           rd_buf,
+                                           1100 + count,
+                                           512);
 
         if (ret == AM_OK) {
-            for(i = 0; i < 512; i++) {
+            for(i = 0; i < 512 * 2; i++) {
                 am_kprintf( "%02x ", rd_buf[i]);
+//                if ((wr_buf[i] != rd_buf[i]) && (count == 0)) {
+//                    am_kprintf( "\r\n error \r\n");
+//                    while(1);
+//                }
             }
             am_kprintf( "\r\n\r\n");
         }

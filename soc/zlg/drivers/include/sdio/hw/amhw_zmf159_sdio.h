@@ -87,8 +87,8 @@ typedef struct amhw_zlg_sdio {
  * \brief sdio的DAT线位宽
  */
 typedef enum amhw_zlg_sdio_width {
-    AMHW_ZLG_ADIO_WIDTH_1BIT      = 0x0,   /**< \brief 1位 */
-	AMHW_ZLG_ADIO_WIDTH_4BIT      = 0x2,   /**< \brief 4位 */
+    AMHW_ZLG_SDIO_WIDTH_1BIT      = 0x0,   /**< \brief 1位 */
+	AMHW_ZLG_SDIO_WIDTH_4BIT      = 0x2,   /**< \brief 4位 */
 } amhw_zlg_sdio_width_t;
 
 /**
@@ -103,14 +103,14 @@ typedef enum amhw_zlg_sdio_speed_mode {
  * \brief sdio端口时钟配置
  */
 typedef enum amhw_zlg_port_clk_mode {
-    AMHW_ZLG_ADIO_PORT_CLK_MODE_1_2BASECLK      = 0x0,   /**< \brief 1/2倍基础时钟速模式 */
-    AMHW_ZLG_ADIO_PORT_CLK_MODE_1_4BASECLK      = 0x1,   /**< \brief 1/4倍基础时钟速模式 */
-    AMHW_ZLG_ADIO_PORT_CLK_MODE_1_6BASECLK      = 0x2,   /**< \brief 1/6倍基础时钟速模式 */
-    AMHW_ZLG_ADIO_PORT_CLK_MODE_1_8BASECLK      = 0x3,   /**< \brief 1/8倍基础时钟速模式 */
-	AMHW_ZLG_ADIO_PORT_CLK_MODE_1_10BASECLK     = 0x4,   /**< \brief 1/10倍基础时钟速模式 */
-    AMHW_ZLG_ADIO_PORT_CLK_MODE_1_12BASECLK     = 0x5,   /**< \brief 1/12倍基础时钟速模式 */
-    AMHW_ZLG_ADIO_PORT_CLK_MODE_1_14BASECLK     = 0x6,   /**< \brief 1/14倍基础时钟速模式 */
-    AMHW_ZLG_ADIO_PORT_CLK_MODE_1_16BASECLK     = 0x7,   /**< \brief 1/16倍基础时钟速模式 */
+    AMHW_ZLG_SDIO_PORT_CLK_MODE_1_2BASECLK      = 0x0,   /**< \brief 1/2倍基础时钟速模式 */
+    AMHW_ZLG_SDIO_PORT_CLK_MODE_1_4BASECLK      = 0x1,   /**< \brief 1/4倍基础时钟速模式 */
+    AMHW_ZLG_SDIO_PORT_CLK_MODE_1_6BASECLK      = 0x2,   /**< \brief 1/6倍基础时钟速模式 */
+    AMHW_ZLG_SDIO_PORT_CLK_MODE_1_8BASECLK      = 0x3,   /**< \brief 1/8倍基础时钟速模式 */
+	AMHW_ZLG_SDIO_PORT_CLK_MODE_1_10BASECLK     = 0x4,   /**< \brief 1/10倍基础时钟速模式 */
+    AMHW_ZLG_SDIO_PORT_CLK_MODE_1_12BASECLK     = 0x5,   /**< \brief 1/12倍基础时钟速模式 */
+    AMHW_ZLG_SDIO_PORT_CLK_MODE_1_14BASECLK     = 0x6,   /**< \brief 1/14倍基础时钟速模式 */
+    AMHW_ZLG_SDIO_PORT_CLK_MODE_1_16BASECLK     = 0x7,   /**< \brief 1/16倍基础时钟速模式 */
 } amhw_zlg_port_clk_mode_t;
 
 /**
@@ -150,7 +150,7 @@ typedef enum amhw_zlg_sdio_pclkg_mode {
  */
 typedef enum amhw_zlg_resive_or_send_mode {
     AMHW_ZLG_SDIO_SEND_MODE       = 0x0,   /**< \brief 使用发送模式*/
-	AMHW_ZLG_SDIO_RESIVE_MODE     = 0x1,   /**< \brief 使用接收模式 */
+	AMHW_ZLG_SDIO_RECEIVE_MODE     = 0x1,   /**< \brief 使用接收模式 */
 } amhw_zlg_resive_or_send_mode_t;
 
 
@@ -492,7 +492,7 @@ void amhw_zlg_sdio_out_8nullclk (amhw_zlg_sdio_t *p_hw_sdio)
 am_static_inline
 void amhw_zlg_sdio_get_cid_csd(amhw_zlg_sdio_t *p_hw_sdio)
 {
-	p_hw_sdio->mmc_io |= (1 << 4);
+	p_hw_sdio->mmc_io |= (1ul << 4);
 }
 
 /**
@@ -813,37 +813,32 @@ void amhw_zlg_sdio_set_cardclk_div (amhw_zlg_sdio_t *p_hw_sdio, uint8_t clk_div)
  * \return 无
  */
 am_static_inline
-void amhw_zlg_sdio_set_clk_selete_bety (amhw_zlg_sdio_t *p_hw_sdio, amhw_zlg_clk_selete_bety_t flag)
+void amhw_zlg_sdio_clk_selete_bety_set (amhw_zlg_sdio_t *p_hw_sdio, amhw_zlg_clk_selete_bety_t flag)
 {
-	flag? (p_hw_sdio->mmc_io_mbctl |= (1 << 3)) : (p_hw_sdio->mmc_io_mbctl &= ~(1 << 3));
+	flag? (p_hw_sdio->mmc_io_mbctl |= (1ul << 3)) : (p_hw_sdio->mmc_io_mbctl &= ~(1ul << 3));
 }
 
 am_static_inline
-void amhw_zlg_sdio_set_auto_cmdblock_tranfer (amhw_zlg_sdio_t *p_hw_sdio, am_bool_t flag)
+void amhw_zlg_sdio_nblocks_cmd_tranfer_enable (amhw_zlg_sdio_t *p_hw_sdio, am_bool_t flag)
 {
-	flag? (p_hw_sdio->mmc_io_mbctl |= (1 << 2)) : (p_hw_sdio->mmc_io_mbctl &= ~(1 << 2));
+	flag? (p_hw_sdio->mmc_io_mbctl |= (1ul << 2)) : (p_hw_sdio->mmc_io_mbctl &= ~(1ul << 2));
 }
 
 am_static_inline
-void amhw_zlg_sdio_set_auto_block_tranfer (amhw_zlg_sdio_t *p_hw_sdio, am_bool_t flag)
+void amhw_zlg_sdio_nblocks_auto_tranfer_enable (amhw_zlg_sdio_t *p_hw_sdio, am_bool_t flag)
 {
-	flag? (p_hw_sdio->mmc_io_mbctl |= (1 << 0)) : (p_hw_sdio->mmc_io_mbctl &= ~(1 << 0));
+	flag? (p_hw_sdio->mmc_io_mbctl |= (1ul << 0)) : (p_hw_sdio->mmc_io_mbctl &= ~(1ul << 0));
 }
 
 am_static_inline
-void amhw_zlg_sdio_set_read (amhw_zlg_sdio_t *p_hw_sdio)
+void amhw_zlg_sdio_nblocks_tranfer_dir_set (amhw_zlg_sdio_t         *p_hw_sdio,
+                                            amhw_zlg_transfer_mode_t trans_dir)
 {
-	p_hw_sdio->mmc_io_mbctl = (p_hw_sdio->mmc_io_mbctl & (~0x2)) | 0x2;
+    AM_BIT_MODIFY(p_hw_sdio->mmc_io_mbctl, 1, trans_dir);
 }
 
 am_static_inline
-void amhw_zlg_sdio_set_write (amhw_zlg_sdio_t *p_hw_sdio)
-{
-	p_hw_sdio->mmc_io_mbctl = (p_hw_sdio->mmc_io_mbctl & (~0x2));
-}
-
-am_static_inline
-void amhw_zlg_sdio_set_tranfer_block_cnt (amhw_zlg_sdio_t *p_hw_sdio, uint16_t cnt)
+void amhw_zlg_sdio_nblocks_cnt_tranfer_set (amhw_zlg_sdio_t *p_hw_sdio, uint16_t cnt)
 {
 	p_hw_sdio->mmc_blockcnt = cnt;
 }

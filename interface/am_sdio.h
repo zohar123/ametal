@@ -28,6 +28,7 @@ extern "C" {
 #endif
 
 #include "am_common.h"
+#include "string.h"
 #include "am_list.h"
 
 /**
@@ -36,40 +37,88 @@ extern "C" {
  * @{
  */
 
+/**
+ * \name SD 命令
+ * @{
+ */
+#define AM_SDIO_CMD0               0
+#define AM_SDIO_CMD1               1
+#define AM_SDIO_CMD2               2
+#define AM_SDIO_CMD3               3
+#define AM_SDIO_CMD4               4
+#define AM_SDIO_CMD5               5
+#define AM_SDIO_CMD6               6
+#define AM_SDIO_CMD7               7
+#define AM_SDIO_CMD8               8
+#define AM_SDIO_CMD9               9
+#define AM_SDIO_CMD10              10
+#define AM_SDIO_CMD11              11
+#define AM_SDIO_CMD12              12
+#define AM_SDIO_CMD13              13
+#define AM_SDIO_CMD14              14
+#define AM_SDIO_CMD15              15
+#define AM_SDIO_CMD16              16
+#define AM_SDIO_CMD17              17
+#define AM_SDIO_CMD18              18
+#define AM_SDIO_CMD19              19
+#define AM_SDIO_CMD20              20
+#define AM_SDIO_CMD21              21
+#define AM_SDIO_CMD22              22
+#define AM_SDIO_CMD23              23
+#define AM_SDIO_CMD24              24
+#define AM_SDIO_CMD25              25
+#define AM_SDIO_CMD26              26
+#define AM_SDIO_CMD27              27
+#define AM_SDIO_CMD28              28
+#define AM_SDIO_CMD29              29
+#define AM_SDIO_CMD31              31
+#define AM_SDIO_CMD32              32
+#define AM_SDIO_CMD33              33
+#define AM_SDIO_CMD34              34
+#define AM_SDIO_CMD35              35
+#define AM_SDIO_CMD36              36
+#define AM_SDIO_CMD37              37
+#define AM_SDIO_CMD38              38
+#define AM_SDIO_CMD39              39
+#define AM_SDIO_CMD40              40
+#define AM_SDIO_CMD41              41
+#define AM_SDIO_CMD42              42
+#define AM_SDIO_CMD43              43
+#define AM_SDIO_CMD44              44
+#define AM_SDIO_CMD45              45
+#define AM_SDIO_CMD46              46
+#define AM_SDIO_CMD47              47
+#define AM_SDIO_CMD48              48
+#define AM_SDIO_CMD49              49
+#define AM_SDIO_CMD50              50
+#define AM_SDIO_CMD51              51
+#define AM_SDIO_CMD52              52
+#define AM_SDIO_CMD53              53
+#define AM_SDIO_CMD54              54
+#define AM_SDIO_CMD55              55
+#define AM_SDIO_CMD56              56
+#define AM_SDIO_CMD57              57
+#define AM_SDIO_CMD57              57
+#define AM_SDIO_CMD58              58
+#define AM_SDIO_CMD59              59
+
+#define AM_SDIO_ACMD6              6
+#define AM_SDIO_ACMD13             13
+#define AM_SDIO_ACMD14             14
+#define AM_SDIO_ACMD15             15
+#define AM_SDIO_ACMD16             16
+#define AM_SDIO_ACMD22             22
+#define AM_SDIO_ACMD23             23
+#define AM_SDIO_ACMD28             28
+#define AM_SDIO_ACMD41             41
+#define AM_SDIO_ACMD42             42
+#define AM_SDIO_ACMD51             51
+/** @} */
+
 #define AM_SD_VOLTAGE_WINDOW_SD            ((uint32_t)0x80100000)
 #define AM_SD_HIGH_CAPACITY                ((uint32_t)0x40000000)
 #define AM_SD_STD_CAPACITY                 ((uint32_t)0x00000000)
 #define AM_SD_CHECK_PATTERN                ((uint32_t)0x000001AA)
-
-/**
- * \brief SDIO 模式设置
- */
-#define AM_SDIO_SDIO_M              0       /**< \brief SDIO SDIO模式 */
-#define AM_SDIO_SD_1B_M             1       /**< \brief SDIO SD 1线模式 */
-#define AM_SDIO_SD_4B_M             2       /**< \brief SDIO SD 4线模式 */
-#define AM_SDIO_SD_8B_M             3       /**< \brief SDIO SD 8线模式 */
-
-
-/**
- * \brief 命令响应类型
- */
-#define AWBL_SDIO_RSP_NONE      0
-#define AWBL_SDIO_RSP_R1        1
-#define AWBL_SDIO_RSP_R1B       2
-#define AWBL_SDIO_RSP_R2        3
-#define AWBL_SDIO_RSP_R3        4
-#define AWBL_SDIO_RSP_R4        5
-#define AWBL_SDIO_RSP_R5        6
-#define AWBL_SDIO_RSP_R6        7
-#define AWBL_SDIO_RSP_R7        8
-
-/**
- * \brief 读写方向标志
- */
-#define AWBL_SDIO_NO_DATA       0
-#define AWBL_SDIO_RD_DATA       1
-#define AWBL_SDIO_WR_DATA       2
-
 
 #define AM_SDIO_M_WR            0x0000u    /**< \brief 写操作           */
 #define AM_SDIO_M_RD            0x0002u    /**< \brief 读操作           */
@@ -78,33 +127,88 @@ extern "C" {
 //#define AM_SDIO_M_RECV_LEN      0x0010u    /**< \brief 暂不支持         */
 
 /**
- * \brief SDIO控制器信息结构体
+ * \name card status of R1 on SPI mode
+ * \anchor grp_awbl_spi_r1_state
+ * @{
  */
 
-struct am_sdio_transfer;      /**< \brief 声明SDIO传输的结构体类型     */
-struct am_sdio_cmd;           /**< \brief 声明SDIO消息的结构体类型     */
+/** \brief 指示卡是否处于空闲状态 */
+#define AM_SDIO_SPI_R1_IN_IDLE_STATE       0x01
+
+/** \brief 操作被复位 */
+#define AM_SDIO_SPI_R1_ERASE_RESET         0x02
+
+/** \brief 对于当前卡状态为非法命令  */
+#define AM_SDIO_SPI_R1_ILLEGAL_CMD         0x04
+
+/** \brief CRC校验失败 */
+#define AM_SDIO_SPI_R1_COM_CRC_ERROR       0x08
+
+/** \brief 擦除错误 */
+#define AM_SDIO_SPI_R1_ERASE_SEQ_ERROR     0x10
+
+/** \brief 地址错误，非对齐或数据长度不匹配 */
+#define AM_SDIO_SPI_R1_ADDRESS_ERROR       0x20
+
+/** \brief 参数错误，命令参数段不合法  */
+#define AM_SDIO_SPI_R1_PARA_ERROR          0x40
+#define AM_SDIO_SPI_R1_ALL_ERROR           0x7E
+#define AM_SDIO_SPI_R1_MASK                0x7F
+/** @} */
+
+/** \brief SDIO总线宽度 */
+typedef enum am_sdio_bus_width {
+    AM_SDIO_BUS_WIDTH_1B  = 1, /**< \brief 1位数据线 */
+    AM_SDIO_BUS_WIDTH_4B  = 2, /**< \brief 4位数据线 */
+    AM_SDIO_BUS_WIDTH_8B  = 3, /**< \brief 8位数据线 */
+} am_sdio_bus_width_t;
+
+/** \brief command */
+typedef struct am_sdio_trans{
+
+    struct am_list_head  trans_node;
+
+    uint32_t             cmd;        /**< \brief SDIO 命令*/
+    uint32_t             arg;        /**< \brief 命令参数 */
+    uint8_t              opt;        /**< \brief 传输操作 */
+#define AM_SDIO_OW       0           /**< \brief 只写 */
+#define AM_SDIO_WR       1           /**< \brief 先写后读 */
+
+    void                *p_data;     /**< \brief 数据缓冲区 */
+    uint32_t             blk_size;   /**< \brief 传输块大小 */
+    uint32_t             nblock;     /**< \brief 传输块数量 */
+    uint8_t              rsp_type;   /**< \brief 命令响应类型 */
+#define AM_SDIO_RSP_NONE      0
+#define AM_SDIO_RSP_R1        1
+#define AM_SDIO_RSP_R1B       2
+#define AM_SDIO_RSP_R2        3
+#define AM_SDIO_RSP_R3        4
+#define AM_SDIO_RSP_R4        5
+#define AM_SDIO_RSP_R5        6
+#define AM_SDIO_RSP_R6        7
+#define AM_SDIO_RSP_R7        8
+
+    uint32_t            *p_rsp;      /**< \brief 响应数据 */
+    uint8_t              retries;    /**< \brief 超时重发次数 */
+} am_sdio_trans_t;
+
+/** \brief message */
+typedef struct am_sdio_msg {
+    struct am_list_head  msg_node;
+    struct am_list_head  trans_list;
+    int                  status;            /**< \brief 完成状态  */
+    void                *p_arg;             /**< \brief 回调函数参数 */
+    void (*pfn_complete) (void *p_arg);     /**< \brief 命令完成回调函数*/
+} am_sdio_msg_t;
 
 /**
  * \brief sdio驱动函数结构体
  */
 struct am_sdio_drv_funcs {
 
-    /** \brief SDIO数据发送 */
-    int (*pfn_sdio_data_send) (void     *p_drv,
-                              uint8_t  *p_buf,
-                              uint16_t  len);
-
-    /** \brief SDIO数据接收 */
-    int (*pfn_sdio_data_recv) (void    *p_drv,
-                              uint8_t *p_buf,
-                              uint16_t len);
-
-    /** \brief SDIO命令发送   */
-    int (*pfn_sdio_send_cmd) (void               *p_drv,
-                              struct am_sdio_cmd *p_cmd);
-
     /** \brief 启动SDIO消息传输，完成后调用回调函数  */
-    int (*pfn_sdio_msg_start)(void *p_drv);
+    int (*pfn_sdio_msg_start)(void                  *p_drv,
+                              struct am_sdio_msg    *p_msg);
 };
 
 /**
@@ -117,21 +221,6 @@ typedef struct am_sdio_serv {
 
 /** \brief SDIO 标准服务操作句柄定义 */
 typedef am_sdio_serv_t *am_sdio_handle_t;
-
-/** \brief SDIO从设备描述结构 */
-typedef struct am_sdio_device {
-
-    am_sdio_handle_t  handle;       /**< \brief 该设备关联的SDIO标准服务handle */
-
-    /** \brief 从设备的SDIO模式标志，请参考“SDIO模式标志”*/
-    uint16_t         mode;
-
-    /* \brief 设备支持的最高速度 */
-    uint32_t         max_speed_hz;
-
-    /** \brief 从机设备特性*/
-    uint16_t         dev_flags;
-} am_sdio_device_t;
 
 /**< \brief 响应类型 */
 #define AM_SDIO_RESPONSE_NO                    0
@@ -198,27 +287,98 @@ void am_sdio_mkcmd (am_sdio_cmd_t *p_cmd,
 }
 
 /**
- * \brief SDIO从机设备描述结构体参数设置
+ * \brief SDIO传输命令结构体信息参数设置
  *
- * \param[in] p_dev       : 指向从机设备描述结构体的指针
- * \param[in] handle      : 与从设备关联的I2C标准服务操作句柄
- * \param[in] mode        : SDIO模式标志
- * \param[in] max_speed_hz: 设备支持的最大速度
- * \param[in] dev_flags   : 从机设备特性，见“SDIO从设备属性标志”
+ * \param[in] p_trans : 指向传输结构体指针
+ * \param[in] cmd       CMD 命令
+ * \param[in] cmd_arg   命令参数
+ * \param[in] opt       传输方式
+ * \param[in] p_data    传输数据缓存
+ * \param[in] blk_size  传输块大小
+ * \param[in] nblk      传输块数量
+ * \param[in] rsp_type  响应类型
+ * \param[in] rsp_type  响应数据缓存
+ * \param[in] retries   超时重发次数
  *
- * \return 无
+ * \retval  AM_OK     : 传输结构体参数设置完成
+ * \retval -AM_EINVAL : 参数错误
  */
 am_static_inline
-void am_sdio_mkdev (am_sdio_device_t *p_dev,
-                    am_sdio_handle_t  handle,
-                    uint16_t          mode,
-                    uint32_t          max_speed_hz,
-                    uint16_t          dev_flags)
+void am_sdio_mktrans (am_sdio_trans_t *p_trans,
+                      uint8_t          cmd,
+                      uint32_t         cmd_arg,
+                      uint8_t          opt,
+                      void            *p_data,
+                      uint32_t         blk_size,
+                      uint32_t         nblk,
+                      uint8_t          rsp_type,
+                      void            *p_rsp,
+                      uint8_t          retries)
 {
-    p_dev->handle        = handle;
-    p_dev->mode          = mode;
-    p_dev->max_speed_hz  = max_speed_hz;
-    p_dev->dev_flags     = dev_flags;
+    p_trans->cmd      = cmd;
+    p_trans->arg      = cmd_arg;
+    p_trans->opt      = opt;
+    p_trans->p_data   = p_data;
+    p_trans->blk_size = blk_size;
+    p_trans->nblock   = nblk;
+    p_trans->rsp_type = rsp_type;
+    p_trans->p_rsp    = p_rsp;
+    p_trans->retries  = retries;
+}
+
+am_static_inline
+void am_sdio_msg_init (am_sdio_msg_t *p_msg)
+{
+    memset(p_msg, 0, sizeof(*p_msg));
+
+    AM_INIT_LIST_HEAD(&(p_msg->trans_list));
+
+    p_msg->status = -AM_ENOTCONN;
+}
+
+/**
+ * \brief 将传输添加到消息末尾
+ * \param p_msg     message object
+ * \param p_cmd     command to be added
+ */
+am_static_inline
+void am_sdio_trans_add_tail (am_sdio_msg_t   *p_msg,
+                             am_sdio_trans_t *p_trans)
+{
+    am_list_add_tail(&p_trans->trans_node, &p_msg->trans_list);
+}
+
+/**
+ * \brief 将传输从消息中删除
+ * \param[in] p_trans : 待加入删除的传输
+ * \return 无
+ * \note 删除前，务必确保该传输确实已经加入了消息中
+ */
+am_static_inline
+void am_sdio_trans_del (am_sdio_trans_t *p_trans)
+{
+    am_list_del(&p_trans->trans_node);
+}
+
+/**
+ * \brief 从message列表表头取出一条 transfer
+ * \attention 调用此函数必须锁定控制器
+ *
+ * \retval  p_msg
+ */
+am_static_inline
+am_sdio_trans_t *am_sdio_msg_out (am_sdio_msg_t *p_msg)
+{
+    am_sdio_trans_t *p_trans = NULL;
+
+    if (!(am_list_empty(&p_msg->trans_list))) {
+        p_trans = am_list_entry(p_msg->trans_list.next,
+                                am_sdio_trans_t,
+                                trans_node);
+        am_list_del(p_msg->trans_list.next);
+    }
+
+    return p_trans;
 }
 
 /**
@@ -240,37 +400,11 @@ void am_sdio_mkdev (am_sdio_device_t *p_dev,
  *    \li -AM_EIO : 传输错误
  */
 am_static_inline
-int am_sdio_msg_start (am_sdio_handle_t    handle)
+int am_sdio_msg_start (am_sdio_handle_t  handle,
+                       am_sdio_msg_t    *p_msg)
 {
-    return handle->p_funcs->pfn_sdio_msg_start(handle->p_drv);
-}
-
-am_static_inline
-int am_sdio_send_cmd (am_sdio_handle_t handle,
-                      am_sdio_cmd_t   *p_cmd)
-{
-    return handle->p_funcs->pfn_sdio_send_cmd(handle->p_drv,
-                                              p_cmd);
-}
-
-am_static_inline
-int am_sdio_msg_send (am_sdio_handle_t handle,
-                      uint8_t         *p_buf,
-                      uint16_t         len)
-{
-     return handle->p_funcs->pfn_sdio_data_send(handle->p_drv,
-                                               p_buf,
-                                               len);
-}
-
-am_static_inline
-int am_sdio_msg_recv (am_sdio_handle_t handle,
-                      uint8_t         *p_buf,
-                      uint16_t         len)
-{
-    return handle->p_funcs->pfn_sdio_data_recv(handle->p_drv,
-                                              p_buf,
-                                              len);
+    return handle->p_funcs->pfn_sdio_msg_start(handle->p_drv,
+                                               p_msg);
 }
 
 /**

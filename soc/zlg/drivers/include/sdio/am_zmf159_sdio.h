@@ -58,8 +58,6 @@ typedef struct am_zlg_sdio_devinfo {
 
     uint8_t               width;
 
-//  uint32_t              task_trans_prio;/**< 传输任务优先级 */
-
     uint32_t              speed;
 
     uint8_t               speed_mode;

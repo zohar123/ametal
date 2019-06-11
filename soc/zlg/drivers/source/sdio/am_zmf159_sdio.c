@@ -48,27 +48,18 @@
 #define __SDIO_ST_M_SEND_DATA      (0x14u)          /* 发送数据状态 */
 #define __SDIO_ST_M_RECV_DATA      (0x15u)          /* 接收数据状态 */
 
-/** \brief SDIO 消息处理函数 */
-static int __sdio_msg_start (void *p_drv);
-
 /** \brief SDIO 硬件初始化 */
 static int __sdio_hard_init (am_zlg_sdio_dev_t *p_dev);
 
 /** \brief SDIO 中断处理函数 */
 static void __sdio_irq_handler (void *p_arg);
 
-/** \brief SDIO 中断处理函数 */
-static int __sdio_send_cmd (void *p_drv, am_sdio_cmd_t *cmd_msg);
-static int __sdio_msg_send(void *p_drv,  uint8_t *p_buf, uint16_t len);
-static int __sdio_msg_recv(void *p_drv,  uint8_t *p_buf, uint16_t len);
+static int __sdio_msg_start (void *p_drv, struct am_sdio_msg *p_msg);
 
 /**
  * \brief SDIO 驱动函数定义
  */
 static am_const struct am_sdio_drv_funcs __g_sdio_drv_funcs = {
-     __sdio_msg_send,
-     __sdio_msg_recv,
-     __sdio_send_cmd,
      __sdio_msg_start
 };
 
@@ -108,7 +99,10 @@ static void __sdio_irq_handler (void *p_arg)
     }
 
     if (ZMF159_SDIO_INT_MB_COMPLE & status) {
-        //am_wait_done(&p_dev->wait);
+        if (p_dev->int_status == ZMF159_SDIO_INT_MB_COMPLE) {
+            p_dev->int_status = 0;
+            am_wait_done(&p_dev->wait);
+        }
         amhw_zlg_sdio_clr_int_status(p_hw_sdio, ZMF159_SDIO_INT_MB_COMPLE);
     }
 
@@ -151,7 +145,7 @@ static int __sdio_hard_init (am_zlg_sdio_dev_t *p_dev)
     } else {
         amhw_zlg_sdio_speed_mode_set (p_hw_sdio, AMHW_ZLG_SDIO_SPEED_MODE_LOW);
     }
-    amhw_zlg_sdio_prot_clk_set (p_hw_sdio, AMHW_ZLG_ADIO_PORT_CLK_MODE_1_2BASECLK);
+    amhw_zlg_sdio_prot_clk_set (p_hw_sdio, AMHW_ZLG_SDIO_PORT_CLK_MODE_1_2BASECLK);
 
     /*使能CRC */
     amhw_zlg_sdio_set_crcctl_enable(p_hw_sdio, ZMF159_SDIO_CMDCRC | ZMF159_SDIO_DATCRC);
@@ -169,135 +163,98 @@ static int __sdio_hard_init (am_zlg_sdio_dev_t *p_dev)
     amhw_zlg_sdio_port_operation_set(p_hw_sdio, AMHW_ZLG_SDIO_PORT_OPER_SDIO_MODE);
 
     amhw_zlg_sdio_set_int_enable (p_hw_sdio, ZMF159_SDIO_INT_CMD_COMPLE |
-                                             ZMF159_SDIO_INT_DAT_COMPLE);
+                                             ZMF159_SDIO_INT_DAT_COMPLE |
+                                             ZMF159_SDIO_INT_MB_COMPLE);
 
     return AM_OK;
 }
 
-/** \brief SDIO 命令发送函数 */
-static int __sdio_send_cmd (void *p_drv, am_sdio_cmd_t *cmd_msg)
+static int __sdio_cmd_send (am_zlg_sdio_dev_t *p_dev,
+                            am_sdio_trans_t   *p_trans)
 {
-    int                ret;
-    am_zlg_sdio_dev_t *p_dev     = (am_zlg_sdio_dev_t *)p_drv;
-    amhw_zlg_sdio_t   *p_hw_sdio = (amhw_zlg_sdio_t *)p_dev->p_devinfo->regbase;
+    int              ret;
+    amhw_zlg_sdio_t *p_hw_sdio = (amhw_zlg_sdio_t *)p_dev->p_devinfo->regbase;
 
-    amhw_zlg_sdio_write_cmd(p_hw_sdio, 4, 0x40 | cmd_msg->cmd);
-    amhw_zlg_sdio_write_cmd(p_hw_sdio, 3, ((cmd_msg->arg & 0xff000000) >> 24));
-    amhw_zlg_sdio_write_cmd(p_hw_sdio, 2, ((cmd_msg->arg & 0xff0000) >> 16));
-    amhw_zlg_sdio_write_cmd(p_hw_sdio, 1, ((cmd_msg->arg & 0xff00) >> 8));
-    amhw_zlg_sdio_write_cmd(p_hw_sdio, 0, (cmd_msg->arg & 0xff));
+    amhw_zlg_sdio_pclkg_set(p_hw_sdio, AMHW_ZLG_SDIO_SEND_MODE);
 
-    amhw_zlg_sdio_autotr_enable(p_hw_sdio, 1);
+    amhw_zlg_sdio_write_cmd(p_hw_sdio, 4, 0x40 | p_trans->cmd);
+    amhw_zlg_sdio_write_cmd(p_hw_sdio, 3, ((p_trans->arg & 0xff000000) >> 24));
+    amhw_zlg_sdio_write_cmd(p_hw_sdio, 2, ((p_trans->arg & 0xff0000) >> 16));
+    amhw_zlg_sdio_write_cmd(p_hw_sdio, 1, ((p_trans->arg & 0xff00) >> 8));
+    amhw_zlg_sdio_write_cmd(p_hw_sdio, 0, (p_trans->arg & 0xff));
 
     p_dev->int_status = ZMF159_SDIO_INT_CMD_COMPLE;
+    amhw_zlg_sdio_autotr_enable(p_hw_sdio, 1);
+
     if ((ret = am_wait_on_timeout(&p_dev->wait, 10)) != AM_OK) {
         return ret;
     }
 
-    if (cmd_msg->rsp_type == AM_SDIO_RESPONSE_SHORT) {
+    amhw_zlg_sdio_pclkg_set(p_hw_sdio, AMHW_ZLG_SDIO_RECEIVE_MODE);
 
-        amhw_zlg_sdio_pclkg_set(p_hw_sdio, AMHW_ZLG_SDIO_RESIVE_MODE);
-        amhw_zlg_sdio_autotr_enable(p_hw_sdio, 1);
+    if (p_trans->rsp_type == AM_SDIO_RESPONSE_SHORT) {
 
         p_dev->int_status = ZMF159_SDIO_INT_CMD_COMPLE;
+        amhw_zlg_sdio_autotr_enable(p_hw_sdio, 1);
+
         if ((ret = am_wait_on_timeout(&p_dev->wait, 10)) != AM_OK) {
             return ret;
         }
 
-        amhw_zlg_sdio_pclkg_set(p_hw_sdio, AMHW_ZLG_SDIO_SEND_MODE);
-        cmd_msg->p_rsp[0] =  amhw_zlg_sdio_read_cmd(p_hw_sdio, 3) << 24  |
-                             amhw_zlg_sdio_read_cmd(p_hw_sdio, 2) << 16  |
-                             amhw_zlg_sdio_read_cmd(p_hw_sdio, 1) << 8   |
-                             amhw_zlg_sdio_read_cmd(p_hw_sdio, 0);
-        cmd_msg->p_rsp[1] =  amhw_zlg_sdio_read_cmd(p_hw_sdio, 4);
+        if (p_trans->p_rsp) {
+            p_trans->p_rsp[0] =  amhw_zlg_sdio_read_cmd(p_hw_sdio, 3) << 24  |
+                                 amhw_zlg_sdio_read_cmd(p_hw_sdio, 2) << 16  |
+                                 amhw_zlg_sdio_read_cmd(p_hw_sdio, 1) << 8   |
+                                 amhw_zlg_sdio_read_cmd(p_hw_sdio, 0);
+            p_trans->p_rsp[1] =  amhw_zlg_sdio_read_cmd(p_hw_sdio, 4);
+        }
 
-    } else if (cmd_msg->rsp_type == AM_SDIO_RESPONSE_LONG) {
+    } else if (p_trans->rsp_type == AM_SDIO_RESPONSE_LONG) {
 
         amhw_zlg_sdio_get_cid_csd(p_hw_sdio);
-        amhw_zlg_sdio_pclkg_set(p_hw_sdio, AMHW_ZLG_SDIO_RESIVE_MODE);
-        amhw_zlg_sdio_autotr_enable(p_hw_sdio, 1);
+//        amhw_zlg_sdio_pclkg_set(p_hw_sdio, AMHW_ZLG_SDIO_RECEIVE_MODE);
 
         p_dev->int_status = ZMF159_SDIO_INT_CMD_COMPLE;
+        amhw_zlg_sdio_autotr_enable(p_hw_sdio, 1);
+
         if ((ret = am_wait_on_timeout(&p_dev->wait, 10)) != AM_OK) {
             return ret;
         }
 
-        p_hw_sdio->mmc_io &= ~(1 << 4);
-        amhw_zlg_sdio_pclkg_set(p_hw_sdio, AMHW_ZLG_SDIO_SEND_MODE);
-        cmd_msg->p_rsp[0] =  amhw_zlg_sdio_read_cmd(p_hw_sdio, 3) << 24  |
-                             amhw_zlg_sdio_read_cmd(p_hw_sdio, 2) << 16  |
-                             amhw_zlg_sdio_read_cmd(p_hw_sdio, 1) << 8   |
-                             amhw_zlg_sdio_read_cmd(p_hw_sdio, 0);
-        cmd_msg->p_rsp[1] =  amhw_zlg_sdio_read_cmd(p_hw_sdio, 7) << 24  |
-                             amhw_zlg_sdio_read_cmd(p_hw_sdio, 6) << 16  |
-                             amhw_zlg_sdio_read_cmd(p_hw_sdio, 5) << 8   |
-                             amhw_zlg_sdio_read_cmd(p_hw_sdio, 4);
-        cmd_msg->p_rsp[2] =  amhw_zlg_sdio_read_cmd(p_hw_sdio, 11) << 24  |
-                             amhw_zlg_sdio_read_cmd(p_hw_sdio, 10) << 16  |
-                             amhw_zlg_sdio_read_cmd(p_hw_sdio, 9)  << 8   |
-                             amhw_zlg_sdio_read_cmd(p_hw_sdio, 8);
-        cmd_msg->p_rsp[3] =  amhw_zlg_sdio_read_cmd(p_hw_sdio, 15) << 24  |
-                             amhw_zlg_sdio_read_cmd(p_hw_sdio, 14) << 16  |
-                             amhw_zlg_sdio_read_cmd(p_hw_sdio, 13) << 8   |
-                             amhw_zlg_sdio_read_cmd(p_hw_sdio, 12);
+        p_hw_sdio->mmc_io &= ~(1ul << 4);
+//        amhw_zlg_sdio_pclkg_set(p_hw_sdio, AMHW_ZLG_SDIO_SEND_MODE);
+
+        if (p_trans->p_rsp) {
+            p_trans->p_rsp[0] =  amhw_zlg_sdio_read_cmd(p_hw_sdio, 3) << 24  |
+                                 amhw_zlg_sdio_read_cmd(p_hw_sdio, 2) << 16  |
+                                 amhw_zlg_sdio_read_cmd(p_hw_sdio, 1) << 8   |
+                                 amhw_zlg_sdio_read_cmd(p_hw_sdio, 0);
+            p_trans->p_rsp[1] =  amhw_zlg_sdio_read_cmd(p_hw_sdio, 7) << 24  |
+                                 amhw_zlg_sdio_read_cmd(p_hw_sdio, 6) << 16  |
+                                 amhw_zlg_sdio_read_cmd(p_hw_sdio, 5) << 8   |
+                                 amhw_zlg_sdio_read_cmd(p_hw_sdio, 4);
+            p_trans->p_rsp[2] =  amhw_zlg_sdio_read_cmd(p_hw_sdio, 11) << 24  |
+                                 amhw_zlg_sdio_read_cmd(p_hw_sdio, 10) << 16  |
+                                 amhw_zlg_sdio_read_cmd(p_hw_sdio, 9)  << 8   |
+                                 amhw_zlg_sdio_read_cmd(p_hw_sdio, 8);
+            p_trans->p_rsp[3] =  amhw_zlg_sdio_read_cmd(p_hw_sdio, 15) << 24  |
+                                 amhw_zlg_sdio_read_cmd(p_hw_sdio, 14) << 16  |
+                                 amhw_zlg_sdio_read_cmd(p_hw_sdio, 13) << 8   |
+                                 amhw_zlg_sdio_read_cmd(p_hw_sdio, 12);
+        }
     }
 
     return AM_OK;
 }
 
-static int __sdio_msg_recv(void *p_drv, uint8_t *p_buf, uint16_t len)
+static int __sdio_data_send (am_zlg_sdio_dev_t *p_dev,
+                             am_sdio_trans_t   *p_trans)
 {
-    int                i         = 0;
-    uint32_t           data      = 0;
-    am_zlg_sdio_dev_t *p_dev     = (am_zlg_sdio_dev_t *)p_drv;
-    amhw_zlg_sdio_t   *p_hw_sdio = (amhw_zlg_sdio_t *)p_dev->p_devinfo->regbase;
-    am_sdio_timeout_obj_t timeout;
-    am_bool_t             timeout_flg = 0;
-
-    amhw_zlg_sdio_fifo_status_enable(p_hw_sdio);
-
-    amhw_zlg_sdio_buf_dir_set(p_hw_sdio, AMHW_ZLG_SDIO_BUF_DIR_READ);
-
-    amhw_zlg_sdio_transfdir_set(p_hw_sdio, AMHW_ZLG_SDIO_READ_MODE);
-    amhw_zlg_sdio_autodattr_enable(p_hw_sdio);
-
-    am_adio_timeout_set(&timeout, 10);
-    do {                                                      //wait FIFO full interrupt
-        timeout_flg = am_sdio_timeout(&timeout);
-        if(amhw_zlg_sdio_check_fifo_isfull(p_hw_sdio)) {      //judge which interrupt generation
-            break;
-        }
-    } while(!timeout_flg);
-
-    if (timeout_flg) {
-        return -AM_ETIME;
-    }
-
-    for (i = 0; i < len ;) {
-
-        if(amhw_zlg_sdio_check_fifo_isempty(p_hw_sdio)) {
-            break;
-        }
-
-        data    =  p_hw_sdio->data_buf[0];
-       *p_buf++ = (uint8_t)(data & 0xff);
-       *p_buf++ = (uint8_t)((data >> 8) &0xff);
-       *p_buf++ = (uint8_t)((data >> 16) &0xff);
-       *p_buf++ = (uint8_t)((data >> 24) &0xff);
-        i += 4;
-    }
-
-    return i;
-}
-
-static int __sdio_msg_send(void *p_drv, uint8_t *p_buf, uint16_t len)
-{
-    am_zlg_sdio_dev_t *p_dev       = (am_zlg_sdio_dev_t *)p_drv;
-    amhw_zlg_sdio_t   *p_hw_sdio   = (amhw_zlg_sdio_t *)p_dev->p_devinfo->regbase;
-    uint32_t          *p_data      = (uint32_t *)p_buf;
-    int                i           = 0;
-    am_bool_t          timeout_flg = 0;
     int                ret;
+    uint32_t           i           = 0;
+    am_bool_t          timeout_flg = 0;
+    uint32_t          *p_data      = (uint32_t *)p_trans->p_data;
+    amhw_zlg_sdio_t   *p_hw_sdio   = (amhw_zlg_sdio_t *)p_dev->p_devinfo->regbase;
 
     am_sdio_timeout_obj_t timeout;
 
@@ -305,8 +262,19 @@ static int __sdio_msg_send(void *p_drv, uint8_t *p_buf, uint16_t len)
 
     amhw_zlg_sdio_buf_dir_set(p_hw_sdio, AMHW_ZLG_SDIO_BUF_DIR_WRITE);
 
-    amhw_zlg_sdio_transfdir_set(p_hw_sdio, AMHW_ZLG_SDIO_WRITE_MODE);
-    amhw_zlg_sdio_autodattr_enable(p_hw_sdio);
+    p_dev->int_status = ZMF159_SDIO_INT_DAT_COMPLE;
+
+    if (p_trans->nblock > 1) {
+        amhw_zlg_sdio_nblocks_cmd_tranfer_enable(p_hw_sdio, 1);
+        amhw_zlg_sdio_nblocks_tranfer_dir_set(p_hw_sdio, AMHW_ZLG_SDIO_WRITE_MODE);
+        amhw_zlg_sdio_nblocks_cnt_tranfer_set(p_hw_sdio, p_trans->nblock);
+        amhw_zlg_sdio_nblocks_auto_tranfer_enable(p_hw_sdio, 1);
+
+        p_dev->int_status = ZMF159_SDIO_INT_MB_COMPLE;
+    } else {
+        amhw_zlg_sdio_transfdir_set(p_hw_sdio, AMHW_ZLG_SDIO_WRITE_MODE);
+        amhw_zlg_sdio_autodattr_enable(p_hw_sdio);
+    }
 
     am_adio_timeout_set(&timeout, 10);
     do {
@@ -320,37 +288,129 @@ static int __sdio_msg_send(void *p_drv, uint8_t *p_buf, uint16_t len)
         return -AM_ETIME;
     }
 
-    for (i = 0; i < len / 4; i++) {
+    for (i = 0; i < p_trans->nblock * p_trans->blk_size; i += 4) {
 
-        if(amhw_zlg_sdio_check_fifo_isfull(p_hw_sdio)) {
-            break;
-        }
+        while(amhw_zlg_sdio_check_fifo_isfull(p_hw_sdio));
 
         p_hw_sdio->data_buf[0] = *p_data++;
     }
 
+    ret = am_wait_on_timeout(&p_dev->wait, 10);
+
+    return ret;
+}
+
+static int __sdio_data_recv(am_zlg_sdio_dev_t *p_dev,
+                            am_sdio_trans_t   *p_trans)
+{
+    int                   ret;
+    am_sdio_timeout_obj_t timeout;
+    uint32_t              i           = 0;
+    uint32_t              data        = 0;
+    am_bool_t             timeout_flg = 0;
+    uint8_t              *p_buf       = (uint8_t *)p_trans->p_data;
+    amhw_zlg_sdio_t      *p_hw_sdio   = (amhw_zlg_sdio_t *)p_dev->p_devinfo->regbase;
+
+    amhw_zlg_sdio_fifo_status_enable(p_hw_sdio);
+    amhw_zlg_sdio_buf_dir_set(p_hw_sdio, AMHW_ZLG_SDIO_BUF_DIR_READ);
+
     p_dev->int_status = ZMF159_SDIO_INT_DAT_COMPLE;
 
-    ret = am_wait_on_timeout(&p_dev->wait, 10);
+    if (p_trans->nblock > 1) {
+        amhw_zlg_sdio_nblocks_cmd_tranfer_enable(p_hw_sdio, 1);
+        amhw_zlg_sdio_nblocks_tranfer_dir_set(p_hw_sdio, AMHW_ZLG_SDIO_READ_MODE);
+        amhw_zlg_sdio_nblocks_cnt_tranfer_set(p_hw_sdio, p_trans->nblock);
+        amhw_zlg_sdio_nblocks_auto_tranfer_enable(p_hw_sdio, 1);
+
+        p_dev->int_status = ZMF159_SDIO_INT_MB_COMPLE;
+    } else {
+        amhw_zlg_sdio_transfdir_set(p_hw_sdio, AMHW_ZLG_SDIO_READ_MODE);
+        amhw_zlg_sdio_autodattr_enable(p_hw_sdio);
+    }
+
+    am_adio_timeout_set(&timeout, 10);
+    do {
+        timeout_flg = am_sdio_timeout(&timeout);
+        if(amhw_zlg_sdio_check_fifo_isfull(p_hw_sdio)) {
+            break;
+        }
+    } while(!timeout_flg);
+
+    if (timeout_flg) {
+        return -AM_ETIME;
+    }
+
+    for (i = 0; i < p_trans->blk_size * p_trans->nblock; i += 4) {
+
+        if(amhw_zlg_sdio_check_fifo_isempty(p_hw_sdio)) {
+            while(amhw_zlg_sdio_check_fifo_isempty(p_hw_sdio));
+        }
+
+        data    =  p_hw_sdio->data_buf[0];
+       *p_buf++ = (uint8_t)(data & 0xff);
+       *p_buf++ = (uint8_t)((data >> 8) &0xff);
+       *p_buf++ = (uint8_t)((data >> 16) &0xff);
+       *p_buf++ = (uint8_t)((data >> 24) &0xff);
+    }
+
+    ret = am_wait_on_timeout(&p_dev->wait, 100);
+
+    return ret;
+}
+
+static int __sdio_transfer (void *p_drv, am_sdio_trans_t *p_trans)
+{
+    int                ret   = AM_ERROR;
+    am_zlg_sdio_dev_t *p_dev = (am_zlg_sdio_dev_t *)p_drv;
+
+    ret = __sdio_cmd_send(p_dev, p_trans);
 
     if (ret != AM_OK) {
         return ret;
     }
-    return (i * 4);
+
+    if (p_trans->p_data) {
+        if (p_trans->opt == AM_SDIO_OW) {
+            ret = __sdio_data_send(p_dev, p_trans);
+        } else {
+            ret = __sdio_data_recv(p_dev, p_trans);
+        }
+    }
+
+    return ret;
 }
 
-/*  状态机内部状态切换 */
-#define __SDIO_NEXT_STATE(s, e) \
-    do { \
-        p_dev->state = (s); \
-        new_event = (e); \
-    } while(0)
-
-static int __sdio_msg_start (void *p_drv)
+static int __sdio_msg_start (void                  *p_drv,
+                             struct am_sdio_msg    *p_msg)
 {
-    return AM_OK;
-}
+    am_sdio_trans_t   *p_trans = NULL;
+    int                ret     = AM_ERROR;
 
+    while(!(am_list_empty(&p_msg->trans_list))) {
+        p_trans = am_sdio_msg_out(p_msg);
+        do {
+            ret = __sdio_transfer(p_drv, p_trans);
+
+            if (ret != AM_OK) {
+                p_msg->status = ret;
+
+                return p_msg->status;
+            }
+
+        } while ((ret != AM_OK) && (p_trans->retries--));
+
+    }
+
+    if (ret == AM_OK) {
+        p_msg->status = AM_OK;
+    }
+
+    if (p_msg->pfn_complete) {
+        p_msg->pfn_complete(p_msg->p_arg);
+    }
+
+    return p_msg->status;
+}
 
 am_sdio_handle_t am_zmf159_sdio_init (am_zlg_sdio_dev_t           *p_dev,
                                      const am_zlg_sdio_devinfo_t *p_devinfo)

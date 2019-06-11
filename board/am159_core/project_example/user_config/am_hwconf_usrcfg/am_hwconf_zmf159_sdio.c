@@ -71,7 +71,7 @@ static const am_zlg_sdio_devinfo_t __g_sdio_devinfo = {
     ZMF159_SDIO_BASE,                 /**< \brief 寄存器块基址 */
 	INUM_SDIO,                        /**< \brief  中断编号 */
     CLK_SDIO,                         /**< \brief 时钟ID值 */
-	AMHW_ZLG_ADIO_WIDTH_4BIT,
+	AMHW_ZLG_SDIO_WIDTH_4BIT,
     1000000,                          /**< \brief  速率 */
 	AMHW_ZLG_SDIO_SPEED_MODE_LOW,     /**< \brief 低俗模式 */
 
