@@ -563,7 +563,7 @@ void amhw_zlg_sdio_transfdir_set (amhw_zlg_sdio_t *p_hw_sdio, amhw_zlg_transfer_
 am_static_inline
 void amhw_zlg_sdio_autodattr_enable (amhw_zlg_sdio_t *p_hw_sdio)
 {
-	    p_hw_sdio->mmc_io |= (1 << 0);
+	    p_hw_sdio->mmc_io |= (1ul << 0);
 }
 
 /**
@@ -576,7 +576,7 @@ void amhw_zlg_sdio_autodattr_enable (amhw_zlg_sdio_t *p_hw_sdio)
 am_static_inline
 void amhw_zlg_sdio_autodattr_disable (amhw_zlg_sdio_t *p_hw_sdio)
 {
-		p_hw_sdio->mmc_io &= ~(1 << 0);
+		p_hw_sdio->mmc_io &= ~(1ul << 0);
 }
 
 

@@ -54,12 +54,16 @@ static int __sdio_hard_init (am_zlg_sdio_dev_t *p_dev);
 /** \brief SDIO 中断处理函数 */
 static void __sdio_irq_handler (void *p_arg);
 
-static int __sdio_msg_start (void *p_drv, struct am_sdio_msg *p_msg);
+static int __sdio_setup (void *p_drv, struct am_sdio_device *p_dev);
+static int __sdio_msg_start (void                  *p_drv,
+                             struct am_sdio_device *p_dev,
+                             struct am_sdio_msg    *p_msg);
 
 /**
  * \brief SDIO 驱动函数定义
  */
 static am_const struct am_sdio_drv_funcs __g_sdio_drv_funcs = {
+     __sdio_setup,
      __sdio_msg_start
 };
 
@@ -252,7 +256,6 @@ static int __sdio_data_send (am_zlg_sdio_dev_t *p_dev,
 {
     int                ret;
     uint32_t           i           = 0;
-    am_bool_t          timeout_flg = 0;
     uint32_t          *p_data      = (uint32_t *)p_trans->p_data;
     amhw_zlg_sdio_t   *p_hw_sdio   = (amhw_zlg_sdio_t *)p_dev->p_devinfo->regbase;
 
@@ -276,17 +279,17 @@ static int __sdio_data_send (am_zlg_sdio_dev_t *p_dev,
         amhw_zlg_sdio_autodattr_enable(p_hw_sdio);
     }
 
-    am_adio_timeout_set(&timeout, 10);
+    am_sdio_timeout_set(&timeout, 10);
     do {
-        timeout_flg = am_sdio_timeout(&timeout);
-        if(amhw_zlg_sdio_check_fifo_isempty(p_hw_sdio)) {
-            break;
-        }
-    } while(!timeout_flg);
+        if (am_sdio_timeout(&timeout)) {
 
-    if (timeout_flg) {
-        return -AM_ETIME;
-    }
+            amhw_zlg_sdio_nblocks_cmd_tranfer_enable(p_hw_sdio, 0);
+            amhw_zlg_sdio_nblocks_auto_tranfer_enable(p_hw_sdio, 0);
+            amhw_zlg_sdio_autodattr_disable(p_hw_sdio);
+
+            return -AM_ETIME;
+        }
+    } while(!amhw_zlg_sdio_check_fifo_isempty(p_hw_sdio));
 
     for (i = 0; i < p_trans->nblock * p_trans->blk_size; i += 4) {
 
@@ -307,7 +310,6 @@ static int __sdio_data_recv(am_zlg_sdio_dev_t *p_dev,
     am_sdio_timeout_obj_t timeout;
     uint32_t              i           = 0;
     uint32_t              data        = 0;
-    am_bool_t             timeout_flg = 0;
     uint8_t              *p_buf       = (uint8_t *)p_trans->p_data;
     amhw_zlg_sdio_t      *p_hw_sdio   = (amhw_zlg_sdio_t *)p_dev->p_devinfo->regbase;
 
@@ -328,17 +330,18 @@ static int __sdio_data_recv(am_zlg_sdio_dev_t *p_dev,
         amhw_zlg_sdio_autodattr_enable(p_hw_sdio);
     }
 
-    am_adio_timeout_set(&timeout, 10);
+    am_sdio_timeout_set(&timeout, 10);
     do {
-        timeout_flg = am_sdio_timeout(&timeout);
-        if(amhw_zlg_sdio_check_fifo_isfull(p_hw_sdio)) {
-            break;
-        }
-    } while(!timeout_flg);
+        if (am_sdio_timeout(&timeout)) {
 
-    if (timeout_flg) {
-        return -AM_ETIME;
-    }
+            amhw_zlg_sdio_nblocks_cmd_tranfer_enable(p_hw_sdio, 0);
+            amhw_zlg_sdio_nblocks_auto_tranfer_enable(p_hw_sdio, 0);
+            amhw_zlg_sdio_autodattr_disable(p_hw_sdio);
+
+            return -AM_ETIME;
+        }
+
+    } while(!amhw_zlg_sdio_check_fifo_isfull(p_hw_sdio));
 
     for (i = 0; i < p_trans->blk_size * p_trans->nblock; i += 4) {
 
@@ -380,7 +383,13 @@ static int __sdio_transfer (void *p_drv, am_sdio_trans_t *p_trans)
     return ret;
 }
 
+static int __sdio_setup (void *p_drv, struct am_sdio_device *p_dev)
+{
+    return AM_OK;
+}
+
 static int __sdio_msg_start (void                  *p_drv,
+                             struct am_sdio_device *p_dev,
                              struct am_sdio_msg    *p_msg)
 {
     am_sdio_trans_t   *p_trans = NULL;

@@ -41,6 +41,7 @@
 *******************************************************************************/
 static  am_sdcard_devinfo_t __g_sdcard_info = {
         AM_SDIO_SD_4B_M,
+        512,
         (AM_SD_OCR_VDD_27_28 | AM_SD_OCR_VDD_28_29 | AM_SD_OCR_VDD_29_30 |
          AM_SD_OCR_VDD_30_31 | AM_SD_OCR_VDD_31_32 | AM_SD_OCR_VDD_32_33 |
          AM_SD_OCR_VDD_33_34 | AM_SD_OCR_VDD_34_35 | AM_SD_OCR_VDD_35_36),

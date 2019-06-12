@@ -15,8 +15,7 @@
  *
  * \internal
  * \par Modification history
- * - 1.01 15-08-17  tee, modified some interface.
- * - 1.00 14-11-01  jon, first implementation.
+ * - 1.00 19-06-12  ipk, first implementation.
  * \endinternal
  */
 
@@ -38,7 +37,7 @@ extern "C" {
  */
 
 /**
- * \name SD 命令
+ * \name SDIO 命令
  * @{
  */
 #define AM_SDIO_CMD0               0
@@ -115,16 +114,90 @@ extern "C" {
 #define AM_SDIO_ACMD51             51
 /** @} */
 
-#define AM_SD_VOLTAGE_WINDOW_SD            ((uint32_t)0x80100000)
-#define AM_SD_HIGH_CAPACITY                ((uint32_t)0x40000000)
-#define AM_SD_STD_CAPACITY                 ((uint32_t)0x00000000)
-#define AM_SD_CHECK_PATTERN                ((uint32_t)0x000001AA)
+/**
+ * \name SD mode R1 response
+ * \anchor grp_awbl_sd_r1_rsp
+ * @{
+ */
 
-#define AM_SDIO_M_WR            0x0000u    /**< \brief 写操作           */
-#define AM_SDIO_M_RD            0x0002u    /**< \brief 读操作           */
-//#define AM_SDIO_M_NOSTART       0x0004u    /**< \brief 无需重新启动     */
-//#define AM_SDIO_M_REV_DIR_ADDR  0x0008u    /**< \brief 读写标志位反转   */
-//#define AM_SDIO_M_RECV_LEN      0x0010u    /**< \brief 暂不支持         */
+/** \brief command argument out of range */
+#define AM_SDIO_R1_OUT_OF_RANGE          (1 << 31)
+
+/** \brief address error */
+#define AM_SDIO_R1_ADDRESS_ERROR         (1 << 30)
+
+/** \brief not support block length or transmit mismatch to the block length */
+#define AM_SDIO_R1_BLOCK_LEN_ERROR       (1 << 29)
+
+/** \brief erase sequence error */
+#define AM_SDIO_R1_ERASE_SEQ_ERROR       (1 << 28)
+
+/** \brief the block write or erase is invalid */
+#define AM_SDIO_R1_ERASE_PARAM           (1 << 27)
+
+/** \brief the block write is protected */
+#define AM_SDIO_R1_WP_VIOLATION          (1 << 26)
+
+/** \brief indicate whether the card is locked */
+#define AM_SDIO_R1_CARD_IS_LOCKED        (1 << 25)
+
+/** \brief indicate in the lock/unlock command，password verify error */
+#define AM_SDIO_R1_LOCK_UNLOCK_FAILED    (1 << 24)
+
+/** \brief CRC error */
+#define AM_SDIO_R1_COM_CRC_ERROR         (1 << 23)
+
+/** \brief ECC failed */
+#define AM_SDIO_R1_CARD_ECC_FAILED       (1 << 21)
+
+/** \brief card host error */
+#define AM_SDIO_R1_CC_ERROR              (1 << 20)
+
+/** \brief unknown error */
+#define AM_SDIO_R1_ERROR                 (1 << 19)
+
+#define AM_SDIO_R1_UNDERRUN              (1 << 18)
+#define AM_SDIO_R1_OVERRUN               (1 << 17)
+
+/** \brief CID/CSD overwrite */
+#define AM_SDIO_R1_CID_CSD_OVERWRITE     (1 << 16)
+
+/** \brief skip write protected area */
+#define AM_SDIO_R1_WP_ERASE_SKIP         (1 << 15)
+
+/** \brief indicate whether card ECC is forbid */
+#define AM_SDIO_R1_CARD_ECC_DISABLED     (1 << 14)
+
+#define AM_SDIO_R1_ERASE_RESET           (1 << 13)
+#define AM_SDIO_R1_STATUS(x)             (x & 0xFFFFE000)
+
+/** \brief current state */
+#define AM_SDIO_R1_CURRENT_STATE(x)      ((x & 0x00001E00) >> 9)
+
+/** \brief bus can transmit data */
+#define AM_SDIO_R1_READY_FOR_DATA        (1 << 8)
+#define AM_SDIO_R1_SWITCH_ERROR          (1 << 7)
+#define AM_SDIO_R1_EXCEPTION_EVENT       (1 << 6)
+/** \brief indicate whether the card into APP CMD mode */
+#define AM_SDIO_R1_APP_CMD               (1 << 5)
+#define AM_SDIO_R1_ALL_ERROR             0xF9F90000
+/** @} */
+
+/**
+ * \name card status of R1 on SD mode
+ * \anchor grp_awbl_sd_r1_state
+ * @{
+ */
+#define AM_SDIO_R1_STATE_IDLE   0
+#define AM_SDIO_R1_STATE_READY  1
+#define AM_SDIO_R1_STATE_IDENT  2
+#define AM_SDIO_R1_STATE_STBY   3
+#define AM_SDIO_R1_STATE_TRAN   4
+#define AM_SDIO_R1_STATE_DATA   5
+#define AM_SDIO_R1_STATE_RCV    6
+#define AM_SDIO_R1_STATE_PRG    7
+#define AM_SDIO_R1_STATE_DIS    8
+/** @} */
 
 /**
  * \name card status of R1 on SPI mode
@@ -156,6 +229,41 @@ extern "C" {
 #define AM_SDIO_SPI_R1_MASK                0x7F
 /** @} */
 
+/**
+ * \name SPI模式 R2状态
+ * \anchor grp_awbl_spi_r2_state
+ * @{
+ */
+
+/** \brief 卡被锁定 */
+#define AM_SDIO_SPI_R2_CARD_LOCKED         0x01
+
+/** \brief 忽略写保护,擦除 */
+#define AM_SDIO_SPI_R2_WP_ERASE_SKIP       0x02
+
+/** \brief LOCK、UNLOCK命令失败 */
+#define AM_SDIO_SPI_R2_LOCK_UNLOCK_FAIL    0x02
+
+/** \brief 为止错误 */
+#define AM_SDIO_SPI_R2_ERROR               0x04
+
+/** \brief 卡内部控制器错误 */
+#define AM_SDIO_SPI_R2_CC_ERROR            0x08
+
+/** \brief ECC错误 */
+#define AM_SDIO_SPI_R2_CARD_ECC_ERROR      0x10
+
+/** \brief 对写保护区域进行了写操作 */
+#define AM_SDIO_SPI_R2_WP_VIOLATION        0x20
+
+/** \brief 擦除参数无效，对无效区域擦除 */
+#define AM_SDIO_SPI_R2_ERASE_PARAM         0x40
+
+/** \brief    */
+#define AM_SDIO_SPI_R2_OUT_OF_RANGE        0x80
+#define AM_SDIO_SPI_R2_CSD_OVERWRITE       0x80
+/** @} */
+
 /** \brief SDIO总线宽度 */
 typedef enum am_sdio_bus_width {
     AM_SDIO_BUS_WIDTH_1B  = 1, /**< \brief 1位数据线 */
@@ -171,8 +279,8 @@ typedef struct am_sdio_trans{
     uint32_t             cmd;        /**< \brief SDIO 命令*/
     uint32_t             arg;        /**< \brief 命令参数 */
     uint8_t              opt;        /**< \brief 传输操作 */
-#define AM_SDIO_OW       0           /**< \brief 只写 */
-#define AM_SDIO_WR       1           /**< \brief 先写后读 */
+#define AM_SDIO_OW           0       /**< \brief 只写 */
+#define AM_SDIO_WR           1       /**< \brief 先写后读 */
 
     void                *p_data;     /**< \brief 数据缓冲区 */
     uint32_t             blk_size;   /**< \brief 传输块大小 */
@@ -201,13 +309,19 @@ typedef struct am_sdio_msg {
     void (*pfn_complete) (void *p_arg);     /**< \brief 命令完成回调函数*/
 } am_sdio_msg_t;
 
+struct am_sdio_device;
+
 /**
  * \brief sdio驱动函数结构体
  */
 struct am_sdio_drv_funcs {
 
+    /** \brief 设置SDIO设备   */
+    int (*pfn_sdio_setup) (void *p_drv, struct am_sdio_device *p_dev);
+
     /** \brief 启动SDIO消息传输，完成后调用回调函数  */
     int (*pfn_sdio_msg_start)(void                  *p_drv,
+                              struct am_sdio_device *p_dev,
                               struct am_sdio_msg    *p_msg);
 };
 
@@ -222,20 +336,24 @@ typedef struct am_sdio_serv {
 /** \brief SDIO 标准服务操作句柄定义 */
 typedef am_sdio_serv_t *am_sdio_handle_t;
 
-/**< \brief 响应类型 */
-#define AM_SDIO_RESPONSE_NO                    0
-#define AM_SDIO_RESPONSE_SHORT                 1
-#define AM_SDIO_RESPONSE_LONG                  2
+/** \brief SDIO host 设备  */
+typedef struct am_sdio_device {
+    am_sdio_handle_t        handle;
 
-/**
- * \brief SDIO 传输的命令结构体
- */
-typedef struct am_sdio_cmd {
-    uint32_t             cmd;        /**< \brief SDIO 命令*/
-    uint32_t             arg;        /**< \brief 命令参数 */
-    uint8_t              rsp_type;   /**< \brief 响应类型 */
-    uint32_t             p_rsp[4];   /**< \brief 响应数据 */
-} am_sdio_cmd_t;
+    uint8_t                 mode;           /**< \brief 工作模式  1线模式 4线模式 SD 8线模式*/
+#define AM_SDIO_SPI_M               0       /**< \brief SDIO SPI模式 */
+#define AM_SDIO_SD_1B_M             1       /**< \brief SDIO SD 1线模式 */
+#define AM_SDIO_SD_4B_M             2       /**< \brief SDIO SD 4线模式 */
+#define AM_SDIO_SD_8B_M             3       /**< \brief SDIO SD 8线模式 */
+
+    uint16_t                blk_size;       /**< \brief 传输数据块大小 */
+
+} am_sdio_device_t;
+
+/**< \brief 响应类型 */
+#define AM_SDIO_RESPONSE_NO         0
+#define AM_SDIO_RESPONSE_SHORT      1
+#define AM_SDIO_RESPONSE_LONG       2
 
 /** \brief SDIO timeout obj */
 typedef struct am_sdio_timeout_obj {
@@ -244,7 +362,7 @@ typedef struct am_sdio_timeout_obj {
 } am_sdio_timeout_obj_t;
 
 am_static_inline
-void am_adio_timeout_set (am_sdio_timeout_obj_t *p_t,
+void am_sdio_timeout_set (am_sdio_timeout_obj_t *p_t,
                           uint32_t              ms)
 {
     p_t->timeout = am_ms_to_ticks(ms);
@@ -261,29 +379,48 @@ am_bool_t am_sdio_timeout (am_sdio_timeout_obj_t *p_t)
     return ((am_sys_tick_diff(p_t->ticks, am_sys_tick_get())) >= p_t->timeout);
 }
 
+am_static_inline
+void am_sdio_mkdev (am_sdio_device_t *p_dev,
+                    am_sdio_handle_t  handle,
+                    uint8_t           mode,
+                    uint16_t          blk_size)
+{
+    p_dev->handle       = handle;
+    p_dev->mode         = mode;
+    p_dev->blk_size     = blk_size;
+}
+
+am_static_inline
+int am_sdio_setup (am_sdio_device_t *p_dev)
+{
+    return p_dev->handle->p_funcs->pfn_sdio_setup(p_dev->handle->p_drv, p_dev);
+}
+
 /**
- * \brief SDIO传输命令结构体信息参数设置
+ * \brief 开始处理一个消息
  *
- * \param[in] p_cmd : 指向传输的命令结构体指针
- * \param[in] cmd   : SDIO 命令
- * \param[in] arg   : 命令参数
+ *     由异步或同步的方式处理消息，若当前SDIO控制器空闲，则该消息会得到立即执行，
+ * 若处理器不空闲，则会将该消息加入一个队列中排队等待，SDIO控制器将顺序处理
+ * 队列中的消息。消息的处理状态和结果反映在\a p_msg->status。
+ * 消息处理结束(成功、超时或出错)时，将会调用\a p_msg->pfn_complete 并传递
+ * 参数\a p_msg->p_arg。
  *
- * \retval  AM_OK     : 传输结构体参数设置完成
- * \retval -AM_EINVAL : 参数错误
+ * \param[in]     handle : SDIO标准服务操作句柄
+ * \param[in,out] p_msg  : 要处理的消息
+ *
+ * \retval  AM_OK     : 传输正常进行处理
+ * \retval -AM_EINVAL : 输入参数错误
+ *  传输过程以及结果状态，通过传输回调函数获取状态位
+ *    \li  AM_OK  : 传输完成
+ *    \li -AM_EIO : 传输错误
  */
 am_static_inline
-void am_sdio_mkcmd (am_sdio_cmd_t *p_cmd,
-                    uint32_t       cmd,
-                    uint32_t       arg,
-                    uint8_t        rsp_type)
+int am_sdio_msg_start (am_sdio_device_t *p_dev,
+                       am_sdio_msg_t    *p_msg)
 {
-    p_cmd->cmd = cmd;
-    p_cmd->arg = arg;
-    p_cmd->rsp_type = rsp_type;
-    p_cmd->p_rsp[0] = 0;
-    p_cmd->p_rsp[1] = 0;
-    p_cmd->p_rsp[2] = 0;
-    p_cmd->p_rsp[3] = 0;
+    return p_dev->handle->p_funcs->pfn_sdio_msg_start(p_dev->handle->p_drv,
+                                                      p_dev,
+                                                      p_msg);
 }
 
 /**
@@ -327,13 +464,17 @@ void am_sdio_mktrans (am_sdio_trans_t *p_trans,
 }
 
 am_static_inline
-void am_sdio_msg_init (am_sdio_msg_t *p_msg)
+void am_sdio_msg_init (am_sdio_msg_t *p_msg,
+                       am_pfnvoid_t   pfn_complete,
+                       void          *p_arg)
 {
     memset(p_msg, 0, sizeof(*p_msg));
 
     AM_INIT_LIST_HEAD(&(p_msg->trans_list));
 
-    p_msg->status = -AM_ENOTCONN;
+    p_msg->status        = -AM_ENOTCONN;
+    p_msg->pfn_complete  = pfn_complete;
+    p_msg->p_arg         = p_arg;
 }
 
 /**
@@ -382,30 +523,72 @@ am_sdio_trans_t *am_sdio_msg_out (am_sdio_msg_t *p_msg)
 }
 
 /**
- * \brief 开始处理一个消息
+ * \brief SDIO写命令
  *
- *     以异步的方式处理消息，若当前SDIO控制器空闲，则该消息会得到立即执行，
- * 若处理器不空闲，则会将该消息加入一个队列中排队等待，SDIO控制器将顺序处理
- * 队列中的消息。消息的处理状态和结果反映在\a p_msg->status。
- * 消息处理结束(成功、超时或出错)时，将会调用\a p_msg->pfn_complete 并传递
- * 参数\a p_msg->p_arg。
+ * \param[in]  p_dev        : SDIO设备
+ * \param[in]  cmd          : 需要写入的命令
+ * \param[in]  cmd_arg      : 命令参数
+ * \param[in]  rsp_type     : 响应类型
+ * \param[in]  p_rsp        : 响应数据缓存，不需要时可传入NULL
  *
- * \param[in]     handle : SDIO标准服务操作句柄
- * \param[in,out] p_msg  : 要处理的消息
- *
- * \retval  AM_OK     : 传输正常进行处理
- * \retval -AM_EINVAL : 输入参数错误
- *  传输过程以及结果状态，通过传输回调函数获取状态位
- *    \li  AM_OK  : 传输完成
- *    \li -AM_EIO : 传输错误
+ * \retval AM_OK            : 传输成功
+ * \retval -AM_ENOMEM       : 内存空间不足
+ * \retval -AM_ECANCELED    : 操作被取消
+ * \retval -AM_EIO          : SDIO总线I/O错误
+ * \retval -AM_EBUSY        : SDIO HOST忙，正在处理其他msg
+ * \retval -AM_EINVAL       : 参数错误
+ * \retval -AM_ETIME        : HOST处理超时
+ * \retval -AM_ENOTSUP      : HOST不支持该功能
  */
-am_static_inline
-int am_sdio_msg_start (am_sdio_handle_t  handle,
-                       am_sdio_msg_t    *p_msg)
-{
-    return handle->p_funcs->pfn_sdio_msg_start(handle->p_drv,
-                                               p_msg);
-}
+int am_sdio_cmd_write (am_sdio_device_t *p_dev,
+                       uint8_t           cmd,
+                       uint32_t          cmd_arg,
+                       uint8_t           rsp_type,
+                       uint32_t         *p_rsp);
+
+/**
+ * \brief SDIO数据块写入
+ *
+ * \param[in]  p_dev        : SDIO设备
+ * \param[in]  p_buf        : 数据缓冲区
+ * \param[in]  addr_start   : 写入数据的起始地址
+ * \param[in]  blk          : 需要写入的块数量
+ *
+ * \retval AM_OK            : 传输成功
+ * \retval -AM_ENOMEM       : 内存空间不足
+ * \retval -AM_ECANCELED    : 操作被取消
+ * \retval -AM_EIO          : SDIO总线I/O错误
+ * \retval -AM_EBUSY        : SDIO HOST忙，正在处理其他msg
+ * \retval -AM_EINVAL       : 参数错误
+ * \retval -AM_ETIME        : HOST处理超时
+ * \retval -AM_ENOTSUP      : HOST不支持该功能
+ */
+int am_sdio_blocks_write (am_sdio_device_t *p_dev,
+                          uint8_t          *p_buf,
+                          uint32_t          addr_start,
+                          uint32_t          blk_num);
+
+/**
+ * \brief SDIO数据块读取
+ *
+ * \param[in]  p_dev        : SDIO设备
+ * \param[in]  p_buf        : 数据缓冲区
+ * \param[in]  addr_start   : 读取数据的起始地址
+ * \param[in]  blk          : 需要读取的块数量
+ *
+ * \retval AM_OK            : 传输成功
+ * \retval -AM_ENOMEM       : 内存空间不足
+ * \retval -AM_ECANCELED    : 操作被取消
+ * \retval -AM_EIO          : SDIO总线I/O错误
+ * \retval -AM_EBUSY        : SDIO HOST忙，正在处理其他msg
+ * \retval -AM_EINVAL       : 参数错误
+ * \retval -AM_ETIME        : HOST处理超时
+ * \retval -AM_ENOTSUP      : HOST不支持该功能
+ */
+int am_sdio_blocks_read (am_sdio_device_t *p_dev,
+                         uint8_t          *p_buf,
+                         uint32_t          addr_start,
+                         uint32_t          blk_num);
 
 /**
  * @}

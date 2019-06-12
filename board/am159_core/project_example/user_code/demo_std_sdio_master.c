@@ -73,23 +73,22 @@ void demo_std_sdio_master_entry ()
 
     am_kprintf( "sd card init successful\r\n");
 
-    ret = am_sdcard_block_erase(sdcard_handle, 1100, 6, 512);
+    ret = am_sdcard_blocks_erase(sdcard_handle, 200, 6);
     if (ret != AM_OK) {
         am_kprintf( "sdcard block erase failed\r\n");
     }
 
-    ret = am_sdcard_multiple_blocks_write(sdcard_handle, wr_buf, 1100, 5, 512);
-
+    ret = am_sdcard_blocks_write(sdcard_handle, wr_buf, 200, 4);
     if (ret != AM_OK) {
         am_kprintf( "sdcard single block write failed\r\n");
     }
 
     while(1) {
 
-        ret = am_sdcard_single_block_read(sdcard_handle,
-                                           rd_buf,
-                                           1100 + count,
-                                           512);
+        ret = am_sdcard_blocks_read(sdcard_handle,
+                                    rd_buf,
+                                    200 + count,
+                                    1);
 
         if (ret == AM_OK) {
             for(i = 0; i < 512 * 2; i++) {
