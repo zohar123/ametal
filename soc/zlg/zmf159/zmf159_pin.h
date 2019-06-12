@@ -102,10 +102,13 @@ extern "C" {
 #define PIOD_1          49        /**< \brief PIOD_1 引脚号 */
 #define PIOD_2          50        /**< \brief PIOD_2 引脚号 */
 
+#define PIOE_2          66        /**< \brief PIOE_2 引脚号 */
+
+
 /**
- * \brief 引脚数目为51
+ * \brief 引脚数目为67
  */
-#define PIN_NUM         51
+#define PIN_NUM         67
 
 /**
  * \brief 支持同时发生最大引脚中断数是16
@@ -3402,6 +3405,26 @@ extern "C" {
 #define PIOE_15_SPEED_10MHz    AM_ZMF159_GPIO_OUTRES_RATE_CODE(0x01UL)   /**< \brief 10MHz输出响应速率 */
 #define PIOE_15_SPEED_20MHz    AM_ZMF159_GPIO_OUTRES_RATE_CODE(0x02UL)   /**< \brief 20MHz输出响应速率 */
 #define PIOE_15_SPEED_50MHz    AM_ZMF159_GPIO_OUTRES_RATE_CODE(0x03UL)   /**< \brief 50MHz输出响应速率 */
+
+
+#define PIOA_2_ETH_MDIO                 AM_ZMF159_GPIO_FUNC_CODE(0x0B)
+#define PIOC_1_ETH_MDC                  AM_ZMF159_GPIO_FUNC_CODE(0x0B)
+#define PIOA_0_ETH_CRS                  AM_ZMF159_GPIO_FUNC_CODE(0x0B)
+#define PIOA_1_ETH_RX_CLK               AM_ZMF159_GPIO_FUNC_CODE(0x0B)
+#define PIOA_3_ETH_COL                  AM_ZMF159_GPIO_FUNC_CODE(0x0B)
+#define PIOA_7_ETH_RX_DV                AM_ZMF159_GPIO_FUNC_CODE(0x0B)
+#define PIOB_0_ETH_RXD2                 AM_ZMF159_GPIO_FUNC_CODE(0x0B)
+#define PIOB_1_ETH_RXD3                 AM_ZMF159_GPIO_FUNC_CODE(0x0B)
+#define PIOE_2_ETH_TXD3                 AM_ZMF159_GPIO_FUNC_CODE(0x0B)
+#define PIOB_10_ETH_RX_ER               AM_ZMF159_GPIO_FUNC_CODE(0x0B)
+#define PIOB_11_ETH_TX_EN               AM_ZMF159_GPIO_FUNC_CODE(0x0B)
+#define PIOB_12_ETH_TXD0                AM_ZMF159_GPIO_FUNC_CODE(0x0B)
+#define PIOB_13_ETH_TXD1                AM_ZMF159_GPIO_FUNC_CODE(0x0B)
+#define PIOC_2_ETH_TXD2                 AM_ZMF159_GPIO_FUNC_CODE(0x0B)
+#define PIOC_3_ETH_TX_CLK               AM_ZMF159_GPIO_FUNC_CODE(0x0B)
+#define PIOC_4_ETH_RXD0                 AM_ZMF159_GPIO_FUNC_CODE(0x0B)
+#define PIOC_5_ETH_RXD1                 AM_ZMF159_GPIO_FUNC_CODE(0x0B)
+
 
 /** @} */
 

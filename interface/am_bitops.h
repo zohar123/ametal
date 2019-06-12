@@ -26,7 +26,7 @@
 
 #ifndef __AM_BITOPS_H
 #define __AM_BITOPS_H
-
+#include "stdint.h"
 /**
  * \addtogroup am_if_bitops
  * \copydoc am_bitops.h
@@ -118,6 +118,35 @@
     ((data) = (((data) & ~AM_SBF(AM_BITS_MASK(len), (start))) | \
         AM_SBF((value) & (AM_BITS_MASK(len)), (start))))
 
+#ifndef __iomem
+#define __iomem
+#endif
+#define rtk_barrier()           asm volatile("" : : : "memory")
+#define __iormb()       rtk_barrier()
+#define __iomb()        rtk_barrier()
+
+static inline uint32_t __raw_readl(const volatile void *addr)
+{
+    return *((const volatile uint32_t *) addr);
+}
+
+static inline void __raw_writel(uint32_t val, volatile void *addr)
+{
+    *((volatile uint32_t *)addr) = val;
+}
+
+#define readl_relaxed(addr)                 __raw_readl( ((volatile void *)(addr)) )
+#define writel_relaxed(b, addr)             __raw_writel(b, ((volatile void *)(addr)) )
+
+#define readl(c)        ({ uint32_t __v = readl_relaxed( (c) ); __iormb(); __v; })
+#define writel(v,c)     { rtk_barrier(); writel_relaxed((v),(c) );__iomb(); }
+
+#define AM_REG_BITS_SET32(addr, start, len, value) \
+    do { \
+        uint32_t __val__ = readl((volatile void __iomem *)(addr)); \
+        AM_BITS_SET(__val__, start, len, value); \
+        writel(__val__, (volatile void __iomem *)(addr)); \
+    } while (0)
 /** @} */ 
 
 /**
