@@ -182,6 +182,9 @@ extern "C" {
 /** \brief SDIO基地址 */
 #define ZMF159_SDIO_BASE              (0x40018000UL)
 
+/** \brief ETH基地址 */
+#define ZMF159_ETH_BASE               (0x40028000UL)
+
 /** @} */
 
 /**
