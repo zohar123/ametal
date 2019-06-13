@@ -56,7 +56,8 @@ am_fm25clxx_handle_t am_fm25clxx_inst_init (void)
 /** \brief ÊµÀý³õÊ¼»¯ */
 void am_fm25clxx_inst_deinit (am_fm25clxx_handle_t handle)
 {
-    am_fm25clxx_deinit (handle);
+    am_lpc84x_spi0_int_inst_deinit(handle->spi_dev.handle);
+    handle = NULL;
 }
 
 /*******************************************************************************

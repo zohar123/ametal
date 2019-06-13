@@ -11,13 +11,12 @@
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
-      <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>LPC845M301JBD48</Device>
           <Vendor>NXP</Vendor>
-          <PackID>NXP.LPC845_DFP.11.0.0</PackID>
-          <PackURL>http://mcuxpresso.nxp.com/cmsis_pack/repo/</PackURL>
+          <PackID>Keil.LPC800_DFP.1.7.0</PackID>
+          <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x10000000,0x4000) IROM(0x00000000,0x010000) CPUTYPE("Cortex-M0+") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>
@@ -184,7 +183,6 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>0</RvdsVP>
-            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -325,7 +323,6 @@
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>1</uC99>
-            <uGnu>0</uGnu>
             <useXO>0</useXO>
             <v6Lang>0</v6Lang>
             <v6LangP>0</v6LangP>
@@ -1663,19 +1660,19 @@
               <FilePath>..\..\..\..\..\examples\soc\nxp\iap\demo_lpc845_hw_iap.c</FilePath>
             </File>
             <File>
-              <FileName>demo_lpc824_hw_acmp_lad.c</FileName>
+              <FileName>demo_lpc845_hw_acmp_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\examples\soc\nxp\acmp\demo_lpc824_hw_acmp_lad.c</FilePath>
+              <FilePath>..\..\..\..\..\examples\soc\nxp\acmp\demo_lpc845_hw_acmp_int.c</FilePath>
             </File>
             <File>
-              <FileName>demo_lpc824_hw_acmp_int.c</FileName>
+              <FileName>demo_lpc845_hw_acmp_lad.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\examples\soc\nxp\acmp\demo_lpc824_hw_acmp_int.c</FilePath>
+              <FilePath>..\..\..\..\..\examples\soc\nxp\acmp\demo_lpc845_hw_acmp_lad.c</FilePath>
             </File>
             <File>
-              <FileName>demo_lpc_hw_usart_autobaud.c</FileName>
+              <FileName>demo_lpc845_hw_usart_autobaud.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\examples\soc\nxp\usart\demo_lpc_hw_usart_autobaud.c</FilePath>
+              <FilePath>..\..\..\..\..\examples\soc\nxp\usart\demo_lpc845_hw_usart_autobaud.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -2093,11 +2090,6 @@
               <FilePath>..\user_config\am_servconf_usrcfg\am_servconf_nvram.c</FilePath>
             </File>
             <File>
-              <FileName>am_hwconf_lpc82x_spi0_poll.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\user_config\am_hwconf_usrcfg\am_hwconf_lpc82x_spi0_poll.c</FilePath>
-            </File>
-            <File>
               <FileName>am_double_app_conf_lpc845.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\user_config\am_double_app_conf_usrcfg\am_double_app_conf_lpc845.c</FilePath>
@@ -2107,6 +2099,16 @@
               <FileType>5</FileType>
               <FilePath>..\user_config\am_double_app_conf_usrcfg\am_boot_config.h</FilePath>
             </File>
+            <File>
+              <FileName>amhw_lpc84x_pmu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\soc\nxp\drivers\source\pmu\hw\amhw_lpc84x_pmu.c</FilePath>
+            </File>
+            <File>
+              <FileName>am_hwconf_lpc84x_spi0_poll.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\user_config\am_hwconf_usrcfg\am_hwconf_lpc84x_spi0_poll.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>
@@ -2115,14 +2117,13 @@
       <TargetName>release</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
-      <uAC6>0</uAC6>
+      <pCCUsed>5060300::V5.06 update 3 (build 300)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>LPC845M301JBD64</Device>
           <Vendor>NXP</Vendor>
-          <PackID>NXP.LPC845_DFP.11.0.0</PackID>
-          <PackURL>http://mcuxpresso.nxp.com/cmsis_pack/repo/</PackURL>
+          <PackID>Keil.LPC800_DFP.1.7.0</PackID>
+          <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x10000000,0x4000) IROM(0x00000000,0x010000) CPUTYPE("Cortex-M0+") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>
@@ -2289,7 +2290,6 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>0</RvdsVP>
-            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -2430,7 +2430,6 @@
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>1</uC99>
-            <uGnu>0</uGnu>
             <useXO>0</useXO>
             <v6Lang>0</v6Lang>
             <v6LangP>0</v6LangP>
@@ -2443,7 +2442,7 @@
               <MiscControls></MiscControls>
               <Define>AM_VDEBUG AM_CORTEX_M0</Define>
               <Undefine></Undefine>
-              <IncludePath>..\user_code;..\user_config;..\user_config\am_hwconf_usrcfg;..\user_config\am_servconf_usrcfg;..\..\..\..\..\3rdparty\CMSIS\Include;..\..\..\..\..\arch\arm\include;..\..\..\..\bsp_common\include;..\..\..\..\..\components\drivers\include;..\..\..\..\..\components\libc\microlib_adapter\include;..\..\..\..\..\components\libc\armlib_adapter\include;..\..\..\..\..\components\service\include;..\..\..\..\..\components\util\include;..\..\..\..\..\examples\board\am824_core;..\..\..\..\..\examples\components;..\..\..\..\..\examples\soc\nxp;..\..\..\..\..\examples\std;..\..\..\..\..\interface;..\..\..\..\..\soc\nxp\lpc824;..\..\..\..\..\soc\nxp\drivers\include\acmp;..\..\..\..\..\soc\nxp\drivers\include\adc;..\..\..\..\..\soc\nxp\drivers\include\clk;..\..\..\..\..\soc\nxp\drivers\include\crc;..\..\..\..\..\soc\nxp\drivers\include\dma;..\..\..\..\..\soc\nxp\drivers\include\fmc;..\..\..\..\..\soc\nxp\drivers\include\gpio;..\..\..\..\..\soc\nxp\drivers\include\i2c;..\..\..\..\..\soc\nxp\drivers\include\iap;..\..\..\..\..\soc\nxp\drivers\include\inmux;..\..\..\..\..\soc\nxp\drivers\include\iocon;..\..\..\..\..\soc\nxp\drivers\include\mrt;..\..\..\..\..\soc\nxp\drivers\include\pint;..\..\..\..\..\soc\nxp\drivers\include\pmu;..\..\..\..\..\soc\nxp\drivers\include\rit;..\..\..\..\..\soc\nxp\drivers\include\rtc;..\..\..\..\..\soc\nxp\drivers\include\sct;..\..\..\..\..\soc\nxp\drivers\include\spi;..\..\..\..\..\soc\nxp\drivers\include\swm;..\..\..\..\..\soc\nxp\drivers\include\syscon;..\..\..\..\..\soc\nxp\drivers\include\timer;..\..\..\..\..\soc\nxp\drivers\include\usart;..\..\..\..\..\soc\nxp\drivers\include\utick;..\..\..\..\..\soc\nxp\drivers\include\wkt;..\..\..\..\..\soc\nxp\drivers\include\wwdt;..\..\..\..\..\soc\nxp\lpc845;..\..\..\..\..\soc\nxp\lpc845\bootloader\include;..\..\..\..\..\soc\nxp\drivers\include\dac\hw;..\..\..\..\..\components\bootloader\include\core;..\..\..\..\..\soc\nxp\drivers\include\dac;..\user_config\am_double_app_conf_usrcfg;..\..\..\..\..\examples\board\am845_core</IncludePath>
+              <IncludePath>..\user_code;..\user_config;..\user_config\am_hwconf_usrcfg;..\user_config\am_servconf_usrcfg;..\..\..\..\..\3rdparty\CMSIS\Include;..\..\..\..\..\arch\arm\include;..\..\..\..\bsp_common\include;..\..\..\..\..\components\drivers\include;..\..\..\..\..\components\libc\microlib_adapter\include;..\..\..\..\..\components\libc\armlib_adapter\include;..\..\..\..\..\components\service\include;..\..\..\..\..\components\util\include;..\..\..\..\..\examples\board\am824_core;..\..\..\..\..\examples\components;..\..\..\..\..\examples\soc\nxp;..\..\..\..\..\examples\std;..\..\..\..\..\interface;..\..\..\..\..\soc\nxp\lpc824;..\..\..\..\..\soc\nxp\drivers\include\acmp;..\..\..\..\..\soc\nxp\drivers\include\adc;..\..\..\..\..\soc\nxp\drivers\include\clk;..\..\..\..\..\soc\nxp\drivers\include\crc;..\..\..\..\..\soc\nxp\drivers\include\dma;..\..\..\..\..\soc\nxp\drivers\include\fmc;..\..\..\..\..\soc\nxp\drivers\include\gpio;..\..\..\..\..\soc\nxp\drivers\include\i2c;..\..\..\..\..\soc\nxp\drivers\include\iap;..\..\..\..\..\soc\nxp\drivers\include\inmux;..\..\..\..\..\soc\nxp\drivers\include\iocon;..\..\..\..\..\soc\nxp\drivers\include\mrt;..\..\..\..\..\soc\nxp\drivers\include\pint;..\..\..\..\..\soc\nxp\drivers\include\pmu;..\..\..\..\..\soc\nxp\drivers\include\rit;..\..\..\..\..\soc\nxp\drivers\include\rtc;..\..\..\..\..\soc\nxp\drivers\include\sct;..\..\..\..\..\soc\nxp\drivers\include\spi;..\..\..\..\..\soc\nxp\drivers\include\swm;..\..\..\..\..\soc\nxp\drivers\include\syscon;..\..\..\..\..\soc\nxp\drivers\include\timer;..\..\..\..\..\soc\nxp\drivers\include\usart;..\..\..\..\..\soc\nxp\drivers\include\utick;..\..\..\..\..\soc\nxp\drivers\include\wkt;..\..\..\..\..\soc\nxp\drivers\include\wwdt;..\..\..\..\..\soc\nxp\lpc845;..\..\..\..\..\soc\nxp\lpc845\bootloader\include;..\..\..\..\..\soc\nxp\drivers\include\dac\hw;..\..\..\..\..\components\bootloader\include\core;..\..\..\..\..\soc\nxp\drivers\include\dac;..\user_config\am_double_app_conf_usrcfg;..\..\..\..\..\examples\board\am845_core;..\..\..\..\..\soc\nxp\drivers\include\capt</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -3768,19 +3767,19 @@
               <FilePath>..\..\..\..\..\examples\soc\nxp\iap\demo_lpc845_hw_iap.c</FilePath>
             </File>
             <File>
-              <FileName>demo_lpc824_hw_acmp_lad.c</FileName>
+              <FileName>demo_lpc845_hw_acmp_int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\examples\soc\nxp\acmp\demo_lpc824_hw_acmp_lad.c</FilePath>
+              <FilePath>..\..\..\..\..\examples\soc\nxp\acmp\demo_lpc845_hw_acmp_int.c</FilePath>
             </File>
             <File>
-              <FileName>demo_lpc824_hw_acmp_int.c</FileName>
+              <FileName>demo_lpc845_hw_acmp_lad.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\examples\soc\nxp\acmp\demo_lpc824_hw_acmp_int.c</FilePath>
+              <FilePath>..\..\..\..\..\examples\soc\nxp\acmp\demo_lpc845_hw_acmp_lad.c</FilePath>
             </File>
             <File>
-              <FileName>demo_lpc_hw_usart_autobaud.c</FileName>
+              <FileName>demo_lpc845_hw_usart_autobaud.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\examples\soc\nxp\usart\demo_lpc_hw_usart_autobaud.c</FilePath>
+              <FilePath>..\..\..\..\..\examples\soc\nxp\usart\demo_lpc845_hw_usart_autobaud.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -4198,11 +4197,6 @@
               <FilePath>..\user_config\am_servconf_usrcfg\am_servconf_nvram.c</FilePath>
             </File>
             <File>
-              <FileName>am_hwconf_lpc82x_spi0_poll.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\user_config\am_hwconf_usrcfg\am_hwconf_lpc82x_spi0_poll.c</FilePath>
-            </File>
-            <File>
               <FileName>am_double_app_conf_lpc845.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\user_config\am_double_app_conf_usrcfg\am_double_app_conf_lpc845.c</FilePath>
@@ -4212,16 +4206,20 @@
               <FileType>5</FileType>
               <FilePath>..\user_config\am_double_app_conf_usrcfg\am_boot_config.h</FilePath>
             </File>
+            <File>
+              <FileName>amhw_lpc84x_pmu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\soc\nxp\drivers\source\pmu\hw\amhw_lpc84x_pmu.c</FilePath>
+            </File>
+            <File>
+              <FileName>am_hwconf_lpc84x_spi0_poll.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\user_config\am_hwconf_usrcfg\am_hwconf_lpc84x_spi0_poll.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>
     </Target>
   </Targets>
-
-  <RTE>
-    <apis/>
-    <components/>
-    <files/>
-  </RTE>
 
 </Project>

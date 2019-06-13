@@ -149,17 +149,6 @@ int am_fm25clxx_status_read(am_fm25clxx_handle_t  handle,
 int am_fm25clxx_status_write(am_fm25clxx_handle_t  handle,
                              uint8_t               val);
 
-/** 
- * \brief FM25CLXX解初始化，释放相关资源
- * 
- *     解初始化后，FM25CLXX相关函数均不可使用，包括使用FM25CLXX获取
- * 到的NVRAM标准服务handle。
- * 
- * \param[in] p_dev : 指向 FM25CLXX 设备的指针
- *
- * \return 无
- */
-void am_fm25clxx_deinit(am_fm25clxx_dev_t *p_dev);
 
 /**
  * \brief 初始化fm25clxx的NVRAM功能，向系统提供  NVRAM 标准服务

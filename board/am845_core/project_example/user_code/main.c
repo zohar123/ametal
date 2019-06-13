@@ -26,7 +26,6 @@
 #include "am_vdebug.h"
 #include "am_board.h"
 #include "am_led.h"
-#include "am_fm175xx.h"
 #include "demo_am845_core_entries.h"
 
 /**
