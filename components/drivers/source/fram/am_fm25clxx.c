@@ -28,8 +28,6 @@
 #include "ametal.h"
 #include "am_vdebug.h"
 #include "am_fm25clxx.h"
-#include <string.h>
-#include "am_lpc_spi_int.h"
 
 /*******************************************************************************
   宏定义
@@ -233,14 +231,6 @@ am_fm25clxx_handle_t am_fm25clxx_init(am_fm25clxx_dev_t            *p_dev,
 
     /* 设备地址作为 handle 返回 */
     return p_dev;
-}
-
-/******************************************************************************/
-void am_fm25clxx_deinit (am_fm25clxx_dev_t *p_dev)
-{
-    am_lpc_spi_int_deinit(p_dev->spi_dev.handle);
-    p_dev = NULL;
-    return;
 }
 
 /******************************************************************************/
