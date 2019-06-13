@@ -20,7 +20,7 @@
  *   4. 将会调用固定电压测试例程，对固定电压进行测试后通过函数修正后进行打印输出。
  *
  * \par 源代码
- * \snippet demo_aml166_core_cs1239_vol_para_adjuet.c src_aml166_core_cs1239_vol_para_adjuet
+ * \snippet demo_aml166_core_adc24_vol_para_adjuet.c src_aml166_core_adc24_vol_para_adjuet
  *
  * \internal
  * \par Modification history
@@ -29,11 +29,11 @@
  */
 
 /**
- * \addtogroup demo_aml166_core_cs1239_vol_para_adjuet
- * \copydoc demo_aml166_core_cs1239_vol_para_adjuet.c
+ * \addtogroup demo_aml166_core_adc24_vol_para_adjuet
+ * \copydoc demo_aml166_core_adc24_vol_para_adjuet.c
  */
 
-/** [src_aml166_core_cs1239_vol_para_adjuet] */
+/** [src_aml166_core_adc24_vol_para_adjuet] */
 
 #include "am_aml166_inst_init.h"
 #include "am_hwconf_zml166_adc.h"
@@ -82,6 +82,6 @@ void demo_aml166_core_zml166_adc_vol_para_adjuet (void)
 }
 
 
-/** [src_aml166_core_cs1239_vol_para_adjuet] */
+/** [src_aml166_core_adc24_vol_para_adjuet] */
 
 /* end of file */

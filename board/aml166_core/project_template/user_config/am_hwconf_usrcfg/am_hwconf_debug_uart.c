@@ -23,7 +23,7 @@
 #include "ametal.h"
 #include "am_uart.h"
 #include "am_vdebug.h"
-#include "am_zlg116_inst_init.h"
+#include "am_aml166_inst_init.h"
 
 /**
  * \addtogroup am_if_src_hwconf_debug_uart

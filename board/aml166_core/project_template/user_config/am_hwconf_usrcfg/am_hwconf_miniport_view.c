@@ -28,7 +28,7 @@
  */
 
 #include "ametal.h"
-#include "am_zlg116_inst_init.h"
+#include "am_aml166_inst_init.h"
 #include "am_key_matrix_gpio.h"
 #include "am_key_matrix_softimer.h"
 #include "am_digitron_scan_gpio.h"

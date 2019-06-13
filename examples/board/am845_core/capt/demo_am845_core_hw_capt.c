@@ -52,7 +52,7 @@
 #include "lpc84x_pin.h"
 
 extern void demo_lpc84x_hw_capt_entry (amhw_lpc84x_capt_t *p_hw_capt,
-                                       amhw_lpc84x_acmp_t *p_hw_acmp);
+                                       amhw_lpc82x_acmp_t *p_hw_acmp);
 
 /**
  * \brief Àý³ÌÈë¿Ú
@@ -65,13 +65,9 @@ void demo_am845_core_hw_capt_entry (void)
     am_gpio_pin_cfg(PIO1_0, PIO1_0_CAPT_X1 | PIO1_0_INACTIVE);
     am_gpio_pin_cfg(PIO1_1, PIO1_1_CAPT_X2 | PIO1_1_INACTIVE);
 
-    amhw_lpc84x_swm_fixed_func_enable(LPC84X_SWM, AMHW_LPC84X_SWM_PIO0_30_ACMP_I5);
-
     amhw_lpc84x_swm_fixed_func_enable(LPC84X_SWM, AMHW_LPC84X_SWM_PIO0_31_CAPT_X0);
     amhw_lpc84x_swm_fixed_func_enable(LPC84X_SWM, AMHW_LPC84X_SWM_PIO1_0_CAPT_X1);
     amhw_lpc84x_swm_fixed_func_enable(LPC84X_SWM, AMHW_LPC84X_SWM_PIO1_1_CAPT_X2);
-
-    am_gpio_pin_cfg (PIO0_30, PIO0_30_ACMP_I5 | PIO0_30_INACTIVE);
 
     demo_lpc84x_hw_capt_entry(LPC84X_CAPT, LPC84X_ACMP);
 }

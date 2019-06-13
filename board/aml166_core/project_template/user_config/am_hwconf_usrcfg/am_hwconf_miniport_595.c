@@ -21,7 +21,7 @@
  * \endinternal
  */
 #include "ametal.h"
-#include "am_zlg116_inst_init.h"
+#include "am_aml166_inst_init.h"
 #include "am_hc595_gpio.h"
 #include "am_hc595_spi.h"
 #include "zlg116_pin.h"

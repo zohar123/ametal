@@ -34,9 +34,12 @@ am_zmf159_clk_dev_t *__gp_dev = NULL;
 
 static void __pllin_hse_init (void)
 {
+    volatile uint16_t wait = 800;
+
     amhw_zmf159_rcc_hseon_enable();
 
     while (amhw_zmf159_rcc_hserdy_read () == AM_FALSE);
+    while(wait--);
 
 //    amhw_zmf159_rcc_hseforpll_set (0);
 

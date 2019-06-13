@@ -18,7 +18,7 @@
  *   2. 串口将会打印出电压值
  *
  * \par 源代码
- * \snippet demo_aml166_core_cs1239_vol_measure.c src_aml166_core_cs1239_vol_measure
+ * \snippet demo_aml166_core_adc24_vol_measure.c src_aml166_core_adc24_vol_measure
  *
  * \internal
  * \par Modification history
@@ -27,11 +27,11 @@
  */
 
 /**
- * \addtogroup demo_aml166_core_cs1239_vol_measure
- * \copydoc demo_aml166_core_cs1239_vol_measure.c
+ * \addtogroup demo_aml166_core_adc24_vol_measure
+ * \copydoc demo_aml166_core_adc24_vol_measure.c
  */
 
-/** [src_aml166_core_cs1239_vol_measure] */
+/** [src_aml166_core_adc24_vol_measure] */
 #include <am_aml166_inst_init.h>
 #include <am_hwconf_zml166_adc.h>
 #include "string.h"
@@ -41,6 +41,18 @@
 #include "demo_components_entries.h"
 #include "demo_aml166_core_entries.h"
 #include "demo_zlg_entries.h"
+
+#define AM_ZML166_ADC_PGA_SET_1         0      /**< \brief 1倍增益选择参数 */
+#define AM_ZML166_ADC_PGA_SET_2         1      /**< \brief 2倍增益选择参数 */
+#define AM_ZML166_ADC_PGA_SET_4         2      /**< \brief 4倍增益选择参数 */
+#define AM_ZML166_ADC_PGA_SET_8         3      /**< \brief 8倍增益选择参数 */
+#define AM_ZML166_ADC_PGA_SET_16        4     /**< \brief 16倍增益选择参数 */
+#define AM_ZML166_ADC_PGA_SET_32        5     /**< \brief 32倍增益选择参数 */
+#define AM_ZML166_ADC_PGA_SET_64        6     /**< \brief 64倍增益选择参数 */
+#define AM_ZML166_ADC_PGA_SET_128       7    /**< \brief 128倍增益选择参数 */
+#define AM_ZML166_ADC_PGA_SET_256       8    /**< \brief 256倍增益选择参数 */
+
+
 /**
  * \brief CS1239固定电压测量例程
  */
@@ -64,6 +76,6 @@ void demo_aml166_core_zml166_adc_vol_measure (void)
                                               AM_ZML166_ADC_PGA_SET_1);
 }
 
-/** [src_aml166_core_cs1239_vol_measure] */
+/** [src_aml166_core_adc24_vol_measure] */
 
 /* end of file */

@@ -27,7 +27,7 @@
 #include "am_system.h"
 #include "am_arm_nvic.h"
 #include "am_arm_systick.h"
-#include "am_zlg116_inst_init.h"
+#include "am_aml166_inst_init.h"
 
 /**
  * \addtogroup am_if_src_hwconf_system_tick_softimer
