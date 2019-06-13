@@ -64,7 +64,8 @@ extern "C" {
 
 #include "am_usbd_cdc_vcom.h"
 #include "am_usbd_printer.h"
-
+#include "am_usbd_keyboard.h"
+#include "am_usbd_msc.h"
 //#include "am_hwconf_key_gpio.h"
 //#include "am_hwconf_buzzer_pwm.h"
 //#include "am_hwconf_debug_uart.h"
@@ -1069,7 +1070,14 @@ am_usbd_printer_handle am_zmf159_usbd_printer_inst_init (void);
 
 /** \brief usb_vcom实例初始化，获得usb_vcom标准服务句柄 */
 am_usbd_cdc_vcom_handle am_zmf159_usbd_vcom_inst_init (void);
-/** \brief usb_vcom实例初始化，获得can标准服务句柄 */
+
+/** \brief usb_keyboard实例初始化，获得usb_keyboard标准服务句柄 */
+am_usbd_keyboard_handle am_zmf159_usbd_keyboard_inst_init (void);
+
+/** \brief usb msc实例初始化，获得usb_keyboard标准服务句柄 */
+am_usbd_msc_handle am_zmf159_usbd_msc_inst_init (void);
+
+/** \brief can实例初始化，获得can标准服务句柄 */
 am_can_handle_t am_zmf159_can_inst_init (void);
 /**
  * @}

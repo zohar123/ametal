@@ -154,11 +154,11 @@ void am_usbd_cdc_vcom_deinit (am_usbd_cdc_vcom_t *p_dev);
 
 am_usb_status_t am_usbd_cdc_vcom_send(am_usbd_cdc_vcom_handle handle,
                                       uint8_t                *p_buff,
-									  uint8_t                 len);
+                                      uint8_t                 len);
 
 // 接收回调函数
 am_usb_status_t am_usbd_cdc_vcom_recv_cb (am_usbd_cdc_vcom_handle     handle,
-		                                  pfn_cdc_vcom_recv_cb_t       pfn,
+                                          pfn_cdc_vcom_recv_cb_t       pfn,
                                           void                       *p_arg);
 
 

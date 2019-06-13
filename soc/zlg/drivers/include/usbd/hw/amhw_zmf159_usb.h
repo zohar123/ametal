@@ -263,7 +263,7 @@ uint8_t amhw_zmf159_usb_int_get (amhw_zmf159_usb_t *p_hw_usb)
  */
 am_static_inline
 void amhw_zmf159_usb_int_clear (amhw_zmf159_usb_t *p_hw_usb,
-                                uint32_t          flag)
+                                uint32_t           flag)
 {
     p_hw_usb->int_stat = flag;
 }

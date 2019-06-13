@@ -88,17 +88,17 @@ typedef struct am_zmf159_usbd_dev am_zmf159_usbd_dev_t;
 
 typedef struct am_zmf159_usbd_dev
 {
-    am_usbd_dev_t  isa;
 
-    uint8_t state;            /* of type CONTROL_STATE */
+    am_usbd_dev_t  isa;
+    uint8_t        state;       /* of type CONTROL_STATE */
 //    uint8_t cur_feature;
 //    uint8_t cur_config;       /* Selected configuration */
 //    uint8_t cur_interface;    /* Selected interface of current configuration */
 //    uint8_t cur_alt;          /* Selected Alternate Setting of current
 //                                       interface*/
 
-    uint8_t ep_num;           /* Number of endpoints that are used */
-    uint8_t config_num;       /* Number of configuration available */
+    uint8_t ep_num;             /* Number of endpoints that are used */
+    uint8_t config_num;         /* Number of configuration available */
 
 //    uint8_t sta_info;
 
@@ -123,6 +123,9 @@ typedef struct am_zmf159_usbd_dev
 ///*******************************************************************************
 //   外部声明函数
 //*******************************************************************************/
+
+//void  am_endpoint_ack(void                *p_arg,
+//                      uint8_t              ep);
 
 // 临时
 am_usbd_dev_t *am_zmf159_usbd_init(am_zmf159_device_t             *,

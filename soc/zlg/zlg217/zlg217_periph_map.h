@@ -46,7 +46,7 @@ extern "C" {
 #include "hw/amhw_zlg_syscfg.h"
 #include "hw/amhw_zlg_gpio.h"
 #include "hw/amhw_zlg_dma.h"
-
+#include "hw/amhw_zlg217_usbd.h"
 
 /**
  * \addtogroup amhw_zlg217_if_periph_map

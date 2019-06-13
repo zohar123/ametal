@@ -41,9 +41,8 @@
 #include "am_rngbuf.h"
 #include "am_vdebug.h"
 #include "am_softimer.h"
-#include "am_zmf159_usbd.h"
-#include "am_zmf159_inst_init.h"
 #include "am_usbd_cdc_vcom.h"
+#include "demo_zlg_entries.h"
 
 #define __RNG_BUFF_SIZE    256                   /**< 缓冲区大小. */
 
@@ -62,12 +61,9 @@ static void __test_function(void *p_arg, uint8_t *p_buffer, uint8_t len)
 /**
  * \brief 例程入口
  */
-void demo_zmf159_usbd_vcom_entry (void)
+void demo_usbd_vcom_entry (am_usbd_cdc_vcom_handle handle)
 {
     uint32_t key = 0;
-    am_kprintf("zmf159 vcom demo \r\n");
-
-    am_usbd_cdc_vcom_handle handle = am_zmf159_usbd_vcom_inst_init();
 
     // 设置串口接收中断
     am_usbd_cdc_vcom_recv_cb(handle, __test_function, NULL);
@@ -86,13 +82,12 @@ void demo_zmf159_usbd_vcom_entry (void)
             // 给串口发数据 最多只能发64 字节，如果发送64字节以上，建议分段发送
             am_usbd_cdc_vcom_send(handle,
                                  (uint8_t *)"recv success\r\n",
-								 sizeof("recv success\r\n"));
+                                 sizeof("recv success\r\n"));
 
             memset(__g_buff, 0, __RNG_BUFF_SIZE);
             am_int_cpu_unlock(key);
         }
     }
-
 }
 /** [src_usbd_vcom] */
 

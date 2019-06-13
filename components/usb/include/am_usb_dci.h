@@ -28,7 +28,7 @@ extern "C" {
 
 #include "am_usbd.h"
 #include "am_usb_spec.h"
-
+#include "am_usbd_ch9.h"
 
 /**
  * \addtogroup am_if_usb_dci
@@ -70,10 +70,10 @@ typedef am_usb_status_t (*am_usbd_send_t)(am_usbd_handle_t handle,
                                          uint32_t          length);
 
 /** \brief 接收函数 */
-typedef am_usb_status_t (*am_usbd_recv_t)(am_usbd_handle_t handle,
-                                         uint8_t           endpoint,
-                                         uint8_t          *p_buffer,
-                                         uint32_t          length);
+typedef uint8_t (*am_usbd_recv_t)(am_usbd_handle_t  handle,
+                                  uint8_t           endpoint,
+                                  uint8_t          *p_buffer,
+                                  uint32_t          length);
 
 /** \brief 取消 */
 typedef am_usb_status_t (*am_usbd_cancel_t)(am_usbd_handle_t handle,
@@ -85,10 +85,10 @@ typedef am_usb_status_t (*am_usbd_control_t)(am_usbd_handle_t       handle,
                                              void                  *p_param);
 
 /** \brief 端点回调函数类型*/
-typedef am_usb_status_t (*am_usbd_ep_callback_t)(void *p_arg);
+typedef void (*am_usbd_ep_callback_t)(void *p_arg);
 
 /* 厂商请求回调函数类型.*/
-typedef void (*am_vendor_request_t)(void *p_arg, uint8_t b_requrest);
+typedef uint8_t (*am_vendor_request_t)(void *p_arg, uint8_t b_requrest);
 
 /* 类请求回调函数类型.*/
 typedef uint8_t (*am_class_request_t)(void *p_arg, uint8_t b_requrest);
@@ -127,8 +127,8 @@ typedef struct am_usbd_devinfo {
 
 /* 类请求回调函数结构体定义*/
 typedef struct am_usbd_class_req_callback {
-	am_class_request_t   pfn_class;   /**< \brief 类请求回调函数*/
-	void                *p_arg;       /**< \brief 类请求回调函数参数*/
+    am_class_request_t   pfn_class;   /**< \brief 类请求回调函数*/
+    void                *p_arg;       /**< \brief 类请求回调函数参数*/
 }am_usbd_class_req_cb_t;
 
 /* 厂商请求回调函数结构体定义*/
@@ -147,10 +147,11 @@ typedef void (*am_std_request_t)(am_usbd_dev_t *p_dev);
 
 typedef struct __endpoint_info
 {
-  uint16_t  Usb_wLength;
-  uint16_t  Usb_wOffset;
-  uint16_t  PacketSize;
-  uint8_t   *(*CopyData)(void *p_arg, uint16_t Length);
+  uint16_t   length;               /**< \brief 需要接收或者发送的字节数  */
+  uint16_t   offset;               /**< \brief 接收或者发送数据的偏移量  */
+  uint16_t   packet_size;          /**< \brief USB设备包允许的最大字节数  */
+//  uint8_t   *(*pfn_copy_data)(void *p_arg, uint16_t *p_length);
+  uint8_t   *p_buf;
 }am_data_info_t;
 
 
@@ -163,24 +164,23 @@ struct am_usbd_dev {
 	 */
 	am_usbd_handle_t      ctrl_handle;
 
-    uint8_t               device_address; /**< \brief 设备地址 */
-    uint8_t               state;          /**< \brief 设备状态 */
+    uint8_t               device_address;   /**< \brief 设备地址 */
+    uint8_t               state;            /**< \brief 设备状态 */
 
-    uint8_t               cur_feature;
+    uint8_t               cur_feature;      /**< \brief 设备属性*/
     uint8_t               cur_config;       /* Selected configuration */
     uint8_t               cur_interface;    /* Selected interface of current configuration */
     uint8_t               cur_alt;          /* Selected Alternate Setting of current
                                              interface*/
 
-    uint8_t sta_info;
-
-
-//    uint8_t                    running_ctrl_state;
+    uint16_t               sta_info;
 
     const am_usbd_interface_t *p_interface;    /**< \brief 控制器接口 */
 
     /** \brief 标准设备请求函数指针数组的指针*/
     const am_std_request_t    *pfn_std_request;
+
+    am_usb_request_funcs_t    *p_funcs;
 
     /** \brief USB device 信息结构体, 存放描述符信息*/
     const am_usbd_devinfo_t   *p_info;
@@ -190,7 +190,6 @@ struct am_usbd_dev {
 
     /**< \brief 厂商请求回调函数，由具体的产商定义功能，在支持的类中有对应接口 */
     am_usbd_vendor_req_cb_t   vendor_req;
-
 
     /** \brief 接收到的setup包中的数据USB标准设备请求结构 */
     am_usb_setup_t            setup_data;
@@ -239,10 +238,10 @@ am_usb_status_t am_usbd_send(am_usbd_dev_t   *p_dev,
  *
  */
 am_static_inline
-am_usb_status_t am_usbd_recv(am_usbd_dev_t   *p_dev,
-                             uint8_t          endpoint,
-                             uint8_t         *buffer,
-                             uint32_t         length)
+uint8_t am_usbd_recv(am_usbd_dev_t   *p_dev,
+                     uint8_t          endpoint,
+                     uint8_t         *buffer,
+                     uint32_t         length)
 {
     return p_dev->p_interface->pfn_device_recv(p_dev->ctrl_handle,
                                                endpoint,

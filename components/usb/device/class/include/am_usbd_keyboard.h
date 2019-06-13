@@ -294,17 +294,24 @@ extern "C" {
 #endif
 
 
-/** \brief 打印机信息结构体 */
+/** \brief USB键盘信息结构体 */
 typedef struct am_usbd_keyboard_info {
     uint8_t ep_in;
     uint8_t ep_out;
 } am_usbd_keyboard_info_t;
 
 
-/** \brief usb device printer struct */
+/** \brief 打印机接收请求回调函数类型 */
+typedef void (*am_keyboard_recv_cb_t)(void *p_arg, uint8_t *p_buf, uint8_t len);
+
+/** \brief usb device keyboard struct */
 typedef struct am_usbd_keyboard {
     am_usbd_dev_t                 *p_dev;      /**< \brief 保存usb设备类指针*/
     const am_usbd_keyboard_info_t *p_info;     /**< \brief 打印机设备信息*/
+    am_bool_t                      is_ready;
+    uint8_t                        rec_buffer;
+    am_keyboard_recv_cb_t          pfn_rec_cb;
+    void                          *p_arg;
 } am_usbd_keyboard_t;
 
 /*USBD keyboard 通用句柄*/
@@ -339,9 +346,9 @@ am_usb_status_t am_usbd_keyboard_send(am_usbd_keyboard_handle   handle,
                                       uint8_t                  *p_buff,
                                       uint8_t                   len);
 
-am_usb_status_t am_usbd_keyboard_recv_req(am_usbd_keyboard_handle handle,
-                                          uint8_t                *p_buff,
-                                          uint8_t                 len);
+am_usb_status_t am_usbd_keyboard_recv_cb_set(am_usbd_keyboard_handle  handle,
+                                             am_keyboard_recv_cb_t    pfn,
+                                             void                    *p_arg);
 /**
  * \brief USB Device keyboard 厂商请求
  *
