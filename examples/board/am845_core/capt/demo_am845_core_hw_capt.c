@@ -52,7 +52,7 @@
 #include "lpc84x_pin.h"
 
 extern void demo_lpc84x_hw_capt_entry (amhw_lpc84x_capt_t *p_hw_capt,
-                                       amhw_lpc82x_acmp_t *p_hw_acmp);
+                                       amhw_lpc84x_acmp_t *p_hw_acmp);
 
 /**
  * \brief Àý³ÌÈë¿Ú
