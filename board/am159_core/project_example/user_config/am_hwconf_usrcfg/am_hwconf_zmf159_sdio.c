@@ -12,12 +12,12 @@
 
 /**
  * \file
- * \brief ZMF159 I2C 用户配置文件
+ * \brief ZMF159 SDIO 用户配置文件
  * \sa am_hwconf_zmf159_sdio.c
  *
  * \internal
  * \par Modification history
- * - 1.00 17-09-5  fra, first implementation
+ * - 1.00 19-06-13  ipk, first implementation
  * \endinternal
  */
 
@@ -35,8 +35,8 @@
  * @{
  */
 
-/** \brief I2C1 平台初始化函数 */
-static void __zlg_sdio_plfm_init (void)
+/** \brief SDIO 平台初始化函数 */
+static void __zmf159_sdio_plfm_init (void)
 {
 
     am_gpio_pin_cfg(PIOC_8, PIOC_8_SDIO_D0 | PIOC_8_INPUT_PU | PIOC_8_SPEED_20MHz);
@@ -50,36 +50,26 @@ static void __zlg_sdio_plfm_init (void)
     am_zmf159_clk_reset(CLK_SDIO);
 }
 
-/** \brief 解除I2C1 平台初始化函数 */
-static void __zlg_sdio_plfm_deinit (void)
+/** \brief 解除SDIO 平台初始化函数 */
+static void __zmf159_sdio_plfm_deinit (void)
 {
     am_clk_disable(CLK_SDIO);
 }
 
 /**
- * \name I2C1 控制器参数定义
- * @{
- */
-
-/** @} */
-
-/**
  * \brief I2C1 设备信息
  */
-static const am_zlg_sdio_devinfo_t __g_sdio_devinfo = {
+static const am_zmf159_sdio_devinfo_t __g_sdio_devinfo = {
 
     ZMF159_SDIO_BASE,                 /**< \brief 寄存器块基址 */
-	INUM_SDIO,                        /**< \brief  中断编号 */
+    INUM_SDIO,                        /**< \brief 中断编号 */
     CLK_SDIO,                         /**< \brief 时钟ID值 */
-	AMHW_ZLG_SDIO_WIDTH_4BIT,
-    1000000,                          /**< \brief  速率 */
-	AMHW_ZLG_SDIO_SPEED_MODE_LOW,     /**< \brief 低俗模式 */
-
-    __zlg_sdio_plfm_init,             /**< \brief 平台初始化 */
-    __zlg_sdio_plfm_deinit            /**< \brief 平台去初始化 */
+    AMHW_ZLG_SDIO_SPEED_MODE_LOW,     /**< \brief 低速模式 */
+    __zmf159_sdio_plfm_init,          /**< \brief 平台初始化 */
+    __zmf159_sdio_plfm_deinit         /**< \brief 平台去初始化 */
 };
 
-static am_zlg_sdio_dev_t __g_sdio_dev;           /**< \brief  设备实例 */
+static am_zmf159_sdio_dev_t __g_sdio_dev;        /**< \brief  设备实例 */
 static am_sdio_handle_t  __g_sdio_handle = NULL; /**< \brief  标准服务句柄 */
 
 /** \brief SDIO 实例初始化，获得SDIO标准服务句柄 */

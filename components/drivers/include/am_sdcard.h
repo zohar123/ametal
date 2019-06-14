@@ -11,7 +11,7 @@
 *******************************************************************************/
 /**
  * \file
- * \brief SDCard标准接口
+ * \brief SDCard接口
  *
  * \internal
  * \par Modification history
@@ -31,18 +31,38 @@ extern "C" {
 #include "am_wait.h"
 
 /**
- * \brief Supported SD Memory Cards
+ * \name SD卡版本
+ * @{
  */
-#define AM_SDIO_STD_CAPACITY_SD_CARD_V1_1          0x00
-#define AM_SDIO_STD_CAPACITY_SD_CARD_V2_0          0x01
-#define AM_SDIO_HIGH_CAPACITY_SD_CARD              0x02
-#define AM_SDIO_MULTIMEDIA_CARD                    0x03
-#define AM_SDIO_SECURE_DIGITAL_IO_CARD             0x04
-#define AM_SDIO_HIGH_SPEED_MULTIMEDIA_CARD         0x05
-#define AM_SDIO_SECURE_DIGITAL_IO_COMBO_CARD       0x06
-#define AM_SDIO_HIGH_CAPACITY_MMC_CARD             0x07
+#define AM_SDCARD_VERSION        0x00E0
+#define AM_SDCARD_SDV2X          0x0020
+#define AM_SDCARD_SDV1X          0x0040
+#define AM_SDCARD_MMC            0x0080
+/** @} */
 
-#define AM_SD_OCR_ERRORBITS                        0xFDFFE008
+/**
+ * \name SD卡容量分类
+ * @{
+ */
+#define AM_SDCARD_CAPACITY_VER   0x0300
+#define AM_SDCARD_SDSC           0x0100        /** <\brief 标准容量SD储存卡（<2GB） */
+#define AM_SDCARD_SDHC           0x0200        /** <\brief 大容量SD储存卡（2GB~32GB） */
+#define AM_SDCARD_SDXC           0x0400        /** <\brief 超大容量SD储存卡（32GB~2TB）*/
+/** @} */
+
+#define AM_SD_OCR_ERRORBITS      0xFDFFE008
+
+/**
+ * \name SD卡传输速率分类
+ * @{
+ */
+#define AN_SDCARD_SPEED_CLASS    0x001F
+#define AN_SDCARD_CLASS_0        0x0001        /** <\brief 这类卡片不指定性能 */
+#define AN_SDCARD_CLASS_2        0x0002        /** <\brief 不低于2MB/S */
+#define AN_SDCARD_CLASS_4        0x0004        /** <\brief 不低于4MB/S */
+#define AN_SDCARD_CLASS_6        0x0008        /** <\brief 不低于6MB/S */
+#define AN_SDCARD_CLASS_10       0x0010        /** <\brief 不低于10MB/S */
+/** @} */
 
 /**
  * \name OCR寄存器
@@ -126,104 +146,151 @@ typedef enum {
   AM_SD_CARD_ERROR                  = 0xFF
 }am_sd_card_state;
 
-/**
- * \brief  Card Specific Data: CSD Register
- */
-typedef struct am_sdcard_csd {
-   uint8_t  csd_struct;             /**< \brief CSD structure */
-   uint8_t  sys_specversion;        /**< \brief System specification version */
-   uint8_t  Reserved1;              /**< \brief Reserved */
-   uint8_t  taac;                   /**< \brief Data read access-time 1 */
-   uint8_t  nsac;                   /**< \brief Data read access-time 2 in CLK cycles */
-   uint8_t  max_bus_clkfrec;        /**< \brief Max. bus clock frequency */
-   uint16_t card_comd_classes;      /**< \brief Card command classes */
-   uint8_t  rdblocklen;             /**< \brief Max. read data block length */
-   uint8_t  part_block_read;        /**< \brief Partial blocks for read allowed */
-   uint8_t  wrblock_misalign;       /**< \brief Write block misalignment */
-   uint8_t  rdblock_misalign;       /**< \brief Read block misalignment */
-   uint8_t  dsrimpl;                /**< \brief DSR implemented */
-   uint8_t  Reserved2;              /**< \brief Reserved */
-   uint32_t device_size;            /**< \brief Device Size */
-   uint8_t  max_rd_current_vddmin;  /**< \brief Max. read current @ VDD min */
-   uint8_t  max_rd_current_vddmax;  /**< \brief Max. read current @ VDD max */
-   uint8_t  max_wr_current_vddmin;  /**< \brief Max. write current @ VDD min */
-   uint8_t  max_wr_current_vddmax;  /**< \brief Max. write current @ VDD max */
-   uint8_t  device_size_mul;        /**< \brief Device size multiplier */
-   uint8_t  erase_grsize;           /**< \brief Erase group size */
-   uint8_t  erase_grmul;            /**< \brief Erase group size multiplier */
-   uint8_t  wrprotect_grsize;       /**< \brief Write protect group size */
-   uint8_t  wrprotect_grenable;     /**< \brief Write protect group enable */
-   uint8_t  man_deflecc;            /**< \brief Manufacturer default ECC */
-   uint8_t  wrspeed_fact;           /**< \brief Write speed factor */
-   uint8_t  max_wrblocklen;         /**< \brief Max. write data block length */
-   uint8_t  write_block_pa_partial; /**< \brief Partial blocks for write allowed */
-   uint8_t  reserved3;              /**< \brief Reserded */
-   uint8_t  content_protect_appli;  /**< \brief Content protection application */
-   uint8_t  file_format_grouop;     /**< \brief File format group */
-   uint8_t  copy_flag;              /**< \brief Copy flag (OTP) */
-   uint8_t  perm_wr_protect;        /**< \brief Permanent write protection */
-   uint8_t  temp_wr_protect;        /**< \brief Temporary write protection */
-   uint8_t  file_format;            /**< \brief File Format */
-   uint8_t  ecc;                    /**< \brief ECC code */
-   uint8_t  csd_crc;                /**< \brief CSD CRC */
-   uint8_t  reserved4;              /**< \brief always 1*/
-} am_sdcard_csd_t;
-
-/**
- * \brief  Card Identification Data: CID Register
- */
+/** \brief CID , only in memory card */
 typedef struct am_sdcard_cid {
-   uint8_t  manu_facturer_id;      /**< \brief ManufacturerID */
-   uint16_t oem_appli_id;          /**< \brief OEM/Application ID */
-   uint32_t prod_name1;            /**< \brief Product Name part1 */
-   uint8_t  prod_name2;            /**< \brief Product Name part2*/
-   uint8_t  prod_rev;              /**< \brief Product Revision */
-   uint32_t prod_sn;               /**< \brief Product Serial Number */
-   uint8_t  reserved1;             /**< \brief Reserved1 */
-   uint16_t manufact_date;         /**< \brief Manufacturing Date */
-   uint8_t  cid_crc;               /**< \brief CID CRC */
-   uint8_t  reserved2;             /**< \brief always 1 */
-} am_sdcard_cid_t;
+    uint32_t    mid;
+    uint16_t    oid;
+    char        pnm[8];
+    uint8_t     prv;
+    uint32_t    psn;
+    uint16_t    year;
+    uint8_t     month;
+    uint8_t     hwrev;
+    uint8_t     fwrev;
+}am_sdcard_cid_t;
+
+/** \brief SCR register, only in memory card */
+typedef struct am_sdcard_scr {
+    uint8_t             structure;          /**< \brief structure version */
+    uint8_t             sda_vsn;            /**< \brief SDA version */
+    uint8_t             sda_spec3;
+    uint8_t             bus_widths;         /**< \brief bus width */
+#define AM_SD_SCR_BUS_WIDTH_1  (1<<0)
+#define AM_SD_SCR_BUS_WIDTH_4  (1<<2)
+    uint8_t             cmds;               /**< \brief CMD support */
+#define AM_SD_SCR_CMD20_SUPPORT   (1<<0)
+#define AM_SD_SCR_CMD23_SUPPORT   (1<<1)
+    uint8_t             erase_value;        /**< \brief erase_value */
+}am_sdcard_scr_t;
+
+/** \brief SSR register, only in memory card */
+typedef struct am_sdcard_ssr {
+    uint32_t            au_size;            /**< \brief In sectors */
+    uint32_t            erase_timeout;      /**< \brief In milliseconds */
+    uint32_t            erase_offset;       /**< \brief In milliseconds */
+}am_sdcard_ssr_t;
+
+/** \brief CSD register, only in memory card */
+typedef struct awbl_sdcard_csd {
+    uint8_t     mmca_vsn;                   /**< \brief MMC version */
+    uint32_t    max_tr_speed;               /**< \brief MAX transfer speed */
+    uint16_t    cmd_class;                  /**< \brief command class  */
+    uint16_t    sector_size;                /**< \brief sector size */
+    uint32_t    sector_cnt;                 /**< \brief sector count */
+    uint16_t    block_size;                 /**< \brief block size */
+}am_sdcard_csd_t;
 
 /**
  * \brief SD Card information
  */
-typedef struct {
-    am_sdcard_csd_t csd;
-    am_sdcard_cid_t cid;
-    uint64_t        capacity;     /**< \brief Card Capacity */
-    uint32_t        block_size;   /**< \brief Card Block Size */
-    uint16_t        rca;
-    uint32_t        type;
-} am_sdcard_info_t;
+typedef struct am_sdcard_mem_info{
+    am_sdcard_csd_t csd;                    /**< \brief CSD寄存器 */
+    am_sdcard_cid_t cid;                    /**< \brief CID寄存器 */
+    am_sdcard_ssr_t ssr;                    /**< \brief SSR寄存器 */
+    am_sdcard_scr_t scr;                    /**< \brief SCR寄存器 */
+
+    uint32_t        ocr;                    /**< \brief OCR寄存器 */
+    uint32_t        rca;                    /**< \brief RCA寄存器 */
+    uint16_t        attribute;              /**< \brief SD Card属性描述*/
+} am_sdcard_mem_info_t;
 
 /**
  * \brief SDCARD 设备信息结构体
  */
 typedef struct am_sdcard_devinfo{
-
-    /** \brief 从设备的SDIO模式标志，请参考“SDIO模式标志”*/
-    uint16_t         mode;
-
-    uint16_t         blk_size;
-
-    uint32_t         ocr_valid;        /**< \brief 支持的ORC（电压范围） */
-
+    uint16_t         mode;                  /**< \brief 设备的SDIO模式标志，请参考“SDIO模式标志”*/
+    uint32_t         speed;                 /**< \brief SDIO速率*/
+    am_bool_t        sdio_crc_en;           /**< \brief SDIO CRC使能标志*/
+    uint32_t         ocr_valid;             /**< \brief SD Card支持的ORC（电压范围） */
 }am_sdcard_devinfo_t;
 
 /**
  * \brief SDCARD 设备结构体
  */
 typedef struct am_sdcard_dev{
-    am_sdio_handle_t        sdio_handle;
-    am_sdio_device_t        sdio_dev;
-    am_sdcard_devinfo_t    *p_devinfo;
-    am_sdcard_info_t        sdcard_info;
-    am_wait_t               wait;
+    am_sdio_device_t           sdio_dev;    /**< \brief SDIO设备*/
+    const am_sdcard_devinfo_t *p_devinfo;   /**< \brief 指向SD Card设备信息实例的指针*/
+    uint32_t                   blk_size;    /**< \brief SD Card 块大小*/
+    am_sdcard_mem_info_t       sdcard_info; /**< \brief SD Card 的属性信息*/
+    am_wait_t                  wait;        /**< \brief wait 等待*/
 }am_sdcard_dev_t;
 
 /** \brief SDIO 标准服务操作句柄定义 */
 typedef am_sdcard_dev_t *am_sdcard_handle_t;
+
+/**
+ * \brief 同步从存储卡中读取数据块
+ *
+ * \param[in]  handle       : SDIO设备
+ * \param[in]  p_buf        : 数据缓冲区
+ * \param[in]  blk_start    : 起始块号
+ * \param[in]  blk_num      : 块个数
+ *
+ * \retval AM_OK            : 传输成功
+ * \retval -AM_ENOMEM       : 内存空间不足
+ * \retval -AM_ECANCELED    : 操作被取消
+ * \retval -AM_EIO          : SDIO总线I/O错误
+ * \retval -AM_EBUSY        : SDIO HOST忙，正在处理其他msg
+ * \retval -AM_EINVAL       : 参数错误
+ * \retval -AM_ETIME        : HOST处理超时
+ * \retval -AM_ENOTSUP      : HOST不支持该功能
+ */
+int am_sdcard_blocks_read (am_sdcard_handle_t handle,
+                           uint8_t           *p_buf,
+                           uint32_t           blk_start,
+                           uint32_t           blk_num);
+
+/**
+ * \brief 同步从存储卡中写入数据块
+ *
+ * \param[in]  handle       : SD Card 句柄
+ * \param[in]  p_buf        : 数据缓冲区
+ * \param[in]  blk_start    : 起始块号
+ * \param[in]  blk          : 需要写入的块数量
+ *
+ * \retval AM_OK            : 传输成功
+ * \retval -AM_ENOMEM       : 内存空间不足
+ * \retval -AM_ECANCELED    : 操作被取消
+ * \retval -AM_EIO          : SDIO总线I/O错误
+ * \retval -AM_EBUSY        : SDIO HOST忙，正在处理其他msg
+ * \retval -AM_EINVAL       : 参数错误
+ * \retval -AM_ETIME        : HOST处理超时
+ * \retval -AM_ENOTSUP      : HOST不支持该功能
+ */
+int am_sdcard_blocks_write (am_sdcard_handle_t  handle,
+                            uint8_t            *p_buf,
+                            uint32_t            blk_start,
+                            uint32_t            blk_num);
+
+/**
+ * \brief 擦除块(CMD38)
+ *
+ * \param[in]  handle       : SD Card 句柄
+ * \param[in]  blk_start    : 需要擦除的起始块号
+ * \param[in]  blk_num      : 需要擦除的块数量
+ *
+ * \retval AM_OK            : 传输成功
+ * \retval -AM_ENOMEM       : 内存空间不足
+ * \retval -AM_ECANCELED    : 操作被取消
+ * \retval -AM_EIO          : SDIO总线I/O错误
+ * \retval -AM_EBUSY        : SDIO HOST忙，正在处理其他msg
+ * \retval -AM_EINVAL       : 参数错误
+ * \retval -AM_ETIME        : HOST处理超时
+ * \retval -AM_ENOTSUP      : HOST不支持该功能
+ */
+int am_sdcard_blocks_erase (am_sdcard_handle_t handle,
+                            uint32_t           blk_start,
+                            uint32_t           blk_num);
 
 /**
  * \brief SD Card 复位
@@ -308,7 +375,7 @@ int am_sdcard_all_cid_get (am_sdcard_handle_t handle,
  * \retval -AM_ENOTSUP      : HOST不支持该功能
  */
 int am_sdio_relative_addr_get (am_sdcard_handle_t handle,
-                               uint16_t          *p_rca);
+                               uint32_t          *p_rca);
 
 /**
  * \brief 选定指定相对地址的卡(CMD7)
@@ -346,9 +413,29 @@ int am_sdcard_card_select (am_sdcard_handle_t handle,
  * \retval -AM_ETIME        : HOST处理超时
  * \retval -AM_ENOTSUP      : HOST不支持该功能
  */
-int aw_sdcard_csd_get (am_sdcard_handle_t handle,
+int am_sdcard_csd_get (am_sdcard_handle_t handle,
                        uint32_t           rca,
                        uint32_t          *p_csd);
+
+/**
+ * \brief 获取存储卡寄存器SCR值(CMD55 + ACMD51)
+ *
+ * \param[in]   p_card      : SDIO设备
+ * \param[in]   rca         : 存储卡相对地址
+ * \param[out]  p_scr       : 寄存器scr值
+ *
+ * \retval AM_OK            : 传输成功
+ * \retval -AM_ENOMEM       : 内存空间不足
+ * \retval -AM_ECANCELED    : 操作被取消
+ * \retval -AM_EIO          : SDIO总线I/O错误
+ * \retval -AM_EBUSY        : SDIO HOST忙，正在处理其他msg
+ * \retval -AM_EINVAL       : 参数错误
+ * \retval -AM_ETIME        : HOST处理超时
+ * \retval -AM_ENOTSUP      : HOST不支持该功能
+ */
+int am_sdcard_scr_get (am_sdcard_handle_t handle,
+                       uint32_t           rca,
+                       uint32_t          *p_scr);
 
 /**
  * \brief 设置存储卡总线宽度(CMD55 + ACMD6)
@@ -368,13 +455,13 @@ int aw_sdcard_csd_get (am_sdcard_handle_t handle,
  */
 int am_sdcard_bus_width_set (am_sdcard_handle_t  handle,
                              uint32_t            rca,
-                             am_sdio_bus_width_t width);
+                             uint8_t             width);
 
 /**
  * \brief SD Card 设置块大小
  *
  * \param[in]  handle       : SD Card 句柄
- * \param[in]  blk_size     : 需要设置的块大小
+ * \param[in]  blk_size     : 需要设置的块大小（单位：字节）
  *
  * \retval AM_OK            : 传输成功
  * \retval -AM_ENOMEM       : 内存空间不足
@@ -387,70 +474,6 @@ int am_sdcard_bus_width_set (am_sdcard_handle_t  handle,
  */
 int am_sdcard_block_size_set(am_sdcard_handle_t handle,
                              uint32_t           blk_size);
-
-/**
- * \brief 同步从存储卡中读取数据块
- *
- * \param[in]  handle       : SDIO设备
- * \param[in]  p_buf        : 数据缓冲区
- * \param[in]  blk_start    : 起始块号
- * \param[in]  blk_num      : 块个数
- *
- * \retval AM_OK            : 传输成功
- * \retval -AM_ENOMEM       : 内存空间不足
- * \retval -AM_ECANCELED    : 操作被取消
- * \retval -AM_EIO          : SDIO总线I/O错误
- * \retval -AM_EBUSY        : SDIO HOST忙，正在处理其他msg
- * \retval -AM_EINVAL       : 参数错误
- * \retval -AM_ETIME        : HOST处理超时
- * \retval -AM_ENOTSUP      : HOST不支持该功能
- */
-int am_sdcard_blocks_read (am_sdcard_handle_t handle,
-                           uint8_t           *p_buf,
-                           uint32_t           blk_start,
-                           uint32_t           blk_num);
-
-/**
- * \brief 同步从存储卡中写入数据块
- *
- * \param[in]  handle       : SD Card 句柄
- * \param[in]  p_buf        : 数据缓冲区
- * \param[in]  blk_start    : 起始块号
- * \param[in]  blk          : 需要写入的块数量
- *
- * \retval AM_OK            : 传输成功
- * \retval -AM_ENOMEM       : 内存空间不足
- * \retval -AM_ECANCELED    : 操作被取消
- * \retval -AM_EIO          : SDIO总线I/O错误
- * \retval -AM_EBUSY        : SDIO HOST忙，正在处理其他msg
- * \retval -AM_EINVAL       : 参数错误
- * \retval -AM_ETIME        : HOST处理超时
- * \retval -AM_ENOTSUP      : HOST不支持该功能
- */
-int am_sdcard_blocks_write (am_sdcard_handle_t  handle,
-                            uint8_t            *p_buf,
-                            uint32_t            blk_start,
-                            uint32_t            blk_num);
-
-/**
- * \brief 擦除块(CMD38)
- *
- * \param[in]  handle       : SD Card 句柄
- * \param[in]  blk_start    : 需要擦除的起始块号
- * \param[in]  blk_num      : 需要擦除的块数量
- *
- * \retval AM_OK            : 传输成功
- * \retval -AM_ENOMEM       : 内存空间不足
- * \retval -AM_ECANCELED    : 操作被取消
- * \retval -AM_EIO          : SDIO总线I/O错误
- * \retval -AM_EBUSY        : SDIO HOST忙，正在处理其他msg
- * \retval -AM_EINVAL       : 参数错误
- * \retval -AM_ETIME        : HOST处理超时
- * \retval -AM_ENOTSUP      : HOST不支持该功能
- */
-int am_sdcard_blocks_erase (am_sdcard_handle_t handle,
-                            uint32_t           blk_start,
-                            uint32_t           blk_num);
 
 /**
  * \brief 停止传输(CMD12)
@@ -468,10 +491,6 @@ int am_sdcard_blocks_erase (am_sdcard_handle_t handle,
  */
 int am_sdcard_transfer_stop (am_sdcard_handle_t handle);
 
-
-int am_sdcard_sdinfo_get (am_sdcard_handle_t handle,
-                          am_sdcard_info_t  *p_sdinfo);
-
 /**
  * \brief 获取卡状态(CMD13)
  *
@@ -488,9 +507,9 @@ int am_sdcard_sdinfo_get (am_sdcard_handle_t handle,
  * \retval -AM_ETIME        : HOST处理超时
  * \retval -AM_ENOTSUP      : HOST不支持该功能
  */
-int am_sdcard_status_reg_get (am_sdcard_handle_t handle,
-                              uint32_t           rca,
-                              uint32_t          *p_status);
+int am_sdcard_status_get (am_sdcard_handle_t handle,
+                          uint32_t           rca,
+                          uint32_t          *p_status);
 
 /**
  * \brief SDCard 设备初始化
@@ -501,9 +520,9 @@ int am_sdcard_status_reg_get (am_sdcard_handle_t handle,
  *
  * \return 成功则返回SDCard设备操作句柄，失败返回NULL
  */
-am_sdcard_handle_t am_sdcard_sdio_init(am_sdcard_dev_t      *p_dev,
-                                       am_sdcard_devinfo_t  *p_devinfo,
-                                       am_sdio_handle_t      sdio_handle);
+am_sdcard_handle_t am_sdcard_init(am_sdcard_dev_t           *p_dev,
+                                  const am_sdcard_devinfo_t *p_devinfo,
+                                  am_sdio_handle_t           sdio_handle);
 
 /**
  * \brief SDCard 设备解初始化
@@ -512,16 +531,13 @@ am_sdcard_handle_t am_sdcard_sdio_init(am_sdcard_dev_t      *p_dev,
  *
  * \retval AM_OK操作成功，否则失败
  */
-int am_sdcard_sdio_deinit (am_sdcard_handle_t handle);
+int am_sdcard_deinit (am_sdcard_handle_t handle);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __AM_SDIO_H */
+#endif /* __AM_SDCARD_H */
 
 /*end of file */
-
-
-
 

@@ -17,7 +17,7 @@
  *
  * \internal
  * \par Modification history
- * - 1.00 17-07-13  tee, first implementation
+ * - 1.00 19-06-13  ipk, first implementation
  * \endinternal
  */
 #include "ametal.h"
@@ -31,30 +31,43 @@
 #include "am_zmf159_inst_init.h"
 
 /**
- * \addtogroup am_if_src_hwconf_miniport_595
- * \copydoc am_hwconf_miniport_595.c
+ * \addtogroup am_if_src_hwconf_zmf159_sdcard
+ * \copydoc am_hwconf_zmf159_sdcard.c
  * @{
  */
 
-/*******************************************************************************
-   Public functions
-*******************************************************************************/
-static  am_sdcard_devinfo_t __g_sdcard_info = {
+/**
+ * \brief SDCARD 设备信息实例
+ */
+static const am_sdcard_devinfo_t __g_sdcard_info = {
+
+        /** \brief SDIO SD 4线模式 */
         AM_SDIO_SD_4B_M,
-        512,
+
+        /** \brief SDIO速率*/
+        1000000,
+
+        /** \brief SDIO CRC使能标志*/
+        AM_TRUE,
+
+        /** \brief SD Card支持的ORC（电压范围） */
         (AM_SD_OCR_VDD_27_28 | AM_SD_OCR_VDD_28_29 | AM_SD_OCR_VDD_29_30 |
          AM_SD_OCR_VDD_30_31 | AM_SD_OCR_VDD_31_32 | AM_SD_OCR_VDD_32_33 |
          AM_SD_OCR_VDD_33_34 | AM_SD_OCR_VDD_34_35 | AM_SD_OCR_VDD_35_36),
 };
+
+/**
+ * \brief SDCARD 设备实例
+ */
 static am_sdcard_dev_t    __g_sdcard_dev;
 
 /* 实例初始化 */
 am_sdcard_handle_t am_sdcard_inst_init (void)
 {
 
-    return  am_sdcard_sdio_init(&__g_sdcard_dev,
-                                &__g_sdcard_info,
-                                am_zmf159_sdio_inst_init());
+    return  am_sdcard_init(&__g_sdcard_dev,
+                           &__g_sdcard_info,
+                           am_zmf159_sdio_inst_init());
 
 }
 

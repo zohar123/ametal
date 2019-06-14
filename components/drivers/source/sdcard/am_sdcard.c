@@ -26,207 +26,185 @@
 #include "am_delay.h"
 #include "string.h"
 
-/** \brief current state */
-#define AM_SD_R1_CURRENT_STATE(x)      ((x & 0x00001E00) >> 9)
+#define __SDIO_SPI_SWAB32(x) ((uint32_t)(\
+            (((uint32_t)(x) & (uint32_t)0x000000ffUL) << 24) | \
+            (((uint32_t)(x) & (uint32_t)0x0000ff00UL) <<  8) | \
+            (((uint32_t)(x) & (uint32_t)0x00ff0000UL) >>  8) | \
+            (((uint32_t)(x) & (uint32_t)0xff000000UL) >> 24)))
 
-static void __sdcard_csdinfo_get(am_sdcard_info_t *p_sd_card_info, uint32_t *p_response)
+/* SD table */
+static const uint32_t __gp_tran_exp[] = {
+    10000, 100000, 1000000, 10000000, 0, 0, 0, 0
+};
+
+static const uint8_t __gp_tran_mant[] = {
+    0,  10, 12, 13, 15, 20, 25, 30,
+    35, 40, 45, 50, 55, 60, 70, 80,
+};
+
+static uint32_t __get_bits_str (uint32_t *p_str,
+                                uint32_t  start,
+                                uint8_t   len)
 {
-    uint8_t tmp = 0;
+    uint32_t  mask;
+    uint32_t  index;
+    uint8_t   shift;
+    uint32_t  value;
 
-    /*!< Byte 0 */
-    tmp = (uint8_t)((p_response[0] & 0xFF000000) >> 24);
-    p_sd_card_info->csd.csd_struct  = (tmp & 0xC0) >> 6;
-    p_sd_card_info->csd.sys_specversion = (tmp & 0x3C) >> 2;
-    p_sd_card_info->csd.Reserved1 = tmp & 0x03;
+    mask  = (int)((len < 32) ? (1 << len) : 0) - 1;
+    index = start / 32;
+    shift = start & 31;
+    value = p_str[index] >> shift;
 
-    /*!< Byte 1 */
-    tmp = (uint8_t)((p_response[0] & 0x00FF0000) >> 16);
-    p_sd_card_info->csd.taac = tmp;
-
-    /*!< Byte 2 */
-    tmp = (uint8_t)((p_response[0] & 0x0000FF00) >> 8);
-    p_sd_card_info->csd.nsac = tmp;
-
-    /*!< Byte 3 */
-    tmp = (uint8_t)(p_response[0] & 0x000000FF);
-    p_sd_card_info->csd.max_bus_clkfrec = tmp;
-
-    /*!< Byte 4 */
-    tmp = (uint8_t)((p_response[1] & 0xFF000000) >> 24);
-    p_sd_card_info->csd.card_comd_classes = tmp << 4;
-
-    /*!< Byte 5 */
-    tmp = (uint8_t)((p_response[1] & 0x00FF0000) >> 16);
-    p_sd_card_info->csd.card_comd_classes |= (tmp & 0xF0) >> 4;
-    p_sd_card_info->csd.rdblocklen = tmp & 0x0F;
-
-    /*!< Byte 6 */
-    tmp = (uint8_t)((p_response[1] & 0x0000FF00) >> 8);
-    p_sd_card_info->csd.part_block_read = (tmp & 0x80) >> 7;
-    p_sd_card_info->csd.wrblock_misalign = (tmp & 0x40) >> 6;
-    p_sd_card_info->csd.rdblock_misalign = (tmp & 0x20) >> 5;
-    p_sd_card_info->csd.dsrimpl = (tmp & 0x10) >> 4;
-    p_sd_card_info->csd.Reserved2 = 0; /*!< Reserved */
-
-    if ((p_sd_card_info->type == AM_SDIO_STD_CAPACITY_SD_CARD_V1_1) ||
-        (p_sd_card_info->type == AM_SDIO_STD_CAPACITY_SD_CARD_V2_0))
-    {
-      p_sd_card_info->csd.device_size = (tmp & 0x03) << 10;
-
-      /*!< Byte 7 */
-      tmp = (uint8_t)(p_response[1] & 0x000000FF);
-      p_sd_card_info->csd.device_size |= (tmp) << 2;
-
-      /*!< Byte 8 */
-      tmp = (uint8_t)((p_response[2] & 0xFF000000) >> 24);
-      p_sd_card_info->csd.device_size |= (tmp & 0xC0) >> 6;
-
-      p_sd_card_info->csd.max_rd_current_vddmin = (tmp & 0x38) >> 3;
-      p_sd_card_info->csd.max_rd_current_vddmax = (tmp & 0x07);
-
-      /*!< Byte 9 */
-      tmp = (uint8_t)((p_response[2] & 0x00FF0000) >> 16);
-      p_sd_card_info->csd.max_wr_current_vddmin = (tmp & 0xE0) >> 5;
-      p_sd_card_info->csd.max_wr_current_vddmax = (tmp & 0x1C) >> 2;
-      p_sd_card_info->csd.device_size_mul = (tmp & 0x03) << 1;
-      /*!< Byte 10 */
-      tmp = (uint8_t)((p_response[2] & 0x0000FF00) >> 8);
-      p_sd_card_info->csd.device_size_mul |= (tmp & 0x80) >> 7;
-
-      p_sd_card_info->capacity = (p_sd_card_info->csd.device_size + 1) ;
-      p_sd_card_info->capacity *= (1 << (p_sd_card_info->csd.device_size_mul + 2));
-      p_sd_card_info->block_size = 1 << (p_sd_card_info->csd.rdblocklen);
-      p_sd_card_info->capacity *= p_sd_card_info->block_size;
+    if ((len + shift) > 32) {
+        value |= p_str[index + 1] << (32 - shift);
     }
-    else if (p_sd_card_info->type == AM_SDIO_HIGH_CAPACITY_SD_CARD)
-    {
-      /*!< Byte 7 */
-      tmp = (uint8_t)(p_response[1] & 0x000000FF);
-      p_sd_card_info->csd.device_size = (tmp & 0x3F) << 16;
-
-      /*!< Byte 8 */
-      tmp = (uint8_t)((p_response[2] & 0xFF000000) >> 24);
-
-      p_sd_card_info->csd.device_size |= (tmp << 8);
-
-      /*!< Byte 9 */
-      tmp = (uint8_t)((p_response[2] & 0x00FF0000) >> 16);
-
-      p_sd_card_info->csd.device_size |= (tmp);
-
-      /*!< Byte 10 */
-      tmp = (uint8_t)((p_response[2] & 0x0000FF00) >> 8);
-
-      p_sd_card_info->capacity = ((uint64_t)p_sd_card_info->csd.device_size + 1) * 512 * 1024;
-      p_sd_card_info->block_size = 512;
-    }
-
-    p_sd_card_info->csd.erase_grsize = (tmp & 0x40) >> 6;
-    p_sd_card_info->csd.erase_grmul = (tmp & 0x3F) << 1;
-
-    /*!< Byte 11 */
-    tmp = (uint8_t)(p_response[2] & 0x000000FF);
-    p_sd_card_info->csd.erase_grmul |= (tmp & 0x80) >> 7;
-    p_sd_card_info->csd.wrprotect_grsize = (tmp & 0x7F);
-
-    /*!< Byte 12 */
-    tmp = (uint8_t)((p_response[3] & 0xFF000000) >> 24);
-    p_sd_card_info->csd.wrprotect_grenable = (tmp & 0x80) >> 7;
-    p_sd_card_info->csd.man_deflecc = (tmp & 0x60) >> 5;
-    p_sd_card_info->csd.wrspeed_fact = (tmp & 0x1C) >> 2;
-    p_sd_card_info->csd.max_wrblocklen = (tmp & 0x03) << 2;
-
-    /*!< Byte 13 */
-    tmp = (uint8_t)((p_response[3] & 0x00FF0000) >> 16);
-    p_sd_card_info->csd.max_wrblocklen |= (tmp & 0xC0) >> 6;
-    p_sd_card_info->csd.write_block_pa_partial = (tmp & 0x20) >> 5;
-    p_sd_card_info->csd.reserved3 = 0;
-    p_sd_card_info->csd.content_protect_appli = (tmp & 0x01);
-
-    /*!< Byte 14 */
-    tmp = (uint8_t)((p_response[3] & 0x0000FF00) >> 8);
-    p_sd_card_info->csd.file_format_grouop = (tmp & 0x80) >> 7;
-    p_sd_card_info->csd.copy_flag = (tmp & 0x40) >> 6;
-    p_sd_card_info->csd.perm_wr_protect = (tmp & 0x20) >> 5;
-    p_sd_card_info->csd.temp_wr_protect = (tmp & 0x10) >> 4;
-    p_sd_card_info->csd.file_format = (tmp & 0x0C) >> 2;
-    p_sd_card_info->csd.ecc = (tmp & 0x03);
-
-    /*!< Byte 15 */
-    tmp = (uint8_t)(p_response[3] & 0x000000FF);
-    p_sd_card_info->csd.csd_crc = (tmp & 0xFE) >> 1;
-    p_sd_card_info->csd.reserved4 = 1;
-
+    value &= mask;
+    return value;
 }
 
-static void __sdcard_cidinfo_get(am_sdcard_info_t *p_sd_card_info, uint32_t *p_response)
+static int __sdcard_decode_cid (am_sdcard_mem_info_t *p_mem_info,
+                                uint32_t             *p_cid)
 {
-    uint8_t tmp = 0;
-    /*!< Byte 0 */
-    tmp = (uint8_t)((p_response[0] & 0xFF000000) >> 24);
-    p_sd_card_info->cid.manu_facturer_id = tmp;
+    if (NULL == p_mem_info || NULL == p_cid) {
+        return -AM_EINVAL;
+    }
+    memset(&(p_mem_info->cid), 0, sizeof(am_sdcard_cid_t));
+    if (p_mem_info->attribute & AM_SDCARD_MMC) {
+        switch (p_mem_info->csd.mmca_vsn) {
+        case 0: /* MMC v1.0 - v1.2 */
+        case 1: /* MMC v1.4 */
+            p_mem_info->cid.mid    = __get_bits_str(p_cid, 104, 24);
+            p_mem_info->cid.pnm[0] = __get_bits_str(p_cid, 96, 8);
+            p_mem_info->cid.pnm[1] = __get_bits_str(p_cid, 88, 8);
+            p_mem_info->cid.pnm[2] = __get_bits_str(p_cid, 80, 8);
+            p_mem_info->cid.pnm[3] = __get_bits_str(p_cid, 72, 8);
+            p_mem_info->cid.pnm[4] = __get_bits_str(p_cid, 64, 8);
+            p_mem_info->cid.pnm[5] = __get_bits_str(p_cid, 56, 8);
+            p_mem_info->cid.pnm[6] = __get_bits_str(p_cid, 48, 8);
+            p_mem_info->cid.hwrev  = __get_bits_str(p_cid, 44, 4);
+            p_mem_info->cid.fwrev  = __get_bits_str(p_cid, 40, 4);
+            p_mem_info->cid.psn    = __get_bits_str(p_cid, 16, 24);
+            p_mem_info->cid.month  = __get_bits_str(p_cid, 12, 4);
+            p_mem_info->cid.year   = __get_bits_str(p_cid, 8, 4) + 1997;
+            break;
 
-    /*!< Byte 1 */
-    tmp = (uint8_t)((p_response[0] & 0x00FF0000) >> 16);
-    p_sd_card_info->cid.oem_appli_id = tmp << 8;
+        case 2: /* MMC v2.0 - v2.2 */
+        case 3: /* MMC v3.1 - v3.3 */
+        case 4: /* MMC v4 */
+            p_mem_info->cid.mid    = __get_bits_str(p_cid, 120, 8);
+            p_mem_info->cid.oid    = __get_bits_str(p_cid, 104, 16);
+            p_mem_info->cid.pnm[0] = __get_bits_str(p_cid, 96, 8);
+            p_mem_info->cid.pnm[1] = __get_bits_str(p_cid, 88, 8);
+            p_mem_info->cid.pnm[2] = __get_bits_str(p_cid, 80, 8);
+            p_mem_info->cid.pnm[3] = __get_bits_str(p_cid, 72, 8);
+            p_mem_info->cid.pnm[4] = __get_bits_str(p_cid, 64, 8);
+            p_mem_info->cid.pnm[5] = __get_bits_str(p_cid, 56, 8);
+            p_mem_info->cid.prv    = __get_bits_str(p_cid, 48, 8);
+            p_mem_info->cid.psn    = __get_bits_str(p_cid, 16, 32);
+            p_mem_info->cid.month  = __get_bits_str(p_cid, 12, 4);
+            p_mem_info->cid.year   = __get_bits_str(p_cid, 8, 4) + 1997;
+            break;
 
-    /*!< Byte 2 */
-    tmp = (uint8_t)((p_response[0] & 0x000000FF00) >> 8);
-    p_sd_card_info->cid.oem_appli_id |= tmp;
+        default:
+            return -AM_EINVAL;
+        }
 
-    /*!< Byte 3 */
-    tmp = (uint8_t)(p_response[0] & 0x000000FF);
-    p_sd_card_info->cid.prod_name1 = tmp << 24;
+    } else {
+        p_mem_info->cid.mid    = __get_bits_str(p_cid, 120, 8);
+        p_mem_info->cid.oid    = __get_bits_str(p_cid, 104, 16);
+        p_mem_info->cid.pnm[0] = __get_bits_str(p_cid, 96, 8);
+        p_mem_info->cid.pnm[1] = __get_bits_str(p_cid, 88, 8);
+        p_mem_info->cid.pnm[2] = __get_bits_str(p_cid, 80, 8);
+        p_mem_info->cid.pnm[3] = __get_bits_str(p_cid, 72, 8);
+        p_mem_info->cid.pnm[4] = __get_bits_str(p_cid, 64, 8);
+        p_mem_info->cid.prv    = __get_bits_str(p_cid, 56, 8);
+        p_mem_info->cid.psn    = __get_bits_str(p_cid, 24, 32);
+        p_mem_info->cid.year   = __get_bits_str(p_cid, 12, 8) + 2000;
+        p_mem_info->cid.month  = __get_bits_str(p_cid, 8, 4);
+    }
+    return AM_OK;
+}
 
-    /*!< Byte 4 */
-    tmp = (uint8_t)((p_response[1] & 0xFF000000) >> 24);
-    p_sd_card_info->cid.prod_name1 |= tmp << 16;
 
-    /*!< Byte 5 */
-    tmp = (uint8_t)((p_response[1] & 0x00FF0000) >> 16);
-    p_sd_card_info->cid.prod_name1 |= tmp << 8;
+static int __sdcard_decode_csd (am_sdcard_mem_info_t *p_mem_info,
+                                uint32_t             *p_csd)
+{
+    uint32_t e, m, r;
+    uint8_t  structure;
 
-    /*!< Byte 6 */
-    tmp = (uint8_t)((p_response[1] & 0x0000FF00) >> 8);
-    p_sd_card_info->cid.prod_name1 |= tmp;
+    if (NULL == p_mem_info   ||
+        NULL == p_csd) {
+        return -AM_EINVAL;
+    }
+    structure = __get_bits_str(p_csd, 126, 2);
+    if (p_mem_info->attribute & AM_SDCARD_MMC) {
+        if (structure == 0) {
+            /* 该版本无法识别 */
+            return -AM_EINVAL;
+        }
+        p_mem_info->csd.mmca_vsn   = __get_bits_str(p_csd, 122, 4);
 
-    /*!< Byte 7 */
-    tmp = (uint8_t)(p_response[1] & 0x000000FF);
-    p_sd_card_info->cid.prod_name2 = tmp;
+        m = __get_bits_str(p_csd, 99, 4);
+        e = __get_bits_str(p_csd, 96, 3);
+        p_mem_info->csd.max_tr_speed  = __gp_tran_exp[e] * __gp_tran_mant[m];
+        p_mem_info->csd.cmd_class     = __get_bits_str(p_csd, 84, 12);
 
-    /*!< Byte 8 */
-    tmp = (uint8_t)((p_response[2] & 0xFF000000) >> 24);
-    p_sd_card_info->cid.prod_rev = tmp;
+        p_mem_info->csd.sector_size = 512;
+        m = __get_bits_str(p_csd, 62, 12);
+        e = __get_bits_str(p_csd, 47, 3);
+        r = __get_bits_str(p_csd, 80, 4);
+        p_mem_info->csd.sector_cnt = ((1 + m) << (e + r - 7));
 
-    /*!< Byte 9 */
-    tmp = (uint8_t)((p_response[2] & 0x00FF0000) >> 16);
-    p_sd_card_info->cid.prod_sn = tmp << 24;
+        e = __get_bits_str(p_csd, 22, 4);
 
-    /*!< Byte 10 */
-    tmp = (uint8_t)((p_response[2] & 0x0000FF00) >> 8);
-    p_sd_card_info->cid.prod_sn |= tmp << 16;
+        if (e >= 9) {
+            m = __get_bits_str(p_csd, 42, 5);
+            r = __get_bits_str(p_csd, 37, 5);
+            p_mem_info->csd.block_size = (m + 1) * (r + 1);
+            p_mem_info->csd.block_size <<= e - 9;
+        }
 
-    /*!< Byte 11 */
-    tmp = (uint8_t)(p_response[2] & 0x000000FF);
-    p_sd_card_info->cid.prod_sn |= tmp << 8;
+    } else {
+        switch (structure) {
+            case 0:
+                m = __get_bits_str(p_csd, 99, 4);
+                e = __get_bits_str(p_csd, 96, 3);
+                p_mem_info->csd.max_tr_speed = __gp_tran_exp[e] * __gp_tran_mant[m];
+                p_mem_info->csd.cmd_class = __get_bits_str(p_csd, 84, 12);
 
-    /*!< Byte 12 */
-    tmp = (uint8_t)((p_response[3] & 0xFF000000) >> 24);
-    p_sd_card_info->cid.prod_sn |= tmp;
+                p_mem_info->csd.sector_size = 512;
+                m = __get_bits_str(p_csd, 62, 12);
+                e = __get_bits_str(p_csd, 47, 3);
+                r = __get_bits_str(p_csd, 80, 4);
+                p_mem_info->csd.sector_cnt = ((1 + m) << (e + r - 7));
 
-    /*!< Byte 13 */
-    tmp = (uint8_t)((p_response[3] & 0x00FF0000) >> 16);
-    p_sd_card_info->cid.reserved1 |= (tmp & 0xF0) >> 4;
-    p_sd_card_info->cid.manufact_date = (tmp & 0x0F) << 8;
 
-    /*!< Byte 14 */
-    tmp = (uint8_t)((p_response[3] & 0x0000FF00) >> 8);
-    p_sd_card_info->cid.manufact_date |= tmp;
+                if (__get_bits_str(p_csd, 46, 1)) {
+                    p_mem_info->csd.block_size = 1;
+                } else {
+                    p_mem_info->csd.block_size = __get_bits_str(p_csd, 39, 7)+1;
+                    p_mem_info->csd.block_size <<= (__get_bits_str(p_csd, 22, 4)-9);
+                }
 
-    /*!< Byte 15 */
-    tmp = (uint8_t)(p_response[3] & 0x000000FF);
-    p_sd_card_info->cid.cid_crc = (tmp & 0xFE) >> 1;
-    p_sd_card_info->cid.reserved2 = 1;
+                break;
+
+            case 1:
+                m = __get_bits_str(p_csd, 99, 4);
+                e = __get_bits_str(p_csd, 96, 3);
+                p_mem_info->csd.max_tr_speed = __gp_tran_exp[e] * __gp_tran_mant[m];
+                p_mem_info->csd.cmd_class    = __get_bits_str(p_csd, 84, 12);
+
+                p_mem_info->csd.sector_size = 512;
+                m = __get_bits_str(p_csd, 48, 22);
+                p_mem_info->csd.sector_cnt = (1 + m) << 10;
+                p_mem_info->csd.block_size = 1;
+                break;
+            default:
+                return -AM_EINVAL;
+        }
+    }
+    return AM_OK;
 }
 
 static int __sdcard_hard_init (am_sdcard_dev_t *p_dev)
@@ -235,6 +213,7 @@ static int __sdcard_hard_init (am_sdcard_dev_t *p_dev)
     uint32_t              ocr;
     uint32_t              current_status = 0;
     uint32_t              rsp[4]         = {0};
+    uint32_t              cid[4]         = {0};
     am_sdio_timeout_obj_t timeout;
 
     ret = am_sdcard_rest(p_dev);
@@ -244,10 +223,10 @@ static int __sdcard_hard_init (am_sdcard_dev_t *p_dev)
 
     ocr = p_dev->p_devinfo->ocr_valid;
     if (am_sdcard_send_if_cond(p_dev, ocr) == AM_OK) {
-        p_dev->sdcard_info.type = AM_SDIO_STD_CAPACITY_SD_CARD_V2_0;
+        p_dev->sdcard_info.attribute |= AM_SDCARD_SDV2X;
         ocr |= AM_SD_OCR_CCS;
     } else {
-        p_dev->sdcard_info.type = AM_SDIO_STD_CAPACITY_SD_CARD_V1_1;
+        p_dev->sdcard_info.attribute |= AM_SDCARD_SDV1X;
     }
 
     am_sdio_timeout_set(&timeout, 200);
@@ -264,41 +243,39 @@ static int __sdcard_hard_init (am_sdcard_dev_t *p_dev)
     } while(ret != AM_OK);
 
     if (ocr & AM_SD_OCR_CCS) {
-        p_dev->sdcard_info.type = AM_SDIO_HIGH_CAPACITY_SD_CARD;
+        p_dev->sdcard_info.attribute |= AM_SDCARD_SDHC;
         AM_DBG_INFO("sd card is High Capacity SD Memory Card\n");
+    } else {
+        p_dev->sdcard_info.attribute |= AM_SDCARD_SDSC;
     }
 
-    if (AM_SDIO_SECURE_DIGITAL_IO_CARD != p_dev->sdcard_info.type) {
+    ret = am_sdcard_all_cid_get(p_dev, cid);
 
-        ret = am_sdcard_all_cid_get(p_dev, rsp);
-
-        if (ret != AM_OK) {
-            return ret;
-        }
-
-        __sdcard_cidinfo_get(&p_dev->sdcard_info, rsp);
+    if (ret != AM_OK) {
+        return ret;
     }
 
-    if ((AM_SDIO_STD_CAPACITY_SD_CARD_V1_1    == p_dev->sdcard_info.type) ||
-        (AM_SDIO_STD_CAPACITY_SD_CARD_V2_0    == p_dev->sdcard_info.type) ||
-        (AM_SDIO_SECURE_DIGITAL_IO_COMBO_CARD == p_dev->sdcard_info.type) ||
-        (AM_SDIO_HIGH_CAPACITY_SD_CARD        == p_dev->sdcard_info.type)) {
+    p_dev->sdcard_info.ocr = ocr;
 
-        ret = am_sdio_relative_addr_get(p_dev, &(p_dev->sdcard_info.rca));
-        if (ret != AM_OK) {
-            return ret;
-        }
+    ret = am_sdio_relative_addr_get(p_dev, &(p_dev->sdcard_info.rca));
+    if (ret != AM_OK) {
+        return ret;
     }
 
-    if (AM_SDIO_SECURE_DIGITAL_IO_CARD != p_dev->sdcard_info.type) {
+    ret = am_sdcard_csd_get(p_dev, p_dev->sdcard_info.rca, rsp);
 
-        ret = aw_sdcard_csd_get(p_dev, p_dev->sdcard_info.rca, rsp);
+    if (ret != AM_OK) {
+        return ret;
+    }
 
-        if (ret != AM_OK) {
-            return ret;
-        }
+    ret = __sdcard_decode_cid(&p_dev->sdcard_info, cid);
+    if (ret != AM_OK) {
+        return ret;
+    }
 
-        __sdcard_csdinfo_get(&p_dev->sdcard_info, rsp);
+    ret = __sdcard_decode_csd(&p_dev->sdcard_info, rsp);
+    if (ret != AM_OK) {
+        return ret;
     }
 
     am_sdio_timeout_set(&timeout, 10);
@@ -308,7 +285,7 @@ static int __sdcard_hard_init (am_sdcard_dev_t *p_dev)
             return -AM_ETIME;
         }
 
-        ret = am_sdcard_status_reg_get(p_dev,
+        ret = am_sdcard_status_get(p_dev,
                                        p_dev->sdcard_info.rca,
                                        &current_status);
 
@@ -341,7 +318,7 @@ static int __sdcard_hard_init (am_sdcard_dev_t *p_dev)
             return -AM_ETIME;
         }
 
-        ret = am_sdcard_status_reg_get(p_dev,
+        ret = am_sdcard_status_get(p_dev,
                                        p_dev->sdcard_info.rca,
                                        &current_status);
 
@@ -360,13 +337,16 @@ static int __sdcard_hard_init (am_sdcard_dev_t *p_dev)
         return ret;
     }
 
-    ret = am_sdcard_block_size_set(p_dev, p_dev->sdio_dev.blk_size);
+    ret = am_sdcard_block_size_set(p_dev,
+                                   p_dev->sdcard_info.csd.sector_size);
     if (ret != AM_OK) {
         return ret;
     }
 
-    AM_DBG_INFO("sd card init successful block size 0x%x \r\n",
-                p_dev->sdcard_info.block_size);
+    AM_DBG_INFO("sd card block size %d bytes\r\n",
+                p_dev->sdcard_info.csd.sector_size);
+    AM_DBG_INFO("sd card capacity %d MB\r\n",
+                p_dev->sdcard_info.csd.sector_cnt / 2 / 1024);
 
     return AM_OK;
 }
@@ -520,7 +500,7 @@ int am_sdcard_all_cid_get (am_sdcard_handle_t handle,
  * \brief 获取存储卡相对地址(CMD3)
  */
 int am_sdio_relative_addr_get (am_sdcard_handle_t handle,
-                               uint16_t          *p_rca)
+                               uint32_t          *p_rca)
 {
     uint32_t          rsp[4] = {0};
     int               ret;
@@ -583,7 +563,7 @@ int am_sdcard_card_select (am_sdcard_handle_t handle,
 /**
  * \brief 获取存储卡寄存器CSD值(CMD9)
  */
-int aw_sdcard_csd_get (am_sdcard_handle_t handle,
+int am_sdcard_csd_get (am_sdcard_handle_t handle,
                        uint32_t           rca,
                        uint32_t          *p_csd)
 {
@@ -600,11 +580,24 @@ int aw_sdcard_csd_get (am_sdcard_handle_t handle,
     } else {
         arg = rca << 16;
     }
-    ret = am_sdio_cmd_write(&handle->sdio_dev,
-                            AM_SDIO_CMD9,
-                            arg,
-                            AM_SDIO_RESPONSE_LONG,
-                            rsp);
+
+    if (handle->sdio_dev.mode == AM_SDIO_SPI_M) {
+        am_sdio_write_then_read(&handle->sdio_dev,
+                                AM_SDIO_CMD9,
+                                arg,
+                                AM_SDIO_RESPONSE_SHORT,
+                                rsp,
+                                p_csd,
+                                16,
+                                1);
+    } else {
+        ret = am_sdio_cmd_write(&handle->sdio_dev,
+                                AM_SDIO_CMD9,
+                                arg,
+                                AM_SDIO_RESPONSE_LONG,
+                                rsp);
+    }
+
     if (ret != AM_OK) {
         return ret;
     }
@@ -613,17 +606,69 @@ int aw_sdcard_csd_get (am_sdcard_handle_t handle,
         if ((rsp[0] & AM_SDIO_SPI_R1_ALL_ERROR) != 0) {
             return -AM_EIO;
         } else {
-//            uint8_t  i;
-//            uint32_t temp;
-//            for (i = 0; i < 2; i++) {
-//                temp       = __SDIO_SPI_SWAB32(p_csd[i]);
-//                p_csd[i]   = __SDIO_SPI_SWAB32(p_csd[3-i]);
-//                p_csd[3-i] = temp;
-//            }
+            uint8_t  i;
+            uint32_t temp;
+            for (i = 0; i < 2; i++) {
+                temp       = __SDIO_SPI_SWAB32(p_csd[i]);
+                p_csd[i]   = __SDIO_SPI_SWAB32(p_csd[3-i]);
+                p_csd[3-i] = temp;
+            }
         }
     } else {
         memcpy(p_csd, rsp, 16);
     }
+
+    return AM_OK;
+}
+
+/**
+ * \brief 获取存储卡寄存器SCR值(CMD55 + ACMD51)
+ */
+int am_sdcard_scr_get (am_sdcard_handle_t handle,
+                       uint32_t           rca,
+                       uint32_t          *p_scr)
+{
+    uint32_t             rsp1[4];
+    uint32_t             rsp2[4];
+    int                  ret;
+    uint32_t             arg;
+    uint32_t             temp;
+
+    if (NULL == handle || NULL == p_scr) {
+        return -AM_EINVAL;
+    }
+
+    arg = (handle->sdio_dev.mode != AM_SDIO_SPI_M) ? (rca << 16) : 0;
+
+    ret = am_sdio_cmd_write(&handle->sdio_dev,
+                            AM_SDIO_CMD55,
+                            arg,
+                            AM_SDIO_RESPONSE_SHORT,
+                            rsp1);
+    if (ret != AM_OK) {
+        return ret;
+    }
+
+    ret = am_sdio_write_then_read(&handle->sdio_dev,
+                                  AM_SDIO_CMD51,
+                                  0,
+                                  AM_SDIO_RESPONSE_SHORT,
+                                  rsp2,
+                                  p_scr,
+                                  8,
+                                  1);
+    if (ret != AM_OK) {
+        return ret;
+    }
+
+    if ((handle->sdio_dev.mode != AM_SDIO_SPI_M) &&
+        !(rsp1[0] & AM_SDIO_R1_APP_CMD)) {
+        return -AM_EIO;
+    }
+
+    temp     = __SDIO_SPI_SWAB32(p_scr[0]);
+    p_scr[0] = __SDIO_SPI_SWAB32(p_scr[1]);
+    p_scr[1] = temp;
 
     return AM_OK;
 }
@@ -656,10 +701,10 @@ int am_sdcard_bus_width_set (am_sdcard_handle_t handle,
     }
 
     if ((handle->sdio_dev.mode == AM_SDIO_SD_1B_M) &&
-        (width == AM_SDIO_BUS_WIDTH_1B)) {
+        (width == AM_SDIO_SD_1B_M)) {
         arg = 0;
     } else if ((handle->sdio_dev.mode == AM_SDIO_SD_4B_M) &&
-               (width == AM_SDIO_BUS_WIDTH_4B)) {
+               (width == AM_SDIO_SD_4B_M)) {
         arg = 2;
     } else {
         return -AM_EINVAL;
@@ -711,7 +756,7 @@ int am_sdcard_block_size_set(am_sdcard_handle_t handle,
     int               ret;
 
     if (handle == NULL) {
-        return AM_ERROR;
+        return -AM_EINVAL;
     }
 
     ret = am_sdio_cmd_write(&handle->sdio_dev,
@@ -720,7 +765,7 @@ int am_sdcard_block_size_set(am_sdcard_handle_t handle,
                             AM_SDIO_RESPONSE_SHORT,
                             rsp);
     if (ret == AM_OK) {
-        handle->sdio_dev.blk_size = blk_size;
+        handle->blk_size = blk_size;
     }
     return ret;
 }
@@ -735,26 +780,48 @@ int am_sdcard_blocks_read (am_sdcard_handle_t handle,
 {
     int               ret;
     uint32_t          addr;
+    uint8_t           cmd;
+    uint32_t          rsp[4];
 
     if (handle == NULL || p_buf == NULL) {
         return -AM_EINVAL;
     }
 
-    if (handle->sdcard_info.type == AM_SDIO_HIGH_CAPACITY_SD_CARD)
+    if ((handle->sdcard_info.attribute & AM_SDCARD_SDHC) ||
+        (handle->sdcard_info.attribute & AM_SDCARD_SDXC))
     {
-        handle->sdio_dev.blk_size = 512;
-        addr                      = blk_start;
+        if (handle->blk_size != 512) {
+            return -AM_ENOTSUP;
+        }
+        addr             = blk_start;
     } else {
-        addr = blk_start << 9;
+        addr = blk_start * handle->blk_size;
     }
 
-    ret = am_sdio_blocks_read(&handle->sdio_dev,
-                              p_buf,
-                              addr,
-                              blk_num);
+    cmd = (blk_num > 1) ? AM_SDIO_CMD18 : AM_SDIO_CMD17;
+    ret = am_sdio_write_then_read(&handle->sdio_dev,
+                                  cmd,
+                                  addr,
+                                  AM_SDIO_RESPONSE_SHORT,
+                                  rsp,
+                                  p_buf,
+                                  handle->blk_size,
+                                  blk_num);
     if (ret != AM_OK) {
         return ret;
     }
+
+    if (handle->p_devinfo->mode == AM_SDIO_SPI_M) {
+        if ((rsp[0] & (AM_SDIO_SPI_R1_IN_IDLE_STATE |
+                        AM_SDIO_SPI_R1_ALL_ERROR)) != 0) {
+            return -AM_EIO;
+        }
+    } else {
+        if ((rsp[0] & 0xFFFF0000) != 0) {
+            return -AM_EIO;
+        }
+    }
+
     if (blk_num > 1) {
         am_sdcard_transfer_stop(handle);
     }
@@ -773,27 +840,48 @@ int am_sdcard_blocks_write (am_sdcard_handle_t  handle,
     int                   ret;
     uint32_t              status;
     uint32_t              addr;
+    uint8_t               cmd;
+    uint32_t              rsp[4];
     am_sdio_timeout_obj_t timeout;
 
     if (handle == NULL || p_buf == NULL) {
         return -AM_EINVAL;
     }
 
-    if (handle->sdcard_info.type == AM_SDIO_HIGH_CAPACITY_SD_CARD)
+    if ((handle->sdcard_info.attribute & AM_SDCARD_SDHC) ||
+        (handle->sdcard_info.attribute & AM_SDCARD_SDXC))
     {
-        handle->sdio_dev.blk_size = 512;
-        addr                      = blk_start;
+        if (handle->blk_size != 512) {
+            return -AM_ENOTSUP;
+        }
+        addr             = blk_start;
     } else {
-        addr = blk_start << 9;
+        addr = blk_start * handle->blk_size;
     }
 
-    ret = am_sdio_blocks_write(&handle->sdio_dev,
-                               p_buf,
-                               addr,
-                               blk_num);
+    cmd = (blk_num > 1) ? AM_SDIO_CMD25 : AM_SDIO_CMD24;
+    ret = am_sdio_write_then_write(&handle->sdio_dev,
+                                   cmd,
+                                   addr,
+                                   AM_SDIO_RESPONSE_SHORT,
+                                   rsp,
+                                   p_buf,
+                                   handle->blk_size,
+                                   blk_num);
 
     if (ret != AM_OK) {
         return ret;
+    }
+
+    if (handle->p_devinfo->mode == AM_SDIO_SPI_M) {
+        if ((rsp[0] & (AM_SDIO_SPI_R1_IN_IDLE_STATE |
+                        AM_SDIO_SPI_R1_ALL_ERROR)) != 0) {
+            return -AM_EIO;
+        }
+    } else {
+        if ((rsp[0] & 0xFFFF0000) != 0) {
+            return -AM_EIO;
+        }
     }
 
     if (blk_num > 1) {
@@ -807,7 +895,7 @@ int am_sdcard_blocks_write (am_sdcard_handle_t  handle,
         }
 
         /* get status of the card */
-        ret = am_sdcard_status_reg_get(handle,
+        ret = am_sdcard_status_get(handle,
                                        handle->sdcard_info.rca,
                                        &status);
         if (ret != AM_OK){
@@ -821,7 +909,7 @@ int am_sdcard_blocks_write (am_sdcard_handle_t  handle,
             break;
         } else {
             if ((status & AM_SDIO_R1_READY_FOR_DATA) &&
-                (AM_SD_R1_CURRENT_STATE(status) != AM_SDIO_R1_STATE_PRG)) {
+                (AM_SDIO_R1_CURRENT_STATE(status) != AM_SDIO_R1_STATE_PRG)) {
                 break;
             }
         }
@@ -843,44 +931,40 @@ int am_sdcard_blocks_erase (am_sdcard_handle_t handle,
     uint32_t         temp;
     int              ret;
     uint32_t         addr_start;
-    uint16_t         blk_size   = handle->sdio_dev.blk_size;
+    uint16_t         blk_size   = handle->blk_size;
 
     am_sdio_timeout_obj_t timeout;
 
-    if (handle == NULL) {
+    if (handle == NULL || blk_num <= 0) {
         return -AM_EINVAL;
     }
 
-    if (handle->sdcard_info.type == AM_SDIO_HIGH_CAPACITY_SD_CARD)
+    if ((handle->sdcard_info.attribute & AM_SDCARD_SDHC) ||
+        (handle->sdcard_info.attribute & AM_SDCARD_SDXC))
     {
         addr_start = blk_start;
         addr_end   = addr_start + blk_num - 1;
     } else {
-        addr_start = blk_start << 9;
+        addr_start = blk_start * blk_size;
         addr_end   = addr_start + blk_num * blk_size - 1;
     }
 
-    if ((AM_SDIO_STD_CAPACITY_SD_CARD_V1_1 == handle->sdcard_info.type) ||
-       (AM_SDIO_STD_CAPACITY_SD_CARD_V2_0  == handle->sdcard_info.type) ||
-       (AM_SDIO_HIGH_CAPACITY_SD_CARD      == handle->sdcard_info.type)) {
+    ret = am_sdio_cmd_write(&handle->sdio_dev,
+                            AM_SDIO_CMD32,
+                            addr_start,
+                            AM_SDIO_RESPONSE_SHORT,
+                            rsp);
+    if (ret != AM_OK) {
+        return ret;
+    }
 
-        ret = am_sdio_cmd_write(&handle->sdio_dev,
-                                AM_SDIO_CMD32,
-                                addr_start,
-                                AM_SDIO_RESPONSE_SHORT,
-                                rsp);
-        if (ret != AM_OK) {
-            return ret;
-        }
-
-        ret = am_sdio_cmd_write(&handle->sdio_dev,
-                                AM_SDIO_CMD33,
-                                addr_end,
-                                AM_SDIO_RESPONSE_SHORT,
-                                rsp);
-        if (ret != AM_OK) {
-            return ret;
-        }
+    ret = am_sdio_cmd_write(&handle->sdio_dev,
+                            AM_SDIO_CMD33,
+                            addr_end,
+                            AM_SDIO_RESPONSE_SHORT,
+                            rsp);
+    if (ret != AM_OK) {
+        return ret;
     }
 
     ret = am_sdio_cmd_write(&handle->sdio_dev,
@@ -899,7 +983,7 @@ int am_sdcard_blocks_erase (am_sdcard_handle_t handle,
             return -AM_ETIME;
         }
 
-        am_sdcard_status_reg_get(handle,
+        am_sdcard_status_get(handle,
                                  handle->sdcard_info.rca,
                                  &current_status);
 
@@ -931,16 +1015,10 @@ int am_sdcard_transfer_stop (am_sdcard_handle_t handle)
     return ret;
 }
 
-int am_sdcard_sdinfo_get (am_sdcard_handle_t handle,
-                          am_sdcard_info_t  *p_sdinfo)
-{
-    return AM_OK;
-}
-
 /**
  * \brief 获取卡状态(CMD13)
  */
-int am_sdcard_status_reg_get (am_sdcard_handle_t handle,
+int am_sdcard_status_get (am_sdcard_handle_t handle,
                               uint32_t           rca,
                               uint32_t          *p_status)
 {
@@ -972,9 +1050,9 @@ int am_sdcard_status_reg_get (am_sdcard_handle_t handle,
     return ret;
 }
 
-am_sdcard_handle_t am_sdcard_sdio_init(am_sdcard_dev_t     *p_dev,
-                                       am_sdcard_devinfo_t *p_devinfo,
-                                       am_sdio_handle_t     sdio_handle)
+am_sdcard_handle_t am_sdcard_init(am_sdcard_dev_t           *p_dev,
+                                  const am_sdcard_devinfo_t *p_devinfo,
+                                  am_sdio_handle_t           sdio_handle)
 {
     int ret;
 
@@ -982,17 +1060,21 @@ am_sdcard_handle_t am_sdcard_sdio_init(am_sdcard_dev_t     *p_dev,
         return NULL;
     }
 
-    p_dev->sdio_handle          = sdio_handle;
-    p_dev->p_devinfo            = p_devinfo;
+    p_dev->p_devinfo   = p_devinfo;
 
     am_sdio_mkdev(&p_dev->sdio_dev,
-                  p_dev->sdio_handle,
-                  p_devinfo->mode,
-                  p_devinfo->blk_size);
+                  sdio_handle,
+                  p_dev->p_devinfo->mode,
+                  p_dev->p_devinfo->speed,
+                  p_dev->p_devinfo->sdio_crc_en);
+
+    am_sdio_setup(&p_dev->sdio_dev);
 
     am_wait_init(&p_dev->wait);
 
     ret = __sdcard_hard_init(p_dev);
+
+    p_dev->blk_size = p_dev->sdcard_info.csd.sector_size;
 
     if (ret != AM_OK) {
         return NULL;
@@ -1002,7 +1084,7 @@ am_sdcard_handle_t am_sdcard_sdio_init(am_sdcard_dev_t     *p_dev,
 }
 
 /******************************************************************************/
-int am_sdcard_sdio_deinit (am_sdcard_handle_t handle)
+int am_sdcard_deinit (am_sdcard_handle_t handle)
 {
     if (handle == NULL) {
         return -AM_EINVAL;
@@ -1012,7 +1094,5 @@ int am_sdcard_sdio_deinit (am_sdcard_handle_t handle)
 
     return AM_OK;
 }
-
-
 
 /* end of file */

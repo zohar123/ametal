@@ -40,6 +40,7 @@
 #include "am_rtc.h"
 #include "am_hc595.h"
 #include "am_sensor.h"
+#include "am_sdcard.h"
 #include "am_boot_firmware_recv.h"
 #include "am_boot_enter_check.h"
 #include "am_boot_flash.h"
@@ -454,6 +455,13 @@ void demo_std_bmg160_entry (am_sensor_handle_t handle);
  * \return 无
  */
 void demo_std_mmc5883ma_entry (am_sensor_handle_t handle);
+
+/**
+ * \brief SD Card读写例程
+ *
+ * \return 无
+ */
+void demo_std_sdcard_entry (am_sdcard_handle_t handle);
 
 /**
  * \brief bootloader 单区例程

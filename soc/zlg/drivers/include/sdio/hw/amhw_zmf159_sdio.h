@@ -48,9 +48,6 @@ extern "C" {
 #define ZMF159_SDIO_INT_DAT_COMPLE     (0x01 << 1)
 #define ZMF159_SDIO_INT_CMD_COMPLE     (0x01 << 0)
 
-
-
-
 /**
  * \addtogroup amhw_zlg_sdio
  * \copydoc amhw_zlg_sdio.h
@@ -180,7 +177,7 @@ typedef enum amhw_zlg_clk_selete_bety {
 am_static_inline
 void amhw_zlg_sdio_read_wait_enable (amhw_zlg_sdio_t              *p_hw_sdio)
 {
-	p_hw_sdio->mmc_ctrl |= ( 1<<10 );
+	p_hw_sdio->mmc_ctrl |= (1ul << 10);
 }
 
 /**
@@ -193,7 +190,7 @@ void amhw_zlg_sdio_read_wait_enable (amhw_zlg_sdio_t              *p_hw_sdio)
 am_static_inline
 void amhw_zlg_sdio_read_wait_disable (amhw_zlg_sdio_t             *p_hw_sdio)
 {
-	p_hw_sdio->mmc_ctrl &= ~(1 << 10);
+	p_hw_sdio->mmc_ctrl &= ~(1ul << 10);
 }
 
 /**
@@ -392,39 +389,18 @@ am_bool_t amhw_zlg_sdio_cmd12_io_flag_get (amhw_zlg_sdio_t *p_hw_sdio)
 }
 
 /**
- * \brief 设置sdio的特征位
- *
- * \param[in] p_hw_sdio 指向 amhw_zlg_sdio_t 结构的指针
- * \param[in] permit   当前指令后是否跟数据块
- *
- * \return 无
- */
-am_static_inline
-void amhw_zlg_sdio_cmdch_flag_set (amhw_zlg_sdio_t *p_hw_sdio, am_bool_t cmd_stop)
-{
-	if (cmd_stop) {
-	    p_hw_sdio->mmc_io |= (1 << 8);
-	} else {
-		p_hw_sdio->mmc_io &= ~(1 << 8);
-	}
-}
-
-/**
  * \brief
  *
  * \param[in] p_hw_sdio 指向 amhw_zlg_sdio_t 结构的指针
- *
- * \return AM_TRUE  当前指令后跟数据块
- *         AM_FALSE 当前指令后不跟数据块
+ * \param[in] flg       AM_TRUE  当前指令后跟数据块
+ *                      AM_FALSE 当前指令后不跟数据块
+ * \return 无
  */
 am_static_inline
-am_bool_t amhw_zlg_sdio_cmdch_flag_get (amhw_zlg_sdio_t *p_hw_sdio)
+void amhw_zlg_sdio_cmdch_flag_set (amhw_zlg_sdio_t *p_hw_sdio,
+                                   am_bool_t        flg)
 {
-    if ((p_hw_sdio->mmc_io) & (1 << 8)) {
-    	return AM_TRUE;
-    } else {
-    	return AM_FALSE;
-    }
+    AM_BIT_MODIFY(p_hw_sdio->mmc_io, 8, flg);
 }
 
 /**
@@ -485,7 +461,7 @@ void amhw_zlg_sdio_enrresp_disable (amhw_zlg_sdio_t *p_hw_sdio)
 am_static_inline
 void amhw_zlg_sdio_out_8nullclk (amhw_zlg_sdio_t *p_hw_sdio)
 {
-	p_hw_sdio->mmc_io |= ((1 << 5));
+	p_hw_sdio->mmc_io |= ((1ul << 5));
 }
 
 
@@ -547,9 +523,9 @@ am_static_inline
 void amhw_zlg_sdio_transfdir_set (amhw_zlg_sdio_t *p_hw_sdio, amhw_zlg_transfer_mode_t mode)
 {
 	if (mode == AMHW_ZLG_SDIO_READ_MODE) {
-	    p_hw_sdio->mmc_io |= (1 << 1);
+	    p_hw_sdio->mmc_io |= (1ul << 1);
 	} else {
-		p_hw_sdio->mmc_io &= ~(1 << 1);
+		p_hw_sdio->mmc_io &= ~(1ul << 1);
 	}
 }
 
@@ -917,6 +893,18 @@ am_static_inline
 am_bool_t amhw_zlg_sdio_check_fifo_isfull (amhw_zlg_sdio_t *p_hw_sdio)
 {
 	return (p_hw_sdio->buf_ctll & 0x1)? AM_TRUE : AM_FALSE;
+}
+
+am_static_inline
+void amhw_zlg_sdio_data_buf_write (amhw_zlg_sdio_t *p_hw_sdio, uint32_t data)
+{
+    p_hw_sdio->data_buf[0] = data;
+}
+
+am_static_inline
+uint32_t amhw_zlg_sdio_data_buf_read (amhw_zlg_sdio_t *p_hw_sdio)
+{
+    return p_hw_sdio->data_buf[0];
 }
 
 #endif

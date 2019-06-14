@@ -43,8 +43,8 @@ int am_main (void)
      *
      * 注意：同一时刻只能运行一个 demo，即只能使某一行处于取消注释状态
      */
-    demo_std_sdio_master_entry();
-//    demo_zmf159_core_std_led_entry();
+
+    demo_zmf159_core_std_led_entry();
 //    demo_zmf159_core_std_delay_entry();
 //    demo_zmf159_core_std_adc_entry();
 //    demo_zmf159_core_hw_adc_int_entry();
@@ -117,6 +117,7 @@ int am_main (void)
 //    demo_zmf159_usbd_printer_entry();
 //    demo_zmf159_usbd_printer_counter_entry();
 //    demo_zmf159_usbd_vcom_entry();
+//    demo_zmf159_core_std_sdcard_entry();
 
     while (1) {
     }
