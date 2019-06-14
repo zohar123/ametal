@@ -246,6 +246,7 @@ typedef am_xmodem_tx_dev_t *am_xmodem_tx_handle_t;
  * \param[in] p_dev       : xmodem设备
  * \param[in] p_decinfo   : 设备信息结构体
  * \param[in] uart_handle : 串口句柄
+ * \param[in] crc_handle  : CRC句柄
  *
  * \return 不为NULL，则返回值为Xmodem接收句柄；
  *         若为NULL，表明参数无效或定时器初始化失败
@@ -309,6 +310,7 @@ am_err_t am_xmodem_rec_can_set (am_xmodem_rec_handle_t handle);
  * \param[in] p_dev         : Xmodem发送设备
  * \param[in] p_tra_devinfo : Xmodem发送设备信息结构体
  * \param[in] uart_handle   : 串口句柄
+ * \param[in] crc_handle    : CRC句柄
  *
  * \return 不为NULL返回值为Xmodem发送句柄；为NULL表明参数无效或定时器初始化失败
  */
