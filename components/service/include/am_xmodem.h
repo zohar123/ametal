@@ -217,7 +217,7 @@ typedef struct am_xmodem_tx_dev {
     char                          *p_tx_buf;       /**< \brief 文件指针 */
     uint8_t                        nake_state;     /**< \brief 当前重发状态 */
     uint8_t                        tx_state;       /**< \brief 控制获取字符发送状态*/
-    int16_t                        fra_crc_pry;    /**< \brief 保存CRC校验码 */
+    uint16_t                       fra_crc_pry;    /**< \brief 保存CRC校验码 */
     uint32_t                       frame_tx_bytes; /**< \brief 发送的一帧数据大小 */
     uint32_t                       doc_bytes;      /**< \brief 文件大小 */
     uint32_t                       ctrlz_num;      /**< \brief 填充的字节数*/

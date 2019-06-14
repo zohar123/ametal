@@ -41,6 +41,7 @@ extern "C" {
 #include "am_spi.h"
 #include "am_uart.h"
 #include "am_timer.h"
+#include "am_xmodem.h"
 #include "am_lpc_sct.h"
 #include "am_hwconf_lm75.h"
 #include "am_hwconf_led_gpio.h"

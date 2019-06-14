@@ -37,6 +37,8 @@ extern "C" {
 #include "am_zm516x.h"
 #include "am_zlg9021.h"
 #include "am_zlg52810.h"
+#include "am_xmodem.h"
+
 /**
  * \brief EP24CXX 器件例程
  *

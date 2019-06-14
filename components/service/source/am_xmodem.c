@@ -762,47 +762,33 @@ am_err_t am_xmodem_tx_cb_reg (am_xmodem_tx_handle_t handle,
 
 /**
  * \brief 生成CRC校验码函数
- *
- * \param[in]  ptr    存放数据的数组的指针
- * \param[in]  count  存放数据的数组的字节数
- *
- * \return crc 校验码
  */
-am_local int16_t __xmodem_tx_crc_set (am_xmodem_tx_dev_t *p_dev,
-                                      char               *ptr,
-                                      int16_t             count)
+am_local uint16_t __xmodem_tx_crc_set (am_xmodem_tx_dev_t *p_dev,
+                                       char               *ptr,
+                                       uint32_t            count)
 {
-    uint8_t  i      = 0;
-    int16_t  crc    = 0;
-    uint32_t t_crc  = 0;
+    uint8_t  i           = 0;
+    uint8_t  data        = 0x1A;
+    uint32_t crc         = 0;
+    uint32_t ctrlz_count = 0;
 
     //标准CRC计算
     am_crc_cal(p_dev->crc_handle,
                (uint8_t *)ptr,
                p_dev->doc_bytes);
-    //获取标准CRC值
-    am_crc_final(p_dev->crc_handle, &t_crc);
 
-    crc = (int16_t)t_crc;
-
-    while (p_dev->doc_bytes < p_dev->frame_tx_bytes) {
-          crc = crc ^ (((int)__AM_XMODEM_CTRLZ) << 8);
-          p_dev->doc_bytes++;
-          i = 8;
-          do
-          {
-             /*判断CRC的第16位是否为0*/
-             if (crc & 0x8000) {
-                /* 高位为1则左移一位后异或*/
-                 crc = (crc << 1) ^ 0x1021;
-             }
-             else {
-                /* 若高位不为1则左移一位再判断下一位是否为1*/
-                 crc = crc << 1;
-             }
-           } while (--i);
+    if (p_dev->doc_bytes < p_dev->frame_tx_bytes) {
+        ctrlz_count = p_dev->frame_tx_bytes - p_dev->doc_bytes;
+        for (i = 0; i < ctrlz_count; i++) {
+            am_crc_cal(p_dev->crc_handle,
+                       &data,
+                       1);
+        }
     }
-    return (crc);
+
+    am_crc_final(p_dev->crc_handle, &crc);
+
+    return (uint16_t)(crc);
 }
 
 /*******************************************************************************
@@ -814,8 +800,7 @@ am_local int16_t __xmodem_tx_crc_set (am_xmodem_tx_dev_t *p_dev,
 am_local void __xmodem_tx_frames_parity (am_xmodem_tx_dev_t *p_dev,
                                          char               *p_outchar)
 {
-    int16_t crc_high = 0;
-
+    uint16_t crc_high = 0;
     /* 若工作模式为1K则获取CRC校验码*/
     if (p_dev->frame_tx_bytes == 1024) {
         crc_high = __xmodem_tx_crc_set(p_dev,
@@ -848,7 +833,6 @@ am_local void __xmodem_tx_frames_parity (am_xmodem_tx_dev_t *p_dev,
        *p_outchar = p_dev->fra_sum_parity;
         p_dev->tx_state = __AM_XMODEM_STOP_TX;
     }
-
 }
 
 /******************************************************************************/
