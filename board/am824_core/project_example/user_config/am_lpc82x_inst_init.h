@@ -41,6 +41,7 @@ extern "C" {
 #include "am_spi.h"
 #include "am_uart.h"
 #include "am_timer.h"
+#include "am_xmodem.h"
 #include "am_lpc_sct.h"
 #include "am_hwconf_lm75.h"
 #include "am_hwconf_led_gpio.h"
@@ -566,6 +567,19 @@ am_timer_handle_t am_arm_systick_inst_init (void);
  */
 void am_arm_systick_inst_deinit (am_timer_handle_t handle);
 
+/**
+ * \brief Xmodem 发送实例初始化
+ *
+ * \return 无
+ */
+am_xmodem_tx_handle_t   am_lpc82x_xmodem_tx_inst_init (void);
+
+/**
+ * \brief Xmodem 接收实例初始化
+ *
+ * \return 无
+ */
+am_xmodem_rec_handle_t   am_lpc82x_xmodem_rec_inst_init (void);
 /**
  * @}
  */
