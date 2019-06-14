@@ -214,6 +214,21 @@ void demo_am845_core_eeprom_entry (void);
  * \return 无
  */
 void demo_fm25clxx_entry(am_fm25clxx_handle_t fm25clxx_handle, int32_t test_lenth);
+
+/**
+ * \brief xmodem接收例程
+ * \param[in] handle  xmodem接收服务句柄
+ * \return 无
+ */
+void demo_xmodem_rec_entry (am_xmodem_rec_handle_t  handle);
+
+/**
+ * \brief xmodem发送例程
+ * \param[in] handle  xmodem发送服务句柄
+ * \return 无
+ */
+void  demo_xmodem_tx_entry (am_xmodem_tx_handle_t  handle);
+
 #ifdef __cplusplus
 }
 #endif
