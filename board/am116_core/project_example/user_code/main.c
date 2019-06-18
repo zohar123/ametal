@@ -11,13 +11,13 @@
 *******************************************************************************/
 /**
  * \file
- * \brief ZLG116 ä¾‹ç¨‹å·¥ç¨‹
+ * \brief ZLG116 Àı³Ì¹¤³Ì
  *
- * - æ“ä½œæ­¥éª¤ï¼š
- *   1. å–æ¶ˆå±è”½éœ€è¦ä½¿ç”¨çš„ä¾‹ç¨‹ã€‚
+ * - ²Ù×÷²½Öè£º
+ *   1. È¡ÏûÆÁ±ÎĞèÒªÊ¹ÓÃµÄÀı³Ì¡£
  *
  * \note
- *    åŒä¸€æ—¶åˆ»åªèƒ½ä½¿ç”¨ä¸€ä¸ªä¾‹ç¨‹ã€‚
+ *    Í¬Ò»Ê±¿ÌÖ»ÄÜÊ¹ÓÃÒ»¸öÀı³Ì¡£
  *
  * \internal
  * \par Modification history
@@ -31,17 +31,17 @@
 #include "am_board.h"
 #include "demo_am116_core_entries.h"
 /**
- * \brief AMetal åº”ç”¨ç¨‹åºå…¥å£
+ * \brief AMetal Ó¦ÓÃ³ÌĞòÈë¿Ú
  */
 int am_main (void)
 {
     AM_DBG_INFO("Start up successful!\r\n");
     /*
-     * ä»¥ä¸‹ä¸ºæ‰€æœ‰demoçš„å…¥å£å‡½æ•°ï¼Œéœ€è¦è¿è¡Œå“ªä¸ª demoï¼Œ å°±å–æ¶ˆå¯¹åº”å‡½æ•°è°ƒç”¨è¡Œçš„æ³¨é‡Š
+     * ÒÔÏÂÎªËùÓĞdemoµÄÈë¿Úº¯Êı£¬ĞèÒªÔËĞĞÄÄ¸ö demo£¬ ¾ÍÈ¡Ïû¶ÔÓ¦º¯Êıµ÷ÓÃĞĞµÄ×¢ÊÍ
      *
-     * é»˜è®¤è¿è¡Œçš„æ˜¯LEDé—ªçƒ demoã€‚
+     * Ä¬ÈÏÔËĞĞµÄÊÇLEDÉÁË¸ demo¡£
      *
-     * æ³¨æ„ï¼šåŒä¸€æ—¶åˆ»åªèƒ½è¿è¡Œä¸€ä¸ª demoï¼Œå³åªèƒ½ä½¿æŸä¸€è¡Œå¤„äºå–æ¶ˆæ³¨é‡ŠçŠ¶æ€ã€‚
+     * ×¢Òâ£ºÍ¬Ò»Ê±¿ÌÖ»ÄÜÔËĞĞÒ»¸ö demo£¬¼´Ö»ÄÜÊ¹Ä³Ò»ĞĞ´¦ÓÚÈ¡Ïû×¢ÊÍ×´Ì¬¡£
      */
     demo_am116_core_std_led_entry();
 //    demo_am116_core_std_delay_entry();
@@ -134,6 +134,10 @@ int am_main (void)
 //    demo_am116_core_dr_fm175xx_picca_write_block();
 //    demo_am116_core_dr_fm175xx_piccb_read_id();
 //    demo_am116_core_dr_fm175xx_picca_lpcd_read_id();
+//    demo_am116_zsn60x_led_test_entry();
+//    demo_am116_zsn60x_picca_test_entry();
+//    demo_am116_zsn60x_piccb_test_entry();
+//    demo_am116_zsn60x_auto_detect_test_entry();
     while (1) {
     }
 }

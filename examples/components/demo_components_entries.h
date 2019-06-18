@@ -12,7 +12,7 @@
 
 /**
  * \file
- * \brief components æ‰€æœ‰ä¾‹ç¨‹å‡½æ•°å…¥å£å£°æ˜
+ * \brief components ËùÓĞÀı³Ìº¯ÊıÈë¿ÚÉùÃ÷
  * \sa    demo_components_entries.h
  *
  * \internal
@@ -37,200 +37,230 @@ extern "C" {
 #include "am_zm516x.h"
 #include "am_zlg9021.h"
 #include "am_zlg52810.h"
-#include "am_xmodem.h"
-
+#include "zsn60x.h"#include "am_xmodem.h"
 /**
- * \brief EP24CXX å™¨ä»¶ä¾‹ç¨‹
+ * \brief EP24CXX Æ÷¼şÀı³Ì
  *
- * \param[in] ep24cxx_handle EP24CXX æ ‡å‡†æœåŠ¡å¥æŸ„
- * \param[in] test_lenth     æµ‹è¯•å­—èŠ‚æ•°
+ * \param[in] ep24cxx_handle EP24CXX ±ê×¼·şÎñ¾ä±ú
+ * \param[in] test_lenth     ²âÊÔ×Ö½ÚÊı
  *
- * \return æ— 
+ * \return ÎŞ
  */
 void demo_ep24cxx_entry (am_ep24cxx_handle_t ep24cxx_handle, int32_t test_lenth);
 
 /**
- * \brief  MX25XXå™¨ä»¶ ä¾‹ç¨‹
+ * \brief  MX25XXÆ÷¼ş Àı³Ì
  *
- * \param[in] mx25xx_handle  MX25XX æ ‡å‡†æœåŠ¡å¥æŸ„
- * \param[in] test_lenth     æµ‹è¯•å­—èŠ‚æ•°
+ * \param[in] mx25xx_handle  MX25XX ±ê×¼·şÎñ¾ä±ú
+ * \param[in] test_lenth     ²âÊÔ×Ö½ÚÊı
  *
- * \return æ— 
+ * \return ÎŞ
  */
 void demo_mx25xx_entry (am_mx25xx_handle_t mx25xx_handle, int32_t test_lenth);
 
 /**
- * \brief FTL ä¾‹ç¨‹
+ * \brief FTL Àı³Ì
  *
- * \param[in] ftl_handle     FTL æ ‡å‡†æœåŠ¡å¥æŸ„
- * \param[in] test_lenth     æµ‹è¯•å­—èŠ‚æ•°
+ * \param[in] ftl_handle     FTL ±ê×¼·şÎñ¾ä±ú
+ * \param[in] test_lenth     ²âÊÔ×Ö½ÚÊı
  *
- * \return æ— 
+ * \return ÎŞ
  */
 void demo_ftl_entry (am_ftl_handle_t ftl_handle, int32_t test_lenth);
 
 /**
- * \brief MTD ä¾‹ç¨‹
+ * \brief MTD Àı³Ì
  *
- * \param[in] mtd_handle  MTD æ ‡å‡†æœåŠ¡å¥æŸ„
- * \param[in] test_lenth  æµ‹è¯•å­—èŠ‚æ•°
+ * \param[in] mtd_handle  MTD ±ê×¼·şÎñ¾ä±ú
+ * \param[in] test_lenth  ²âÊÔ×Ö½ÚÊı
  *
- * \return æ— 
+ * \return ÎŞ
  */
 void demo_mtd_entry (am_mtd_handle_t mtd_handle, int32_t test_lenth);
 
 /**
- * \brief FM175XX è¯»CPUå¡ä¾‹ç¨‹
- * \param[in] handle  FM175XX æœåŠ¡å¥æŸ„
- * \return æ— 
+ * \brief FM175XX ¶ÁCPU¿¨Àı³Ì
+ * \param[in] handle  FM175XX ·şÎñ¾ä±ú
+ * \return ÎŞ
  */
 void demo_fm175xx_cpu_card (am_fm175xx_handle_t handle);
 
 /**
- * \brief FM175XX è¯»Aç±»å‹å¡ä¾‹ç¨‹
- * \param[in] handle  FM175XX æœåŠ¡å¥æŸ„
- * \return æ— 
+ * \brief FM175XX ¶ÁAÀàĞÍ¿¨Àı³Ì
+ * \param[in] handle  FM175XX ·şÎñ¾ä±ú
+ * \return ÎŞ
  */
 void demo_fm175xx_picca_read_id (am_fm175xx_handle_t handle);
 
 /**
- * \brief Aç±»å¡è¯»ä¼‘çœ å¡ä¾‹ç¨‹
- * \param[in] handle  FM175XX æœåŠ¡å¥æŸ„
- * \return æ— 
+ * \brief AÀà¿¨¶ÁĞİÃß¿¨Àı³Ì
+ * \param[in] handle  FM175XX ·şÎñ¾ä±ú
+ * \return ÎŞ
  */
 void demo_fm175xx_picca_halt (am_fm175xx_handle_t handle);
 
 /**
- * \brief Aç±»å¡è¯»å—ä¾‹ç¨‹
- * \param[in] handle  FM175XX æœåŠ¡å¥æŸ„
- * \return æ— 
+ * \brief AÀà¿¨¶Á¿éÀı³Ì
+ * \param[in] handle  FM175XX ·şÎñ¾ä±ú
+ * \return ÎŞ
  */
 void demo_fm175xx_picca_read_block (am_fm175xx_handle_t handle);
 
 /**
- * \brief Aç±»å¡å€¼æ“ä½œä¾‹ç¨‹
- * \param[in] handle  FM175XX æœåŠ¡å¥æŸ„
- * \return æ— 
+ * \brief AÀà¿¨Öµ²Ù×÷Àı³Ì
+ * \param[in] handle  FM175XX ·şÎñ¾ä±ú
+ * \return ÎŞ
  */
 void demo_fm175xx_picca_val_operate (am_fm175xx_handle_t handle);
 
 /**
- * \brief Aç±»å†™å—ä¾‹ç¨‹
- * \param[in] handle  FM175XX æœåŠ¡å¥æŸ„
- * \return æ— 
+ * \brief AÀàĞ´¿éÀı³Ì
+ * \param[in] handle  FM175XX ·şÎñ¾ä±ú
+ * \return ÎŞ
  */
 void demo_fm175xx_picca_write_block (am_fm175xx_handle_t handle);
 
 /**
- * \brief Bç±»å¡è¯»å¡å·ä¾‹ç¨‹
- * \param[in] handle  FM175XX æœåŠ¡å¥æŸ„
- * \return æ— 
+ * \brief BÀà¿¨¶Á¿¨ºÅÀı³Ì
+ * \param[in] handle  FM175XX ·şÎñ¾ä±ú
+ * \return ÎŞ
  */
 void demo_fm175xx_piccb_read_id (am_fm175xx_handle_t handle);
 
 /**
- * \brief FM175XX LPCDæ¨¡å¼ä¾‹ç¨‹
- * \param[in] handle  FM175XX æœåŠ¡å¥æŸ„
- * \return æ— 
+ * \brief FM175XX LPCDÄ£Ê½Àı³Ì
+ * \param[in] handle  FM175XX ·şÎñ¾ä±ú
+ * \return ÎŞ
  */
 void demo_fm175xx_picca_lpcd_mode (am_fm175xx_handle_t handle);
 /**
- * \brief FM175XX FM11RF005Må¡æ“ä½œä¾‹ç¨‹
- * \param[in] handle  FM175XX æœåŠ¡å¥æŸ„
- * \return æ— 
+ * \brief FM175XX FM11RF005M¿¨²Ù×÷Àı³Ì
+ * \param[in] handle  FM175XX ·şÎñ¾ä±ú
+ * \return ÎŞ
  */
 void demo_fm175xx_fm11rf005m_operate (am_fm175xx_handle_t handle);
 
 /**
- * \brief zm516x æ¨¡å—è‡ªåŠ¨æ³¢ç‰¹ç‡ä¾‹ç¨‹
- * \param[in] handle  zm516x æœåŠ¡å¥æŸ„
- * \return æ— 
+ * \brief zm516x Ä£¿é×Ô¶¯²¨ÌØÂÊÀı³Ì
+ * \param[in] handle  zm516x ·şÎñ¾ä±ú
+ * \return ÎŞ
  */
 void demo_zm516x_baudrate_entry (am_zm516x_handle_t handle);
 
 /**
- * \brief zm516x æ¨¡å— GPIO ä¾‹ç¨‹
- * \param[in] handle  zm516x æœåŠ¡å¥æŸ„
- * \return æ— 
+ * \brief zm516x Ä£¿é GPIO Àı³Ì
+ * \param[in] handle  zm516x ·şÎñ¾ä±ú
+ * \return ÎŞ
  */
 void demo_zm516x_gpio_entry (am_zm516x_handle_t handle);
 
 /**
- * \brief zm516x æ¨¡å— KEY LED ä¾‹ç¨‹
- * \param[in] handle  zm516x æœåŠ¡å¥æŸ„
- * \return æ— 
+ * \brief zm516x Ä£¿é KEY LED Àı³Ì
+ * \param[in] handle  zm516x ·şÎñ¾ä±ú
+ * \return ÎŞ
  */
 void demo_zm516x_key_led_entry (am_zm516x_handle_t handle);
 
 /**
- * \brief zm516x æ¨¡å—ç»„ç½‘ä¾‹ç¨‹
- * \param[in] handle  zm516x æœåŠ¡å¥æŸ„
- * \return æ— 
+ * \brief zm516x Ä£¿é×éÍøÀı³Ì
+ * \param[in] handle  zm516x ·şÎñ¾ä±ú
+ * \return ÎŞ
  */
 void demo_zm516x_network_entry (am_zm516x_handle_t handle);
 
 /**
- * \brief zm516x æ¨¡å—æœç´¢ä¾‹ç¨‹
- * \param[in] handle  zm516x æœåŠ¡å¥æŸ„
- * \return æ— 
+ * \brief zm516x Ä£¿éËÑË÷Àı³Ì
+ * \param[in] handle  zm516x ·şÎñ¾ä±ú
+ * \return ÎŞ
  */
 void demo_zm516x_search_entry (am_zm516x_handle_t handle);
 
 /**
- * \brief zm516x æ¨¡å—æ¼”ç¤ºä¾‹ç¨‹
- * \param[in] handle  zm516x æœåŠ¡å¥æŸ„
- * \return æ— 
+ * \brief zm516x Ä£¿éÑİÊ¾Àı³Ì
+ * \param[in] handle  zm516x ·şÎñ¾ä±ú
+ * \return ÎŞ
  */
 void demo_zm516x_entry (am_zm516x_handle_t handle);
 
 /**
- * \brief zlg9021 è“ç‰™æ¨¡å—è‡ªåŠ¨æ³¢ç‰¹ç‡ä¾‹ç¨‹
- * \param[in] handle  zlg9021 æœåŠ¡å¥æŸ„
- * \return æ— 
+ * \brief zlg9021 À¶ÑÀÄ£¿é×Ô¶¯²¨ÌØÂÊÀı³Ì
+ * \param[in] handle  zlg9021 ·şÎñ¾ä±ú
+ * \return ÎŞ
  */
 void demo_zlg9021_baudrate_entry (am_zlg9021_handle_t zlg9021_handle);
 
 /**
- * \brief zlg9021 è“ç‰™æ¨¡å— LED ä¾‹ç¨‹
- * \param[in] handle  zlg9021 æœåŠ¡å¥æŸ„
- * \return æ— 
+ * \brief zlg9021 À¶ÑÀÄ£¿é LED Àı³Ì
+ * \param[in] handle  zlg9021 ·şÎñ¾ä±ú
+ * \return ÎŞ
  */
 void demo_zlg9021_led_entry (am_zlg9021_handle_t zlg9021_handle);
 
 /**
- * \brief zlg52810 è“ç‰™æ¨¡å—è‡ªåŠ¨æ³¢ç‰¹ç‡ä¾‹ç¨‹
- * \param[in] handle  zlg52810 æœåŠ¡å¥æŸ„
- * \return æ— 
+ * \brief zlg52810 À¶ÑÀÄ£¿é×Ô¶¯²¨ÌØÂÊÀı³Ì
+ * \param[in] handle  zlg52810 ·şÎñ¾ä±ú
+ * \return ÎŞ
  */
 void demo_zlg52810_baudrate_entry (am_zlg52810_handle_t zlg52810_handle);
 /**
- * \brief EEPROMä¾‹ç¨‹
- * \param[in] æ— 
- * \return æ— 
+ * \brief EEPROMÀı³Ì
+ * \param[in] ÎŞ
+ * \return ÎŞ
  */
 void demo_am845_core_eeprom_entry (void);
 
 /**
- * \brief FM25CLxxä¾‹ç¨‹
- * \param[in] handle  FM25CLxx æœåŠ¡å¥æŸ„
- * \return æ— 
+ * \brief FM25CLxxÀı³Ì
+ * \param[in] handle  FM25CLxx ·şÎñ¾ä±ú
+ * \return ÎŞ
  */
 void demo_fm25clxx_entry(am_fm25clxx_handle_t fm25clxx_handle, int32_t test_lenth);
 
 /**
- * \brief xmodemæ¥æ”¶ä¾‹ç¨‹
- * \param[in] handle  xmodemæ¥æ”¶æœåŠ¡å¥æŸ„
- * \return æ— 
+ * \brief  ZSN60x  LED²âÊÔÊµÀı³ÌĞò
+ *
+ * \param[in] handle      : ZSN60XÉè±¸·şÎñ¾ä±ú
+ * \retval  no : ÎŞ·µ»ØÖµ
+ */
+void demo_zsn60x_led_test_entry (zsn60x_handle_t handle);
+
+/**
+ * \brief  ZSN60x  AÀà¿¨¼¤»îÀı³Ì
+ *
+ * \param[in] handle      : ZSN60XÉè±¸·şÎñ¾ä±ú
+ * \retval  no : ÎŞ·µ»ØÖµ
+ */
+void demo_zsn60x_picca_active_test_entry (zsn60x_handle_t handle);
+
+/**
+ * \brief  ZSN60x  BÀà¿¨¼¤»îÀı³Ì
+ *
+ * \param[in] handle      : ZSN60XÉè±¸·şÎñ¾ä±ú
+ * \retval  no : ÎŞ·µ»ØÖµ
+ */
+void demo_zsn60x_piccb_active_test_entry (zsn60x_handle_t handle);
+
+/**
+ * \brief  ZSN60x  ×Ô¶¯¼ì²âÄ£Ê½Àı³Ì
+ *
+ * \param[in] handle      : ZSN60XÉè±¸·şÎñ¾ä±ú
+ * \retval  no : ÎŞ·µ»ØÖµ
+ */
+void demo_zsn60x_auto_detect_test_entry(zsn60x_handle_t handle);
+
+/**
+ * \brief xmodem½ÓÊÕÀı³Ì
+ * \param[in] handle  xmodem½ÓÊÕ·şÎñ¾ä±ú
+ * \return ÎŞ
  */
 void demo_xmodem_rec_entry (am_xmodem_rec_handle_t  handle);
 
 /**
- * \brief xmodemå‘é€ä¾‹ç¨‹
- * \param[in] handle  xmodemå‘é€æœåŠ¡å¥æŸ„
- * \return æ— 
+ * \brief xmodem·¢ËÍÀı³Ì
+ * \param[in] handle  xmodem·¢ËÍ·şÎñ¾ä±ú
+ * \return ÎŞ
  */
 void  demo_xmodem_tx_entry (am_xmodem_tx_handle_t  handle);
-
 #ifdef __cplusplus
 }
 #endif
