@@ -106,6 +106,8 @@ int am_main (void)
 //    demo_amks16z_core_hw_uart_tx_dma_entry();
 //    demo_amks16z_core_std_uart_polling_entry();
 //    demo_amks16z_core_std_uart_ringbuf_entry();
+//    demo_amks16z_core_std_uart_dma_polling_entry();
+//    demo_amks16z_core_std_uart_dma_ringbuf_entry();
 //    demo_amks16z_core_microport_ds1302_entry();
 //    demo_amks16z_core_microport_eeprom_nvram_entry();
 //    demo_amks16z_core_microport_eeprom_entry();

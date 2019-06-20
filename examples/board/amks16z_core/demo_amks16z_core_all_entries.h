@@ -223,7 +223,17 @@ void demo_amks16z_core_std_uart_ringbuf_entry (void);
  * \return 无
  */
 void demo_amks16z_core_hw_uart_rx_dma_entry (void);
+/**
+ * \brief  DMA串口标准接口查询收发例程
+ * \return 无
+ */
+void demo_amks16z_core_std_uart_dma_polling_entry (void);
 
+/**
+ * \brief  DMA串口环形缓冲区例程
+ * \return 无
+ */
+void demo_amks16z_core_std_uart_dma_ringbuf_entry (void);
 /**
  * \brief  LED例程
  * \return 无
