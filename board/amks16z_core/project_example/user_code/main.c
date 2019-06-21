@@ -11,7 +11,7 @@
 *******************************************************************************/
 /**
  * \file
- * \brief AMKS16 例程工程
+ * \brief AMKS16RFID 例程工程
  *
  * - 操作步骤：
  *   1. 取消屏蔽需要使用的例程。
@@ -21,7 +21,7 @@
  *	
  * \internal
  * \par Modification history
- * - 1.00 18-09-10  ipk, first implementation
+ * - 1.00 18-12-04  htf, first implementation
  * \endinternal
  */
 #include "ametal.h"
@@ -29,6 +29,7 @@
 #include "am_delay.h"
 #include "am_vdebug.h"
 #include "am_board.h"
+#include "demo_amks16rfid_entries.h"
 #include "demo_amks16z_core_all_entries.h"
 
 /**
@@ -44,7 +45,7 @@ int am_main (void)
      *
      * 注意：同一时刻只能运行一个 demo，即只能使某一行处于取消注释状态。
      */
-    demo_amks16z_core_std_led_entry();
+//    demo_amks16z_core_std_led_entry();
 //    demo_amks16z_core_hw_adc_int_entry();
 //    demo_amks16z_core_hw_adc_poll_entry();
 //    demo_amks16z_core_std_adc_descs_st_entry();
@@ -105,6 +106,8 @@ int am_main (void)
 //    demo_amks16z_core_hw_uart_tx_dma_entry();
 //    demo_amks16z_core_std_uart_polling_entry();
 //    demo_amks16z_core_std_uart_ringbuf_entry();
+    demo_amks16z_core_std_uart_dma_polling_entry();
+    demo_amks16z_core_std_uart_dma_ringbuf_entry();
 //    demo_amks16z_core_microport_ds1302_entry();
 //    demo_amks16z_core_microport_eeprom_nvram_entry();
 //    demo_amks16z_core_microport_eeprom_entry();
@@ -126,7 +129,17 @@ int am_main (void)
 //    demo_amks16z_core_miniport_zlg72128_entry();
 //    demo_amks16z_core_hw_wdt_entry();
 //    demo_amks16z_core_std_wdt_entry();
-
+    /*
+     * 以下demo为amks16rfid板特有demo
+     */
+//    demo_amks16rfid_dr_fm175xx_lpcd_read_id();
+//    demo_amks16rfid_dr_fm175xx_picca_halt();
+//    demo_amks16rfid_dr_fm175xx_picca_read_block();
+//    demo_amks16rfid_dr_fm175xx_picca_read_id();
+//    demo_amks16rfid_dr_fm11rf005m_operate();
+//    demo_amks16rfid_dr_fm175xx_picca_val_operate();
+//    demo_amks16rfid_dr_fm175xx_picca_write_block();
+//    demo_amks16rfid_dr_fm175xx_piccb_read_id();
     while (1) {
     }
 }

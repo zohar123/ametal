@@ -270,6 +270,46 @@ am_uart_handle_t am_kl26_uart2_inst_init (void);
 void am_kl26_uart2_inst_deinit (am_uart_handle_t handle);
 
 /**
+ * \brief  DMA USART0 实例初始化，获得UART标准服务句柄
+ * \return UART标准服务句柄，若为NULL，表明初始化失败
+ */
+am_uart_handle_t am_kl26_uart0_dma_inst_init (void);
+
+/**
+ * \brief DMA USART0 实例解初始化
+ * \param[in] handle : 通过 am_kl26_uart0_dma_inst_init() 函数获得的UART句柄
+ * \return 无
+ */
+void am_kl26_uart2_dma_inst_deinit (am_uart_handle_t handle);
+
+
+/**
+ * \brief  DMA USART1 实例初始化，获得UART标准服务句柄
+ * \return UART标准服务句柄，若为NULL，表明初始化失败
+ */
+am_uart_handle_t am_kl26_uart1_dma_inst_init (void);
+
+/**
+ * \brief DMA USART1 实例解初始化
+ * \param[in] handle : 通过 am_kl26_uart1_dma_inst_init() 函数获得的UART句柄
+ * \return 无
+ */
+void am_kl26_uart1_dma_inst_deinit (am_uart_handle_t handle);
+
+/**
+ * \brief  DMA USART2 实例初始化，获得UART标准服务句柄
+ * \return DMA UART标准服务句柄，若为NULL，表明初始化失败
+ */
+am_uart_handle_t am_kl26_uart2_dma_inst_init (void);
+
+/**
+ * \brief USART2 实例解初始化
+ * \param[in] handle : 通过 am_kl26_uart2_inst_init() 函数获得的UART句柄
+ * \return 无
+ */
+void am_kl26_uart2_dma_inst_deinit (am_uart_handle_t handle);
+
+/**
  * \brief  RTC 实例初始化，获得RTC标准服务句柄
  * \return RTC 标准服务句柄，若为NULL，表明初始化失败
  */
