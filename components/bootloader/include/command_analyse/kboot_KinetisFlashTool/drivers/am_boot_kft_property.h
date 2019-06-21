@@ -235,7 +235,6 @@ typedef struct am_boot_kft_property_store
 } am_boot_kft_property_store_t;
 
 typedef struct am_boot_kft_property_devinfo {
-    uint32_t  app_start_addr;      /**< \brief 应用代码的起始地址*/
     uint32_t  flash_start_addr;    /**< \brief flash的起始地址*/
     uint32_t  flash_size;          /**< \brief flash的大小 */
 
@@ -248,8 +247,6 @@ typedef struct am_boot_kft_property_devinfo {
  * \brief bootloader 属性驱动函数
  */
 struct am_boot_kft_property_funcs {
-    /** \brief 装载用户配置 */
-    int32_t (*pfn_load_user_config)(void *p_arg);
 
     /** \brief 获取属性 */
     int32_t (*pfn_get_property)(void       *p_arg,

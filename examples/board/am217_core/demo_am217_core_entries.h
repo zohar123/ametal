@@ -23,7 +23,6 @@
 
 #include "amhw_zlg_adc.h"
 
-
 /**
  * \brief ADC INT 例程，通过 HW 层接口实现
  */
@@ -480,9 +479,28 @@ void demo_zlg217_core_dr_fm175xx_picca_lpcd_read_id(void);
 void demo_zlg217_core_boot_kft_bootloader_entry (void);
 
 /**
- * \brief 基于KinetisFlashTool上位机的bootloader的测试应用程序例程
+
+ * \brief 双区bootloader的测试应用程序例程
  */
-void demo_zlg217_core_boot_kft_application_entry (void);
+
+void demo_zlg217_core_double_application_entry (void);
+
+/**
+
+ * \brief 单区bootloader的测试应用程序例程
+ */
+
+void demo_zlg217_core_single_application_entry (void);
+
+/**
+ * \brief 基于串口助手的单区bootloader例程
+ */
+void demo_zlg217_core_single_bootloader_uart_entry (void);
+
+/**
+ * \brief 基于串口助手的双区bootloader例程
+ */
+void demo_zlg217_core_double_bootloader_uart_entry(void);
 
 /**
  * \brief USBD键盘例程

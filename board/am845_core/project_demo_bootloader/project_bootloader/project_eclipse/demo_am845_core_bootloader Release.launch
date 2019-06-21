@@ -67,7 +67,7 @@
 <stringAttribute key="org.eclipse.cdt.launch.PROGRAM_NAME" value="Release/demo_am845_core_bootloader.elf"/>
 <stringAttribute key="org.eclipse.cdt.launch.PROJECT_ATTR" value="demo_am845_core_bootloader"/>
 <booleanAttribute key="org.eclipse.cdt.launch.PROJECT_BUILD_CONFIG_AUTO_ATTR" value="true"/>
-<stringAttribute key="org.eclipse.cdt.launch.PROJECT_BUILD_CONFIG_ID_ATTR" value="ilg.gnuarmeclipse.managedbuild.cross.config.elf.release.1754499042"/>
+<stringAttribute key="org.eclipse.cdt.launch.PROJECT_BUILD_CONFIG_ID_ATTR" value=""/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
 <listEntry value="/demo_am845_core_bootloader"/>
 </listAttribute>
