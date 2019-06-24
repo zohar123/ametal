@@ -70,7 +70,7 @@
 #include "am_vdebug.h"
 #include "am_boot_firmware.h"
 #include "am_boot_flash.h"
-#include "demo_std_entries.h"
+#include "demo_boot_entries.h"
 #include "am_lpc84x_inst_init.h"
 #include "am_boot_enter_check_uart.h"
 #include "am_boot_firmware_recv_uart.h"

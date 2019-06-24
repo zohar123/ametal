@@ -45,7 +45,7 @@
 #include "am_boot_msg.h"
 #include "am_boot_firmware.h"
 #include "am_zlg217_inst_init.h"
-#include "demo_std_entries.h"
+#include "demo_boot_entries.h"
 
 void demo_zlg217_core_double_application_entry (void)
 {

@@ -40,7 +40,7 @@
 #include "am_boot_firmware_recv_uart.h"
 #include "am_boot_firmware.h"
 #include "am_lpc84x_inst_init.h"
-#include "demo_std_entries.h"
+#include "demo_boot_entries.h"
 #include "am_appconf_lpc84x.h"
 
 void demo_am845_core_double_application_entry (void)
