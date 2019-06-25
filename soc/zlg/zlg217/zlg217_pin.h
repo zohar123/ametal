@@ -31,6 +31,9 @@ extern "C" {
 
 #include "am_zlg217_gpio_util.h"
 
+#ifdef PIN_OUTSET
+    #include "zlg217_pin_outset.h"
+#endif
  /**
  * \addtogroup zlg217_if_pin
  * \copydoc zlg217_pin.h
