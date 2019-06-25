@@ -193,8 +193,8 @@ static int __i2c_hard_init (am_fsl_i2c_dev_t *p_dev)
     /* I2C 波特率设置  */
     __i2c_speed_set(p_dev, p_dev->p_devinfo->bus_speed);
 
-    /* 滤波设置 */
-    amhw_fsl_i2c_flt_fact(p_hw_i2c, 15);
+    /* 滤波设置 注意：若在此处设置非0的滤波值，则I2C时钟频率将会随机减小*/
+    amhw_fsl_i2c_flt_fact(p_hw_i2c, 0);
 
     amhw_fsl_i2c_enable(p_hw_i2c);
 
