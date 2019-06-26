@@ -467,11 +467,26 @@ void __uart_irq_handler (void *p_arg)
 
         uart_int_stat &= p_dev->other_int_enable;
 
-        if (p_dev->pfn_err != NULL) {
-            p_dev->pfn_err(p_dev->err_arg,
-                           AM_FSL_UART_ERRCODE_UART_OTHER_INT,
-                           (void *)uart_int_stat,
-                           1);
+        if(uart_int_stat == AMHW_FSL_UART_INT_C3_OVR){
+            /* 若为OVR中断  则表示当前程序处理不及时，新接收到的数据无存放空间
+             * 需要根据串口对其进行处理，若不处理，则会导致响应的串口无法继续进行接收
+             */
+            if(p_dev->p_devinfo->ver == AM_FSL_UART_VER0){
+                /* 清除OVR状态位 */
+                p_hw_uart->stat1 |= AMHW_FSL_UART_INT_C3_OVR;
+            }else{
+                /* 获取新接收数据 */
+                uint8_t data = amhw_fsl_uart_rxdata_read(p_hw_uart);
+                /* 存放新接收数据 */
+                p_dev->pfn_rxchar_put(p_dev->rxput_arg, data);
+            }
+        }else{
+            if (p_dev->pfn_err != NULL) {
+                p_dev->pfn_err(p_dev->err_arg,
+                               AM_FSL_UART_ERRCODE_UART_OTHER_INT,
+                               (void *)uart_int_stat,
+                               1);
+            }
         }
     }
 
@@ -535,11 +550,12 @@ am_uart_handle_t am_fsl_uart_init (am_fsl_uart_dev_t           *p_dev,
 
     p_dev->err_arg           = NULL;
 
-    p_dev->other_int_enable  = p_devinfo->other_int_enable  &
-                               ~(AMHW_FSL_UART_INT_C2_TCIE |
-                               AMHW_FSL_UART_INT_C2_IRIE   |
-                               AMHW_FSL_UART_INT_C2_ILIE   |
-                               AMHW_FSL_UART_INT_C2_TIE);
+    p_dev->other_int_enable  = (p_devinfo->other_int_enable |
+                                AMHW_FSL_UART_INT_C3_OVR)   &
+                              ~(AMHW_FSL_UART_INT_C2_TCIE   |
+                                AMHW_FSL_UART_INT_C2_IRIE   |
+                                AMHW_FSL_UART_INT_C2_ILIE   |
+                                AMHW_FSL_UART_INT_C2_TIE);
 
     if (p_dev->p_devinfo->pfn_plfm_init) {
         p_dev->p_devinfo->pfn_plfm_init();
