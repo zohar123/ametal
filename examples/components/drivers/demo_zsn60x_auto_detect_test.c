@@ -1,5 +1,45 @@
+/*******************************************************************************
+*                                 AMetal
+*                       ----------------------------
+*                       innovating embedded platform
+*
+* Copyright (c) 2001-2018 Guangzhou ZHIYUAN Electronics Co., Ltd.
+* All rights reserved.
+*
+* Contact information:
+* web site:    http://www.zlg.cn/
+*******************************************************************************/
+
+/**
+ * \file
+ * \brief zsn60x 自动检测模式进行测试
+ *
+ * - 操作步骤：
+ *   1. 正确连接并配置好串口；
+ *   2. 正确连接好天线；
+ *   3. 将卡片置于感应区
+ *
+ * - 实验现象：
+ *   1. 将卡片放置天线感应区后串口打印响应信息；
+ *
+ * \par 源代码
+ * \snippet demo_zsn60x_auto_detect_test.c src_zsn60x_auto_detect_test
+ *
+ * \internal
+ * \par Modification history
+ * - 1.00 19-06-18  htf, first implementation.
+ * \endinternal
+ */
+
+/**
+ * \addtogroup demo_if_zsn60x_auto_detect_test
+ * \copydoc demo_zsn60x_auto_detect_test.c
+ */
+
+/** [src_zsn60x_auto_detect_test] */
 #include "zsn60x.h"  
 #include "ametal.h"
+#include "am_vdebug.h"
 static int a = 0;
 
 /* 检测到卡片回调函数 */
@@ -48,3 +88,6 @@ void demo_zsn60x_auto_detect_test_entry(zsn60x_handle_t handle)
         am_kprintf("Auto detect card fail beacuse error 0x%2x!\r\n", ret);
     }
 }  
+/** [src_zsn60x_auto_detect_test] */
+
+/* end of file */

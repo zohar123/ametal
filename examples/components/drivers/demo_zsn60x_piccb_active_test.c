@@ -1,5 +1,44 @@
-#include "zsn60x.h"
+/*******************************************************************************
+*                                 AMetal
+*                       ----------------------------
+*                       innovating embedded platform
+*
+* Copyright (c) 2001-2018 Guangzhou ZHIYUAN Electronics Co., Ltd.
+* All rights reserved.
+*
+* Contact information:
+* web site:    http://www.zlg.cn/
+*******************************************************************************/
+
+/**
+ * \file
+ * \brief zsn60x B类卡测试程序
+ *
+ * - 操作步骤：
+ *   1. 正确连接并配置好串口；
+ *   2. 将B类卡放置于天线感应区。
+ *
+ * - 实验现象：
+ *   1. MCU将会打印出B类卡的相关信息
+ *
+ * \par 源代码
+ * \snippet demo_zsn60x_piccb_test.c src_zsn60x_piccb_test
+ *
+ * \internal
+ * \par Modification history
+ * - 1.00 19-06-18  htf, first implementation.
+ * \endinternal
+ */
+
+/**
+ * \addtogroup demo_if_zsn60x_piccb_test
+ * \copydoc demo_zsn60x_piccb_test.c
+ */
+
+/** [src_zsn60x_piccb_test] */
 #include "ametal.h"
+#include "zsn60x.h"
+#include "am_vdebug.h"
 /* ZSN60x  B类卡激活测试程序 */
 void demo_zsn60x_piccb_active_test_entry (zsn60x_handle_t handle)
 {
@@ -24,3 +63,6 @@ void demo_zsn60x_piccb_active_test_entry (zsn60x_handle_t handle)
         am_kprintf("active fail beacuse error 0x%02x", ret);
     }
 }
+/** [src_zsn60x_piccb_test] */
+
+/* end of file */
