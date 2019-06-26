@@ -480,7 +480,8 @@ int am_zmf159_clk_init (am_zmf159_clk_dev_t           *p_dev,
     }
     p_dev->apb2_clk = p_dev->ahb1_clk / div;
 
-    ZMF159_FLASH->acr |= 0x10;
+    amhw_zlg_flash_set_prebuff_on(ZMF159_FLASH, 1);
+    //ZMF159_FLASH->acr |= 0x10;
 
     amhw_zlg_flash_latency_set(ZMF159_FLASH,
                               (p_dev->pllout_clk / 24000000));

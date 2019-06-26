@@ -460,5 +460,9 @@ void demo_zmf159_usbd_msc_entry (void);
  */
 void demo_zmf159_core_std_can_entry (void);
 
+/**
+ * \brief sdcard Àý³ÌÈë¿Ú
+ */
+void demo_zmf159_core_std_sdcard_entry (void);
 
 /* end of file */

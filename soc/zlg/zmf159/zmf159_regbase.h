@@ -179,6 +179,9 @@ extern "C" {
 /** \brief SYSTICK基地址 */
 #define ZMF159_SYSTICK                (0xE000E010UL)
 
+/** \brief SDIO基地址 */
+#define ZMF159_SDIO_BASE              (0x40018000UL)
+
 /** @} */
 
 /**
