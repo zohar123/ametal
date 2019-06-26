@@ -536,6 +536,26 @@ void demo_am116_zsn60x_piccb_test_entry();
  */
 void demo_am116_zsn60x_auto_detect_test_entry();
 
+/**
+ * \brief USBD键盘例程
+ */
+void demo_zlg126_usbd_keyboard_entry (void);
+
+/**
+ * \brief USBD打印机 例程
+ */
+void demo_zlg126_usbd_printer_entry (void);
+
+/**
+ * \brief USBD U盘 例程
+ */
+void demo_zlg126_usbd_msc_entry (void);
+
+/**
+ * \brief USBD 虚拟串口  例程
+ */
+void demo_zlg126_usbd_vcom_entry (void);
+
 #ifdef __cplusplus
 }
 #endif
