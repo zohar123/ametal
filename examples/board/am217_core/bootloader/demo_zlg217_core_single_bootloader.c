@@ -53,7 +53,7 @@
 #include "am_zlg217_inst_init.h"
 #include "am_boot_enter_check_uart.h"
 #include "am_boot_firmware_recv_uart.h"
-#include "demo_std_entries.h"
+#include "demo_boot_entries.h"
 
 void demo_zlg217_core_single_bootloader_uart_entry (void)
 {

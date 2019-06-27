@@ -1,4 +1,4 @@
-
+#include "am_boot_flash.h"
 #include "am_boot_firmware_recv.h"
 #include "am_boot_enter_check.h"
 #include "am_boot_firmware.h"

@@ -41,11 +41,6 @@
 #include "am_hc595.h"
 #include "am_sensor.h"
 #include "am_sdcard.h"
-#include "am_boot_firmware_recv.h"
-#include "am_boot_enter_check.h"
-#include "am_boot_flash.h"
-#include "am_boot_memory.h"
-#include "am_boot_msg.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -463,43 +458,6 @@ void demo_std_mmc5883ma_entry (am_sensor_handle_t handle);
  */
 void demo_std_sdcard_entry (am_sdcard_handle_t handle);
 
-/**
- * \brief bootloader 单区例程
- *
- * \return 无
- */
-void demo_std_single_bootloader_entry(am_boot_firwa_recv_handle_t  firwa_recv_handle,
-                                      am_boot_enter_check_handle_t enter_check_handle);
-
-/**
- * \brief bootloader 基于nxp KinetisFlashTool的例程
- *
- * \return 无
- */
-void demo_std_bootloader_kft_entry(am_boot_flash_handle_t    flash_handle,
-                                   am_boot_mem_handle_t      memory_handle,
-                                   uint32_t                  baund,
-                                   am_uart_handle_t          uart_handle,
-                                   uint32_t                  ram_start_addr,
-                                   uint32_t                  ram_size);
-
-/**
- * \brief bootloader 双区的例程
- *
- * \return 无
- */
-void demo_std_double_bootloader_entry(am_boot_firwa_recv_handle_t  firwa_recv_handle,
-                                      am_boot_enter_check_handle_t enter_check_handle,
-                                      am_boot_msg_handle_t         msg_handle);
-
-/**
- * \brief bootloader 双区应用的例程
- *
- * \return 无
- */
-void demo_std_double_application_entry(am_boot_firwa_recv_handle_t  firwa_recv_handle,
-                                       am_boot_enter_check_handle_t check_handle,
-                                       am_boot_msg_handle_t         msg_handle);
 #ifdef __cplusplus
 }
 #endif

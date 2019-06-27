@@ -1417,6 +1417,26 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\examples\components\drivers\demo_fm175xx_picca_write_block.c</FilePath>
             </File>
+            <File>
+              <FileName>demo_std_bootloader_kft.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\examples\components\bootloader\demo_std_bootloader_kft.c</FilePath>
+            </File>
+            <File>
+              <FileName>demo_std_double_application.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\examples\components\bootloader\demo_std_double_application.c</FilePath>
+            </File>
+            <File>
+              <FileName>demo_std_double_bootloader.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\examples\components\bootloader\demo_std_double_bootloader.c</FilePath>
+            </File>
+            <File>
+              <FileName>demo_std_single_bootloader.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\examples\components\bootloader\demo_std_single_bootloader.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1842,26 +1862,6 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\examples\std\dac\demo_std_dac.c</FilePath>
             </File>
-            <File>
-              <FileName>demo_std_bootloader_kft.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\examples\std\bootloader\demo_std_bootloader_kft.c</FilePath>
-            </File>
-            <File>
-              <FileName>demo_std_double_application.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\examples\std\bootloader\demo_std_double_application.c</FilePath>
-            </File>
-            <File>
-              <FileName>demo_std_double_bootloader.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\examples\std\bootloader\demo_std_double_bootloader.c</FilePath>
-            </File>
-            <File>
-              <FileName>demo_std_single_bootloader.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\examples\std\bootloader\demo_std_single_bootloader.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -2138,11 +2138,6 @@
               <FilePath>..\..\..\..\..\components\bootloader\source\drivers\am_boot.c</FilePath>
             </File>
             <File>
-              <FileName>am_boot_autobaud.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\components\bootloader\source\drivers\am_boot_autobaud.c</FilePath>
-            </File>
-            <File>
               <FileName>am_boot_enter_check_key.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\components\bootloader\source\drivers\am_boot_enter_check_key.c</FilePath>
@@ -2181,6 +2176,11 @@
               <FileName>am_boot_serial_uart.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\components\bootloader\source\drivers\am_boot_serial_uart.c</FilePath>
+            </File>
+            <File>
+              <FileName>am_boot_autobaud_soft.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\components\bootloader\source\drivers\am_boot_autobaud_soft.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -2518,7 +2518,7 @@
               <MiscControls></MiscControls>
               <Define>AM_VDEBUG AM_CORTEX_M0</Define>
               <Undefine></Undefine>
-              <IncludePath>..\user_code;..\user_config;..\user_config\am_hwconf_usrcfg;..\user_config\am_servconf_usrcfg;..\..\..\..\..\3rdparty\CMSIS\Include;..\..\..\..\..\arch\arm\include;..\..\..\..\bsp_common\include;..\..\..\..\..\components\drivers\include;..\..\..\..\..\components\libc\microlib_adapter\include;..\..\..\..\..\components\libc\armlib_adapter\include;..\..\..\..\..\components\service\include;..\..\..\..\..\components\util\include;..\..\..\..\..\examples\board\am824_core;..\..\..\..\..\examples\components;..\..\..\..\..\examples\soc\nxp;..\..\..\..\..\examples\std;..\..\..\..\..\interface;..\..\..\..\..\soc\nxp\drivers\include\adc;..\..\..\..\..\soc\nxp\lpc824;..\..\..\..\..\soc\nxp\drivers\include\acmp;..\..\..\..\..\soc\nxp\drivers\include\clk;..\..\..\..\..\soc\nxp\drivers\include\crc;..\..\..\..\..\soc\nxp\drivers\include\dma;..\..\..\..\..\soc\nxp\drivers\include\fmc;..\..\..\..\..\soc\nxp\drivers\include\gpio;..\..\..\..\..\soc\nxp\drivers\include\i2c;..\..\..\..\..\soc\nxp\drivers\include\iap;..\..\..\..\..\soc\nxp\drivers\include\inmux;..\..\..\..\..\soc\nxp\drivers\include\iocon;..\..\..\..\..\soc\nxp\drivers\include\mrt;..\..\..\..\..\soc\nxp\drivers\include\pint;..\..\..\..\..\soc\nxp\drivers\include\pmu;..\..\..\..\..\soc\nxp\drivers\include\rit;..\..\..\..\..\soc\nxp\drivers\include\rtc;..\..\..\..\..\soc\nxp\drivers\include\sct;..\..\..\..\..\soc\nxp\drivers\include\spi;..\..\..\..\..\soc\nxp\drivers\include\swm;..\..\..\..\..\soc\nxp\drivers\include\syscon;..\..\..\..\..\soc\nxp\drivers\include\timer;..\..\..\..\..\soc\nxp\drivers\include\usart;..\..\..\..\..\soc\nxp\drivers\include\utick;..\..\..\..\..\soc\nxp\drivers\include\wkt;..\..\..\..\..\soc\nxp\drivers\include\wwdt;..\user_config\am_bootconf_usrcfg;..\..\..\..\..\soc\nxp\lpc845;..\..\..\..\..\soc\nxp\drivers\include\adc;..\..\..\..\..\examples\board\am845_core;..\..\..\..\..\soc\nxp\drivers\include\dac;..\..\..\..\..\soc\nxp\drivers\include\capt;..\..\..\..\..\soc\nxp\drivers\include\bootloader;..\..\..\..\..\components\bootloader\include\arch\arm;..\..\..\..\..\components\bootloader\include\command_analyse\kboot_KinetisFlashTool;..\..\..\..\..\components\bootloader\include\command_analyse\kboot_KinetisFlashTool\drivers;..\..\..\..\..\components\bootloader\include\core;..\..\..\..\..\components\bootloader\include\drivers</IncludePath>
+              <IncludePath>..\user_code;..\user_config;..\user_config\am_hwconf_usrcfg;..\user_config\am_servconf_usrcfg;..\..\..\..\..\3rdparty\CMSIS\Include;..\..\..\..\..\arch\arm\include;..\..\..\..\bsp_common\include;..\..\..\..\..\components\drivers\include;..\..\..\..\..\components\libc\microlib_adapter\include;..\..\..\..\..\components\libc\armlib_adapter\include;..\..\..\..\..\components\service\include;..\..\..\..\..\components\util\include;..\..\..\..\..\examples\board\am824_core;..\..\..\..\..\examples\components;..\..\..\..\..\examples\soc\nxp;..\..\..\..\..\examples\std;..\..\..\..\..\interface;..\..\..\..\..\soc\nxp\drivers\include\adc;..\..\..\..\..\soc\nxp\lpc824;..\..\..\..\..\soc\nxp\drivers\include\acmp;..\..\..\..\..\soc\nxp\drivers\include\clk;..\..\..\..\..\soc\nxp\drivers\include\crc;..\..\..\..\..\soc\nxp\drivers\include\dma;..\..\..\..\..\soc\nxp\drivers\include\fmc;..\..\..\..\..\soc\nxp\drivers\include\gpio;..\..\..\..\..\soc\nxp\drivers\include\i2c;..\..\..\..\..\soc\nxp\drivers\include\iap;..\..\..\..\..\soc\nxp\drivers\include\inmux;..\..\..\..\..\soc\nxp\drivers\include\iocon;..\..\..\..\..\soc\nxp\drivers\include\mrt;..\..\..\..\..\soc\nxp\drivers\include\pint;..\..\..\..\..\soc\nxp\drivers\include\pmu;..\..\..\..\..\soc\nxp\drivers\include\rit;..\..\..\..\..\soc\nxp\drivers\include\rtc;..\..\..\..\..\soc\nxp\drivers\include\sct;..\..\..\..\..\soc\nxp\drivers\include\spi;..\..\..\..\..\soc\nxp\drivers\include\swm;..\..\..\..\..\soc\nxp\drivers\include\syscon;..\..\..\..\..\soc\nxp\drivers\include\timer;..\..\..\..\..\soc\nxp\drivers\include\usart;..\..\..\..\..\soc\nxp\drivers\include\utick;..\..\..\..\..\soc\nxp\drivers\include\wkt;..\..\..\..\..\soc\nxp\drivers\include\wwdt;..\user_config\am_bootconf_usrcfg;..\..\..\..\..\soc\nxp\lpc845;..\..\..\..\..\soc\nxp\drivers\include\adc;..\..\..\..\..\examples\board\am845_core;..\..\..\..\..\soc\nxp\drivers\include\dac;..\..\..\..\..\soc\nxp\drivers\include\capt;..\..\..\..\..\soc\nxp\drivers\include\bootloader;..\..\..\..\..\components\bootloader\include\arch\arm;..\..\..\..\..\components\bootloader\include\command_analyse\kboot_KinetisFlashTool;..\..\..\..\..\components\bootloader\include\command_analyse\kboot_KinetisFlashTool\drivers;..\..\..\..\..\components\bootloader\include\core;..\..\..\..\..\components\bootloader\include\drivers;..\..\..\..\..\examples\components\bootloader;..\startup</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -3597,6 +3597,26 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\examples\components\drivers\demo_fm175xx_picca_write_block.c</FilePath>
             </File>
+            <File>
+              <FileName>demo_std_bootloader_kft.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\examples\components\bootloader\demo_std_bootloader_kft.c</FilePath>
+            </File>
+            <File>
+              <FileName>demo_std_double_application.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\examples\components\bootloader\demo_std_double_application.c</FilePath>
+            </File>
+            <File>
+              <FileName>demo_std_double_bootloader.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\examples\components\bootloader\demo_std_double_bootloader.c</FilePath>
+            </File>
+            <File>
+              <FileName>demo_std_single_bootloader.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\examples\components\bootloader\demo_std_single_bootloader.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -4022,26 +4042,6 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\examples\std\dac\demo_std_dac.c</FilePath>
             </File>
-            <File>
-              <FileName>demo_std_bootloader_kft.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\examples\std\bootloader\demo_std_bootloader_kft.c</FilePath>
-            </File>
-            <File>
-              <FileName>demo_std_double_application.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\examples\std\bootloader\demo_std_double_application.c</FilePath>
-            </File>
-            <File>
-              <FileName>demo_std_double_bootloader.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\examples\std\bootloader\demo_std_double_bootloader.c</FilePath>
-            </File>
-            <File>
-              <FileName>demo_std_single_bootloader.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\examples\std\bootloader\demo_std_single_bootloader.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -4318,11 +4318,6 @@
               <FilePath>..\..\..\..\..\components\bootloader\source\drivers\am_boot.c</FilePath>
             </File>
             <File>
-              <FileName>am_boot_autobaud.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\components\bootloader\source\drivers\am_boot_autobaud.c</FilePath>
-            </File>
-            <File>
               <FileName>am_boot_enter_check_key.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\components\bootloader\source\drivers\am_boot_enter_check_key.c</FilePath>
@@ -4361,6 +4356,11 @@
               <FileName>am_boot_serial_uart.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\components\bootloader\source\drivers\am_boot_serial_uart.c</FilePath>
+            </File>
+            <File>
+              <FileName>am_boot_autobaud_soft.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\components\bootloader\source\drivers\am_boot_autobaud_soft.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -176,7 +176,7 @@ static const struct am_boot_autobaud_drv_funcs __g_autobaud_soft_funcs = {
 /**
  * \brief 自动波特率初始化函数
  */
-am_boot_autobaud_handle_t am_boot_autobaud_init (
+am_boot_autobaud_handle_t am_boot_autobaud_soft_init (
     am_boot_autobaud_soft_dev_t     *p_dev,
     am_boot_autobaud_soft_devinfo_t *p_devinfo,
     am_cap_handle_t                  cap_handle,
@@ -227,7 +227,7 @@ am_boot_autobaud_handle_t am_boot_autobaud_init (
 /**
  * \brief 自动波特率初解始化函数
  */
-void am_boot_autobaud_deinit (am_boot_autobaud_handle_t handle)
+void am_boot_autobaud_soft_deinit (am_boot_autobaud_handle_t handle)
 {
 
     am_boot_autobaud_soft_dev_t *p_dev = (am_boot_autobaud_soft_dev_t *)handle;

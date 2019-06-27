@@ -29,9 +29,10 @@
 #include "am_boot_mem_flash.h"
 #include "am_boot_kft.h"
 #include "am_boot_enter_check_key.h"
-#include "demo_std_entries.h"
+#include "demo_boot_entries.h"
 #include "am_zlg217_inst_init.h"
 #include "am_bootconf_zlg217.h"
+#include "am_boot_autobaud_soft.h"
 
 #define RAM_START_ADDR 0x20000000
 #define RAM_SIZE       20 * 1024
