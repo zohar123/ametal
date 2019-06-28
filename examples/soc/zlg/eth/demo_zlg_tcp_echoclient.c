@@ -31,7 +31,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "netconf.h"
+#include "eth_conf.h"
 #include "am_zlg_phy.h"
 #include "am_vdebug.h"
 #if LWIP_TCP
@@ -85,11 +85,11 @@ void am_eth_tcp_client_init(void)
     echoclient_pcb = tcp_new();
 
     if (echoclient_pcb != NULL) {
-        IP4_ADDR(&dest_ip_addr, AM_ETH_DEST_IP_ADDR0, AM_ETH_DEST_IP_ADDR1,
-                AM_ETH_DEST_IP_ADDR2, AM_ETH_DEST_IP_ADDR3);
+        IP4_ADDR(&dest_ip_addr, g_eth_dest_ip[0], g_eth_dest_ip[1],
+                g_eth_dest_ip[2], g_eth_dest_ip[3]);
 
         /* connect to destination address/port */
-        tcp_connect(echoclient_pcb, &dest_ip_addr, AM_ETH_DEST_PORT,
+        tcp_connect(echoclient_pcb, &dest_ip_addr, g_eth_dest_port,
                 am_eth_tcp_echoclient_connected);
     } else {
         /* deallocate the pcb */

@@ -448,6 +448,8 @@ void demo_usbd_keyboard_entry (void* p_handle);
  */
 void demo_usbd_msc_entry (void* p_handle);
 
+void demo_zlg_hw_eth_entry(void);
+
 #ifdef __cplusplus
 }
 #endif
