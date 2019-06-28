@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /*******************************************************************************
 *                                 AMetal
 *                       ----------------------------
@@ -119,7 +118,6 @@ int am_main (void)
 //    demo_zmf159_usbd_printer_counter_entry();
 //    demo_zmf159_usbd_vcom_entry();
 //    demo_zmf159_core_std_sdcard_entry();
-//    demo_zmf159_core_eth_entry();
 //    demo_zmf159_core_hw_eth_entry();
     while (1) {
     }
