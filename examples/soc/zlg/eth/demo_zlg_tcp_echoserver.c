@@ -27,10 +27,9 @@
 #include "lwip/debug.h"
 #include "lwip/stats.h"
 #include "lwip/tcp.h"
-#include "netconf.h"
+#include "eth_conf.h"
 #include <stdlib.h>
 #include <string.h>
-#include "netconf.h"
 
 #if LWIP_TCP
 
@@ -73,7 +72,7 @@ void am_eth_tcp_server_init(void)
     if (tcp_echoserver_pcb != NULL) {
         err_t err;
         err = tcp_bind(tcp_echoserver_pcb, IP_ADDR_ANY,
-                AM_ETH_LOCAL_SERVER_PORT);
+                g_eth_local_port);
 
         if (err == ERR_OK) {
             tcp_echoserver_pcb = tcp_listen(tcp_echoserver_pcb);
