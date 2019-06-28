@@ -83,7 +83,7 @@ uint8_t g_tx_buff[AM_ZLG_ETH_TXBUFNB][AM_ZLG_ETH_TX_BUF_SIZE];
 /** \brief public variable declaration */
 am_eth_regs_conf g_eth_regs_config;
 __IO uint32_t g_eth_status = 0;
-__IO am_zlg_eth_link_st_t g_eth_link_status = am_zlg_eth_link_st_up;
+__IO am_zlg_eth_link_st_t g_eth_link_status = AM_ZLG_ETH_LINK_ST_UP;
 
 __IO eth_dma_desc_type_t *g_dma_tx_desc_to_set;
 __IO eth_dma_desc_type_t *g_dma_rx_desc_to_get;
@@ -443,7 +443,7 @@ void am_zlg_eth_check_link_status(uint16_t phy_addr)
         status = 1;
     }
     if (!tmp && status) {
-        g_eth_link_status = am_zlg_eth_link_st_down;
+        g_eth_link_status = AM_ZLG_ETH_LINK_ST_DOWN;
         netif_set_link_down(&g_eth_netif);
         status = 0;
     }
@@ -509,7 +509,7 @@ void am_zlg_eth_link_callback(struct netif *netif)
 #endif 
         netif_set_addr(&g_eth_netif, &ipaddr, &netmask, &gw);
         netif_set_up(&g_eth_netif);
-        g_eth_link_status = am_zlg_eth_link_st_up;
+        g_eth_link_status = AM_ZLG_ETH_LINK_ST_UP;
     } else {
         am_zlg_eth_stop();
 #ifdef USE_DHCP

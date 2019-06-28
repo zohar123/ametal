@@ -647,8 +647,8 @@ void am_zlg_eth_bsp_config(void);
 void am_zlg_eth_check_link_status(uint16_t phy_addr);
 
 typedef enum am_zlg_eth_link_st {
-    am_zlg_eth_link_st_up    = 0x00,    
-    am_zlg_eth_link_st_down  = 0x01   
+    AM_ZLG_ETH_LINK_ST_UP    = 0x00,    
+    AM_ZLG_ETH_LINK_ST_DOWN  = 0x01   
 }am_zlg_eth_link_st_t;
 
 extern __IO am_zlg_eth_link_st_t g_eth_link_status;

@@ -79,7 +79,7 @@ void demo_zlg_hw_eth_entry(void)
 	am_zlg_eth_bsp_config();
     am_zlg_eth_lwip_init();
     while (1) {
-        if ((am_zlg_eth_link_st_up == g_eth_link_status) 
+        if ((AM_ZLG_ETH_LINK_ST_UP == g_eth_link_status) 
             && (__AM_ZLG_ETH_RELEASE == flag)) {
 #if defined(TCP_CLIENT_TEST)
             printf("connect to tcp server\n");
@@ -95,7 +95,7 @@ void demo_zlg_hw_eth_entry(void)
 
             flag = __AM_ZLG_ETH_OCCUPY;
         }
-        if ((am_zlg_eth_link_st_down == g_eth_link_status) 
+        if ((AM_ZLG_ETH_LINK_ST_DOWN == g_eth_link_status) 
             && (__AM_ZLG_ETH_OCCUPY == flag)) {
 #if defined(TCP_CLIENT_TEST)        		
             printf("disconnect to tcp server\n");
