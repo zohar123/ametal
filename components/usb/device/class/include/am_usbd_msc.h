@@ -71,32 +71,30 @@ extern "C" {
 /**< \brief 求出16位日期格式的低字节 */
 #define AM_DATE_LB(Y,M,D) ((((Y)-1980)<<9)|((M)<<5)|(D))
 
-//#define AM_BULK_MAX_PACKET_SIZE           (0x40)    /**< \brief 定义批量传输的最大字节数 */
-#define AM_SCSI_COMMAND_SIZE              (0x1f)      /**< \brief 定义SISI命令字节数 */
+//#define AM_BULK_MAX_PACKET_SIZE           (0x40)       /**< \brief 定义批量传输的最大字节数 */
+#define AM_SCSI_COMMAND_SIZE              (0x1f)         /**< \brief 定义SISI命令字节数 */
 
-#define AM_USBD_MSC_DISD_SIZE             (1024 * 1024U)
-#define AM_USBD_MSC_SECTOR_SIZE           (512U)      /**< \brief 扇区大小 */
-#define AM_USBD_MSC_RAMDISK_SIZE          (10 * 1024U)  /**< \brief 放FAT表及用户数据*/
-#define AM_USBD_MSC_USE_DATE_OFST         (2048U)     /**< \brief 用户数据在FAT数据区偏移位置 */
-#define AM_USBD_MSC_FAT1_OFST             (512U)      /**< \brief FAT1在FAT表中的偏移位置 */
-
+#define AM_USBD_MSC_DISD_SIZE             (32748 * 1024U)  /**< \brief 模拟U盘的总内存大小   256K~32748K*/
+#define AM_USBD_MSC_SECTOR_SIZE           (512U)         /**< \brief 扇区大小 */
+#define AM_USBD_MSC_USE_DATE_OFST         (2048U)        /**< \brief 用户数据在FAT数据区偏移位置 */
+#define AM_USBD_MSC_FAT1_OFST             (512U)         /**< \brief FAT1在FAT表中的偏移位置 */
 
 /**< \brief CBW 标识符 */
-#define AM_BOT_CBW_SIGNATURE             (0x43425355)
+#define AM_BOT_CBW_SIGNATURE              (0x43425355)
 
 /**< \brief CSW 标识符 */
-#define AM_BOT_CSW_SIGNATURE             (0x53425355)
+#define AM_BOT_CSW_SIGNATURE              (0x53425355)
 
 /*******************************************************************************
   SBU_MSC SCSI命令运行阶段
 *******************************************************************************/
 
-#define AM_USBD_MSC_IDLE                 (0)  /**< \brief Idle state */
-#define AM_USBD_MSC_DATA_OUT             (1)  /**< \brief Data Out state */
-#define AM_USBD_MSC_DATA_IN              (2)  /**< \brief Data In state */
-#define AM_USBD_MSC_DATA_IN_LAST         (3)  /**< \brief Last Data In Last */
-#define AM_USBD_MSC_CSW_SEND             (4)  /**< \brief Command Status Wrapper */
-#define AM_USBD_MSC_DATA_ERROR           (5)  /**< \brief error state */
+#define AM_USBD_MSC_IDLE                  (0)  /**< \brief Idle state */
+#define AM_USBD_MSC_DATA_OUT              (1)  /**< \brief Data Out state */
+#define AM_USBD_MSC_DATA_IN               (2)  /**< \brief Data In state */
+#define AM_USBD_MSC_DATA_IN_LAST          (3)  /**< \brief Last Data In Last */
+#define AM_USBD_MSC_CSW_SEND              (4)  /**< \brief Command Status Wrapper */
+#define AM_USBD_MSC_DATA_ERROR            (5)  /**< \brief error state */
 
 /*******************************************************************************
   CSW状态返回数据长度/值
@@ -193,25 +191,24 @@ typedef struct am_bulk_only_csw {
  * \note 不同容量的u盘 各个区的地址不一样
  */
 typedef struct am_usb_msc_diskinfo {
-    uint8_t        is_win10;
+    uint8_t        is_win10;           /**< \brief 当前PC主机是否为WIN10*/
 
-    uint8_t        max_lun;
+    uint8_t        max_lun;            /**< \brief 最大LUN数*/
 
     uint32_t       memory_size;        /**< \brief U盘容量大小 */
     uint16_t       block_size;         /**< \brief U盘扇区大小 */
     uint32_t       block_count;        /**< \brief U盘扇区总数 */
-    uint32_t       fat2_addr;          /**< \brief FAT2 的地址 */
-    uint32_t       rootdir_addr;       /**< \brief 根目录 的地址 */
-    uint32_t       data_addr;          /**< \brief 数据区 的地址 */
+    uint32_t       fat1_offset;        /**< \brief FAT1的地址最大偏移量 */
+    uint32_t       fat2_offset;        /**< \brief FAT2的地址最大偏移量 */
+    uint32_t       root_offset;        /**< \brief 根目录的地址最大偏移量 */
 
-    uint8_t       *p_cmd_buffer;
-    uint8_t       *p_ram_buffer;
+    uint8_t       *p_cmd_buffer;       /**< \brief 接收命令数据缓冲区*/
 
-    const uint8_t *p_root_file;
-    uint32_t       root_file_len;
+    const uint8_t *p_root_dir;         /**< \brief 根目录数据信息*/
+    uint32_t       rootdir_size;       /**< \brief 根目录数据大小*/
 
-    const uint8_t *p_file;
-    uint32_t       file_len;
+    const uint8_t *p_readme;           /**< \brief README文件信息*/
+    uint32_t       readme_size;        /**< \brief README文件数据大小*/
 
 } am_usbd_msc_diskinfo_t;
 
@@ -252,17 +249,17 @@ typedef struct am_usbd_msc {
     volatile uint8_t       int_status_in;    /**< \brief 输入中断状态 */
     volatile uint8_t       int_status_out;   /**< \brief 输出中断状态 */
 
-    uint32_t               w_offset;
-    uint32_t               w_length;
+    uint32_t               w_offset;         /**< \brief 目前需要写数据的地址偏移量 */
+    uint32_t               w_length;         /**< \brief 目前还需要写数据的字节数 */
 
-    uint32_t               r_offset;
-    uint32_t               r_length;
+    uint32_t               r_offset;         /**< \brief 目前需要读数据的地址偏移量 */
+    uint32_t               r_length;         /**< \brief 目前还需要读数据的字节数 */
 
-    am_usbd_msc_endpoint_t endpoint;
+    am_usbd_msc_endpoint_t endpoint;         /**< \brief 端点信息 */
 
-    am_usbd_msc_cb_t       msc_cb;
+    am_usbd_msc_cb_t       msc_cb;           /**< \brief 接收到数据的回调函数 */
 
-    const am_usbd_msc_diskinfo_t *p_info;
+    const am_usbd_msc_diskinfo_t *p_info;    /**< \brief FAT16文件系统相关信息 */
 }am_usbd_msc_t;
 
 typedef am_usbd_msc_t *am_usbd_msc_handle;

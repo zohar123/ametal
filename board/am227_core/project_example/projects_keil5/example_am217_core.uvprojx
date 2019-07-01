@@ -652,9 +652,9 @@
               <FilePath>..\..\..\..\components\drivers\source\fm175xx\am_fm175xx_zlg217.lib</FilePath>
             </File>
             <File>
-              <FileName>am_usb_lib.lib</FileName>
+              <FileName>am_usbd_lib_m3.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>..\..\..\..\components\usb\am_usb_lib.lib</FilePath>
+              <FilePath>..\..\..\..\components\usb\am_usbd_lib_m3.lib</FilePath>
             </File>
           </Files>
         </Group>

@@ -647,14 +647,14 @@
               <FilePath>..\..\..\..\components\drivers\source\lcd\am_ili9341_intfc_3wire.c</FilePath>
             </File>
             <File>
-              <FileName>am_usb_lib.lib</FileName>
-              <FileType>4</FileType>
-              <FilePath>..\..\..\..\components\usb\am_usb_lib.lib</FilePath>
-            </File>
-            <File>
               <FileName>am_sdcard.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\components\drivers\source\sdcard\am_sdcard.c</FilePath>
+            </File>
+            <File>
+              <FileName>am_usbd_lib_m3.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\..\..\components\usb\am_usbd_lib_m3.lib</FilePath>
             </File>
           </Files>
         </Group>
@@ -2691,14 +2691,14 @@
               <FilePath>..\..\..\..\components\drivers\source\lcd\am_ili9341_intfc_3wire.c</FilePath>
             </File>
             <File>
-              <FileName>am_usb_lib.lib</FileName>
-              <FileType>4</FileType>
-              <FilePath>..\..\..\..\components\usb\am_usb_lib.lib</FilePath>
-            </File>
-            <File>
               <FileName>am_sdcard.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\components\drivers\source\sdcard\am_sdcard.c</FilePath>
+            </File>
+            <File>
+              <FileName>am_usbd_lib_m3.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\..\..\components\usb\am_usbd_lib_m3.lib</FilePath>
             </File>
           </Files>
         </Group>
