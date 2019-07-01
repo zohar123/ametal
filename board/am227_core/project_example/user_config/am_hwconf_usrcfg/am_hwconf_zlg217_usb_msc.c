@@ -44,8 +44,9 @@
 /*******************************************************************************
  * 用户USB描述符配置宏,用户配置描述符宏即可,无需关心USB描述符。
  ******************************************************************************/
+#define __USBD_MSC_SYS_WIN7         (0)
+#define __USBD_MSC_SYS_WIN10        (1)
 
-#define __USBD_MSC_SYS_IS_WIN10        (0)
 
 #define __USBD_MSC_FILE_CREAT_TIME1    (15U)
 #define __USBD_MSC_FILE_CREAT_TIME2    (48U)
@@ -64,8 +65,8 @@
 #define __USBD_MSC_FILE_MODIFIED_DATE3 (2U)
 
 /** \brief USB设备描述配置宏*/
-#define __USBD_MSC_VENDOR_ID                 (0x4195) /**< \brief 厂商编号,作为产品发布必须写自己公司的厂商编号，以免侵权，此处填了一个没有在USB协会注册的编号*/
-#define __USBD_MSC_PRODUCT_ID                (0x6515) /**< \brief 产品编号*/
+#define __USBD_MSC_VENDOR_ID                 (0x3068) /**< \brief 厂商编号,作为产品发布必须写自己公司的厂商编号，以免侵权，此处填入的为ZLG提供给客户开发调试用的自定义USB设备类功能*/
+#define __USBD_MSC_PRODUCT_ID                (0x0003) /**< \brief 产品编号*/
 #define __USBD_MSC_DEVICE_ID                 (0x0101) /**< \brief 设备编号*/
 #define __USBD_MSC_VENDOR_STRING_INDEX       (0x01)   /**< \brief 描述厂商的字符串索引*/
 #define __USBD_MSC_PRODUCT_STRING_INDEX      (0x02)   /**< \brief 描述产品的字符串索引 */
@@ -75,7 +76,7 @@
 /** \brief USB配置描述符配置宏*/
 #define __USBD_MSC_INTERFACE_COUNT           (1U)     /**< \brief 接口数*/
 #define __USBD_MSC_CONFIGURE_INDEX           (1U)     /**< \brief 配置描述符索引*/
-#define __USBD_MSC_DEVICE_POWER               AM_USBD_MAX_POWER /**< \brief 设备向主机申请的电流，单位2mA,最大100mA*/
+#define __USBD_MSC_DEVICE_POWER              AM_USBD_MAX_POWER /**< \brief 设备向主机申请的电流，单位2mA,最大100mA*/
 /** \brief 设备属性，自供电，不支持远程唤醒*/
 #define __USBD_MSC_DEVICE_ATTRIBUTE          \
               (AM_USBD_CONFIG_SELF_POWER | AM_USBD_CONFIG_NOT_REMOTE_WAKEUP)
@@ -84,15 +85,15 @@
 #define __USBD_MSC_ENDPOINT_IN                (1U)  /**< \brief 输入端点号*/
 #define __USBD_MSC_ENDPOINT_IN_PACKSIZE       AM_USBD_MAX_EP_DATA_CNT       /**< \brief 端点包大小,设置为64*/
 #define __USBD_MSC_ENDPOINT_IN_ATTRIBUTE      AM_USB_ENDPOINT_BULK          /**< \brief 设置端点属性为批量传输*/
-#define __USBD_MSC_ENDPOINT_IN_QUERY_TIME    (0x01)                         /**< \brief 设置端点查询时间为10ms,单位为1ms*/
+#define __USBD_MSC_ENDPOINT_IN_QUERY_TIME     (0x01)                        /**< \brief 设置端点查询时间为10ms,单位为1ms*/
 
 #define __USBD_MSC_ENDPOINT_OUT               (2)
 #define __USBD_MSC_ENDPOINT_OUT_PACKSIZE      AM_USBD_MAX_EP_DATA_CNT
 #define __USBD_MSC_ENDPOINT_OUT_ATTRIBUTE     AM_USB_ENDPOINT_BULK
-#define __USBD_MSC_ENDPOINT_OUT_QUERY_TIME   (0x01)
+#define __USBD_MSC_ENDPOINT_OUT_QUERY_TIME    (0x01)
 
 /**\brief USB接口描述符配置宏*/
-#define __USBD_MSC_ENDPOINT_COUNT            (2U)     /**< \brief 端点个数,输入端点与输出端点(不包括控制端点)*/
+#define __USBD_MSC_ENDPOINT_COUNT             (2U)     /**< \brief 端点个数,输入端点与输出端点(不包括控制端点)*/
 
 /*****************************************************************************
  * USB描述符(设备描述符,配置描述符，接口描述符,端点描述符),该部分用户只需配置上述宏即可
@@ -131,8 +132,8 @@ static const uint8_t __g_usb_msc_desc_dev[AM_USB_DESC_LENGTH_DEVICE]  = {
 /* 配置描述符及其下级描述符（不能越过上级描述符直接得到下级描述符） */
 static uint8_t __g_usb_msc_desc_conf[AM_USB_DESC_LENGTH_ALL(__USBD_MSC_ENDPOINT_COUNT)] = {
     /* 配置描述符 */
-    AM_USB_DESC_LENGTH_CONFIGURE,     /* 配置描述符字节数 */
-    AM_USB_DESC_TYPE_CONFIGURE,       /* 配置描述符类型编号，固定为0x02 */
+    AM_USB_DESC_LENGTH_CONFIGURE,           /* 配置描述符字节数 */
+    AM_USB_DESC_TYPE_CONFIGURE,             /* 配置描述符类型编号，固定为0x02 */
 
     /* 配置描述符及下属描述符的总长度 */
     AM_USB_SHORT_GET_LOW(AM_USB_DESC_LENGTH_ALL(__USBD_MSC_ENDPOINT_COUNT)),
@@ -146,8 +147,8 @@ static uint8_t __g_usb_msc_desc_conf[AM_USB_DESC_LENGTH_ALL(__USBD_MSC_ENDPOINT_
     __USBD_MSC_DEVICE_POWER,                /* 从总线获取的最大电流：100mA， 2mA一个单位 */
 
     /* 接口描述符 */
-    AM_USB_DESC_LENGTH_INTERFACE,     /* 接口描述符字节数 */
-    AM_USB_DESC_TYPE_INTERFACE,       /* 接口描述符类型编号，固定为0x04 */
+    AM_USB_DESC_LENGTH_INTERFACE,           /* 接口描述符字节数 */
+    AM_USB_DESC_TYPE_INTERFACE,             /* 接口描述符类型编号，固定为0x04 */
     0x00,                                   /* 该接口编号,接口描述符必须从0开始,以此类推 */
     0x00,                                   /* 可选设置的索引值（该接口的备用编号） */
     __USBD_MSC_ENDPOINT_COUNT,              /* 该接口使用的端点数（不包括端点0） */
@@ -211,8 +212,8 @@ static const uint8_t __g_usb_msc_desc_str_language_id[4] = {
 
 /**< \brief 描述厂商的字符串描述符 */
 static const uint8_t __g_usb_msc_desc_str_imanufacturer[22] = {
-    sizeof(__g_usb_msc_desc_str_imanufacturer),       /* 字符串描述符字节数 */
-    AM_USB_DESC_TYPE_STRING,       /* 字符串描述符类型编号，固定为0x03 */
+    sizeof(__g_usb_msc_desc_str_imanufacturer),   /* 字符串描述符字节数 */
+    AM_USB_DESC_TYPE_STRING,                      /* 字符串描述符类型编号，固定为0x03 */
     0x7f, 0x5e, /* 广 */
     0xde, 0x5d, /* 州 */
     0xf4, 0x81, /* 致 */
@@ -228,7 +229,7 @@ static const uint8_t __g_usb_msc_desc_str_imanufacturer[22] = {
 /**< \brief 描述设备序列号的字符串描述符 */
 static const uint8_t __g_usb_msc_desc_str_iserialnumber[22] = {
     sizeof(__g_usb_msc_desc_str_iserialnumber),    /* 字符串描述符字节数 */
-    AM_USB_DESC_TYPE_STRING,                 /* 字符串描述符类型编号，固定为0x03 */
+    AM_USB_DESC_TYPE_STRING,                       /* 字符串描述符类型编号，固定为0x03 */
     0x32, 0x00, /* 2 */
     0x30, 0x00, /* 0 */
     0x31, 0x00, /* 1 */
@@ -289,14 +290,48 @@ static const am_usbd_descriptor_t __g_usb_msc_descriptor[] = {
     },
 };
 
-static const uint8_t __g_readme_data[]= {
-    "**ZLG模拟U盘例程**\r\n"
-     "1.先判断使用PC机的系统，如果使用WIN10,记得修改am_hwconf_zlg217_usb_msc.c文件中系统宏配置项;\r\n"
+/******************************************************************************
+ * 平台初始化函数、解初始化函数已经设备信息
+ ******************************************************************************/
+/**
+ * \brief 平台初始化
+ */
+static void __usb_msc_init (void) {
+    /* 使能时钟 */
+    am_clk_enable(CLK_USB);
+    am_clk_enable(CLK_IOPA);
+    am_clk_enable(CLK_AFIO);
+
+    /* 配置PIOA_11 PIOA_12为USB功能   */
+    am_gpio_pin_cfg(PIOA_11, PIOA_11_USBDM);
+    am_gpio_pin_cfg(PIOA_12, PIOA_12_USBDP);
+}
+
+
+static  uint8_t __g_readme_data[]= {
+    "**USB设备类  ZLG模拟U盘**\r\n"
+     "1.先判断使用PC机的系统，如果使用WIN10,记得修改am_hwconf_xxxx_usb_msc.c文件中系统宏配置项;\r\n"
      "2.接上串口，将文件拖动到U盘中，会打印拖动文件的信息;\r\n"
 };
 
 
-static const uint8_t __g_fat_root_dir[64] = {
+#define __USBD_MSC_FILE_CREAT_TIME1    (15U)
+#define __USBD_MSC_FILE_CREAT_TIME2    (48U)
+#define __USBD_MSC_FILE_CREAT_TIME3    (26U)
+
+#define __USBD_MSC_FILE_CREAT_DATE1    (2018U)
+#define __USBD_MSC_FILE_CREAT_DATE2    (10U)
+#define __USBD_MSC_FILE_CREAT_DATE3    (29U)
+
+#define __USBD_MSC_FILE_MODIFIED_TIME1 (15U)
+#define __USBD_MSC_FILE_MODIFIED_TIME2 (36U)
+#define __USBD_MSC_FILE_MODIFIED_TIME3 (47U)
+
+#define __USBD_MSC_FILE_MODIFIED_DATE1 (2018U)
+#define __USBD_MSC_FILE_MODIFIED_DATE2 (11U)
+#define __USBD_MSC_FILE_MODIFIED_DATE3 (2U)
+
+static const uint8_t __g_fat_root_dir[] = {
 
     /* 磁盘标卷：zlgmcu 的假U盘 */
      'Z', 'L', 'G', 'M', 'C', 'U', 0x20, 0x20, 0x55, 0xC5, 0xCC,
@@ -360,24 +395,8 @@ static const uint8_t __g_fat_root_dir[64] = {
     0x02, 0x00,            /* 起始簇低字，簇2。(数据区) */
 
     /* 文件长度 */
-    (sizeof(__g_readme_data) - 1), ((sizeof(__g_readme_data) - 1) >> 8), 0x00, 0x00,
+    (sizeof(__g_readme_data) - 1) & 0xff, ((sizeof(__g_readme_data) - 1) >> 8) & 0xff, 0x00, 0x00,
 };
-/******************************************************************************
- * 平台初始化函数、解初始化函数已经设备信息
- ******************************************************************************/
-/**
- * \brief 平台初始化
- */
-static void __usb_msc_init (void) {
-    /* 使能时钟 */
-    am_clk_enable(CLK_USB);
-    am_clk_enable(CLK_IOPA);
-    am_clk_enable(CLK_AFIO);
-
-    /* 配置PIOA_11 PIOA_12为USB功能   */
-    am_gpio_pin_cfg(PIOA_11, PIOA_11_USBDM);
-    am_gpio_pin_cfg(PIOA_12, PIOA_12_USBDP);
-}
 
 /**
  * \brief 平台去初始化
@@ -389,8 +408,8 @@ static void __usb_msc_deinit (void) {
 
 /**< \brief 设备信息*/
 static const am_usbd_devinfo_t __g_usbd_msc_info = {
-        __g_usb_msc_descriptor,                                                 /* 描述符地址 */
-        sizeof(__g_usb_msc_descriptor) / sizeof(__g_usb_msc_descriptor[0]),     /* 描述符个数 */
+        __g_usb_msc_descriptor,                                              /* 描述符地址 */
+        sizeof(__g_usb_msc_descriptor) / sizeof(__g_usb_msc_descriptor[0]),  /* 描述符个数 */
 };
 
 /**< \brief 定义USB设备信息 */
@@ -411,12 +430,8 @@ static am_zlg227_usbd_dev_t  __g_zlg_usbd_msc;
 /**< \brief 接收SCSI命令缓冲区 */
 static uint8_t __g_sici_cmd_buff[AM_USBD_MAX_EP_DATA_CNT] = {0};
 
-/**< \brief 定义一个缓冲，格式化和收发数据都在这里进行 */
-static uint8_t __g_ram_disk[AM_USBD_MSC_RAMDISK_SIZE] = {0};
-
-
 static const am_usbd_msc_diskinfo_t __g_usbd_msc_disk_info = {
-    __USBD_MSC_SYS_IS_WIN10,
+    __USBD_MSC_SYS_WIN7,
     0,
 
     AM_USBD_MSC_DISD_SIZE,
@@ -426,16 +441,18 @@ static const am_usbd_msc_diskinfo_t __g_usbd_msc_disk_info = {
     (AM_USBD_MSC_DISD_SIZE / 256 / 1024 * 2 + 1) * 512,
     (AM_USBD_MSC_DISD_SIZE / 256 / 1024 * 2 + 17) * 512,
 
-    // 指令buff
+    /* 指令缓冲区  */
     __g_sici_cmd_buff,
-    __g_ram_disk,
 
+    /* FAT根目录 */
     __g_fat_root_dir,
     sizeof(__g_fat_root_dir),
 
+    /* README文件数据 */
     __g_readme_data,
-    sizeof(__g_readme_data) - 1,
+    sizeof(__g_readme_data),
 };
+
 
 /** \brief usb_msc实例初始化，获得usb_msc标准服务句柄 */
 am_usbd_msc_handle am_zlg227_usb_msc_inst_init (void)

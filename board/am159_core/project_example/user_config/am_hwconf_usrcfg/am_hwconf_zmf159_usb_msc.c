@@ -44,7 +44,8 @@
  * 用户USB描述符配置宏,用户配置描述符宏即可,无需关心USB描述符。
  ******************************************************************************/
 
-#define __USBD_MSC_SYS_IS_WIN10        (0)
+#define __USBD_MSC_SYS_WIN7         (0)
+#define __USBD_MSC_SYS_WIN10        (1)
 
 #define __USBD_MSC_FILE_CREAT_TIME1    (15U)
 #define __USBD_MSC_FILE_CREAT_TIME2    (48U)
@@ -405,31 +406,27 @@ static am_zmf159_usbd_dev_t  __g_zlg_usbd_msc;
 /**< \brief 接收SCSI命令缓冲区 */
 static uint8_t __g_sici_cmd_buff[AM_USBD_MAX_EP_DATA_CNT + 1] = {0};
 
-/**< \brief 定义一个缓冲，格式化和收发数据都在这里进行 */
-static uint8_t __g_ram_disk[AM_USBD_MSC_RAMDISK_SIZE] = {0};
-
-
 static const am_usbd_msc_diskinfo_t __g_usbd_msc_disk_info = {
-        __USBD_MSC_SYS_IS_WIN10,
-        0,
+    __USBD_MSC_SYS_WIN7,
+    0,
 
-        AM_USBD_MSC_DISD_SIZE,
-        AM_USBD_MSC_SECTOR_SIZE,
-        AM_USBD_MSC_DISD_SIZE / AM_USBD_MSC_SECTOR_SIZE,
-        (AM_USBD_MSC_DISD_SIZE / 256 / 1024 + 1) * 512,
-        (AM_USBD_MSC_DISD_SIZE / 256 / 1024 * 2 + 1) * 512,
-        (AM_USBD_MSC_DISD_SIZE / 256 / 1024 * 2 + 17) * 512,
+    AM_USBD_MSC_DISD_SIZE,
+    AM_USBD_MSC_SECTOR_SIZE,
+    AM_USBD_MSC_DISD_SIZE / AM_USBD_MSC_SECTOR_SIZE,
+    (AM_USBD_MSC_DISD_SIZE / 256 / 1024 + 1) * 512,
+    (AM_USBD_MSC_DISD_SIZE / 256 / 1024 * 2 + 1) * 512,
+    (AM_USBD_MSC_DISD_SIZE / 256 / 1024 * 2 + 17) * 512,
 
-        // 指令buff
-        __g_sici_cmd_buff,                        /* 指令接收缓冲区   */
+    /* 指令缓冲区  */
+    __g_sici_cmd_buff,
 
-        __g_ram_disk,                             /* 数据收发格式化缓冲区   */
+    /* FAT根目录 */
+    __g_fat_root_dir,
+    sizeof(__g_fat_root_dir),
 
-        __g_fat_root_dir,                         /* 文件系统描述符   */
-        sizeof(__g_fat_root_dir),                 /* 文件系统描述符大小   */
-
-        __g_readme_data,
-        sizeof(__g_readme_data) - 1,
+    /* README文件数据 */
+    __g_readme_data,
+    sizeof(__g_readme_data),
 };
 
 /** \brief usb_msc实例初始化，获得usb_msc标准服务句柄 */
