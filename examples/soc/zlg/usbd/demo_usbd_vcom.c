@@ -61,10 +61,10 @@ static void __test_function(void *p_arg, uint8_t *p_buffer, uint8_t len)
 /**
  * \brief 例程入口
  */
-void demo_usbd_vcom_entry (am_usbd_cdc_vcom_handle handle)
+void demo_usbd_vcom_entry (void* p_handle)
 {
     uint32_t key = 0;
-
+    am_usbd_cdc_vcom_handle handle = p_handle;
     // 设置串口接收中断
     am_usbd_cdc_vcom_recv_cb(handle, __test_function, NULL);
 

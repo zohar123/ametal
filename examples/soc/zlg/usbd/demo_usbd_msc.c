@@ -55,10 +55,10 @@ static void __rec_buffer_cb(void *p_arg, uint8_t *p_buff, uint16_t len)
 /**
  * \brief 例程入口
  */
-void demo_usbd_msc_entry (am_usbd_msc_handle handle)
+void demo_usbd_msc_entry (void* p_handle)
 {
 
-
+    am_usbd_msc_handle handle = p_handle;
     am_usbd_msc_recv_callback(handle, __rec_buffer_cb, (void *)handle);
 
     /* 复位后延时一段时间，模拟USB设备拔出的动作 */
