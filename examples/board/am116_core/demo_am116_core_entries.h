@@ -516,25 +516,25 @@ void demo_am116_core_bootloader_entry(void);
  */
 void demo_am116_core_application_entry(void);
 
-/**
- * \brief ZSN60x LED≤‚ ‘≥Ã–Ú
- */
-void demo_am116_zsn60x_led_test_entry();
+///**
+// * \brief ZSN60x LED≤‚ ‘≥Ã–Ú
+// */
+//void demo_am116_zsn60x_led_test_entry();
 
-/**
- * \brief ZSN60x A¿‡ø®≤‚ ‘≥Ã–Ú
- */
-void demo_am116_zsn60x_picca_test_entry();
+///**
+// * \brief ZSN60x A¿‡ø®≤‚ ‘≥Ã–Ú
+// */
+//void demo_am116_zsn60x_picca_test_entry();
 
-/**
- * \brief ZSN60x B¿‡ø®≤‚ ‘≥Ã–Ú
- */
-void demo_am116_zsn60x_piccb_test_entry();
+///**
+// * \brief ZSN60x B¿‡ø®≤‚ ‘≥Ã–Ú
+// */
+//void demo_am116_zsn60x_piccb_test_entry();
 
-/**
- * \brief ZSN60x ◊‘∂ØºÏ≤‚≤‚ ‘≥Ã–Ú
- */
-void demo_am116_zsn60x_auto_detect_test_entry();
+///**
+// * \brief ZSN60x ◊‘∂ØºÏ≤‚≤‚ ‘≥Ã–Ú
+// */
+//void demo_am116_zsn60x_auto_detect_test_entry();
 
 /**
  * \brief USBDº¸≈Ã¿˝≥Ã

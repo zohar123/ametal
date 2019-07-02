@@ -687,9 +687,9 @@
               <FilePath>..\..\..\..\components\drivers\source\sensor\am_sensor_shtc1.c</FilePath>
             </File>
             <File>
-              <FileName>am_usbd_zlg116.lib</FileName>
+              <FileName>am_usbd_lib_m0.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>..\..\..\..\components\usb\am_usbd_zlg116.lib</FilePath>
+              <FilePath>..\..\..\..\components\usb\am_usbd_lib_m0.lib</FilePath>
             </File>
           </Files>
         </Group>
@@ -2956,9 +2956,9 @@
               <FilePath>..\..\..\..\components\drivers\source\sensor\am_sensor_shtc1.c</FilePath>
             </File>
             <File>
-              <FileName>am_usbd_zlg116.lib</FileName>
+              <FileName>am_usbd_lib_m0.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>..\..\..\..\components\usb\am_usbd_zlg116.lib</FilePath>
+              <FilePath>..\..\..\..\components\usb\am_usbd_lib_m0.lib</FilePath>
             </File>
           </Files>
         </Group>

@@ -670,7 +670,7 @@ static void __usb_setup_handle (am_zlg126_usbd_dev_t *p_dev)
                         p_usb_dev, &p_data_info->p_buf, &p_data_info->length);
                 break;
             case AM_USB_REQ_STANDARD_CLEAR_FEATURE:
-                ret = p_usb_dev->p_funcs->pfn_feature_set(p_usb_dev);
+                ret = p_usb_dev->p_funcs->pfn_feature_clr(p_usb_dev);
                 break;
             case AM_USB_REQ_STANDARD_SET_FEATURE:
                 ret = p_usb_dev->p_funcs->pfn_feature_set(p_usb_dev);
