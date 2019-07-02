@@ -35,6 +35,10 @@ extern "C" {
 
 #include "am_kl26_gpio_util.h"
 
+    
+#ifdef  PIN_OUTSET
+    #include "kl26_pin_outset.h"
+#endif
  /**
  * \addtogroup kl26_if_pin
  * \copydoc kl26_pin.h
