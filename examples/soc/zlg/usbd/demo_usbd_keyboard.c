@@ -80,8 +80,9 @@ void __g_keybroad_rec_cb(void *p_arg, uint8_t *p_buffer, uint8_t len)
 /**
  * \brief Àı³ÌÈë¿Ú
  */
-void demo_usbd_keyboard_entry (am_usbd_keyboard_handle handle)
+void demo_usbd_keyboard_entry (void* p_handle)
 {
+    am_usbd_keyboard_handle handle = p_handle;
     am_input_key_handler_t  key_handler;
     am_usbd_keyboard_recv_cb_set(handle, __g_keybroad_rec_cb, NULL);
     am_input_key_handler_register(&key_handler, __input_key_proc, handle);

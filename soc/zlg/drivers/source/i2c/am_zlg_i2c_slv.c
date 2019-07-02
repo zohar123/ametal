@@ -75,11 +75,10 @@ static int __i2c_slv_hard_init (am_zlg_i2c_slv_dev_t *p_dev)
      * 一些中断的设置
      */
 
-    /** 只开启 从机 接受中断 和  读请求中断 */
+    /** 只开启起始条件检测中断 */
     amhw_zlg_i2c_intr_mask_clear(p_hw_i2c,0XFFF);
-    amhw_zlg_i2c_intr_mask_set (p_hw_i2c,AMHW_ZLG_INT_FLAG_RX_FULL   | 
-	                                     AMHW_ZLG_INT_FLAG_RD_REQ    |
-                                         AMHW_ZLG_INT_FLAG_START_DET);
+    amhw_zlg_i2c_intr_mask_set(p_hw_i2c, AMHW_ZLG_INT_FLAG_START_DET);
+
     /* 清除中断状态 */
     amhw_zlg_i2c_clr_intr_get (p_hw_i2c);
     amhw_zlg_i2c_enable(p_hw_i2c);
@@ -323,20 +322,30 @@ static void __i2c_slv_irq_handler (void *p_arg)
         /** 清除开始中断 */
         amhw_zlg_i2c_clr_start_det_get(p_hw_i2c_slv);
 
+        /* 判断I2C从机设备是否支持广播功能 */
+        if(p_dev->p_i2c_slv_dev[0]->dev_flags  & AM_I2C_SLV_GEN_CALL_ACK){
+            amhw_zlg_i2c_gen_call_ack(p_hw_i2c_slv);
+            amhw_zlg_i2c_intr_mask_set(p_hw_i2c_slv, AMHW_ZLG_INT_FLAG_GEN_CALL);
+        }else{
+            amhw_zlg_i2c_gen_call_nack(p_hw_i2c_slv);
+        }
         /**
          *  \brief 判断是不是 与本设备进行通信
          *
          *  \note 只有从机地址匹配了  从机状态机活动状态位 才会置1
          */
         if ( p_hw_i2c_slv->ic_status & AMHW_ZLG_STATUS_FLAG_SLV_ACTIVITY ) {
-            /* 地址匹配回调 ,是读还是写该MCU无法确定 */
+            /* 地址匹配回调, 是读还是写该MCU无法确定 */
             if( NULL != p_i2c_slv_dev->p_cb_funs->pfn_addr_match) {
                 p_i2c_slv_dev->p_cb_funs->pfn_addr_match(p_i2c_slv_dev->p_arg, AM_TRUE);
             }
 
-            /** 打开停止中断 */
-            amhw_zlg_i2c_intr_mask_set (p_hw_i2c_slv,AMHW_ZLG_INT_FLAG_STOP_DET);
-            /* 开始用软件定时器计时 1000ms */
+            /** 接收到从机地址活动状态为之后才能打开停止检测中断以及接收传输中断 */
+            amhw_zlg_i2c_intr_mask_set (p_hw_i2c_slv, AMHW_ZLG_INT_FLAG_STOP_DET|
+                                                      AMHW_ZLG_INT_FLAG_RX_FULL |
+                                                      AMHW_ZLG_INT_FLAG_RD_REQ);
+
+            /* 使用软件定时器对传输过程进行出错判断， 若该次传输时间大于1s，则表示该传输出错 */
             am_softimer_start(&p_dev->softimer, 1000);
         }
     }
@@ -395,7 +404,9 @@ static void __i2c_slv_irq_handler (void *p_arg)
             p_i2c_slv_dev->p_cb_funs->pfn_tran_stop(p_i2c_slv_dev->p_arg);
         }
 
-        amhw_zlg_i2c_intr_mask_clear(p_hw_i2c_slv, AMHW_ZLG_INT_FLAG_TX_EMPTY);
+        /**完成I2C传输结束之后,只开启起始条件检测中断,等待下一次传输的到来 */
+        amhw_zlg_i2c_intr_mask_clear(p_hw_i2c_slv,0XFFF);
+        amhw_zlg_i2c_intr_mask_set (p_hw_i2c_slv, AMHW_ZLG_INT_FLAG_START_DET);
 
         /* 传输结束停止计时 */
         am_softimer_stop(&p_dev->softimer);

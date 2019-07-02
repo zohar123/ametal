@@ -83,10 +83,10 @@ static void __printer_send_callback(void *p_arg)
 /**
  * \brief 例程入口
  */
-void demo_usbd_printer_entry (am_usbd_printer_handle handle)
+void demo_usbd_printer_entry (void* p_handle)
 {
     uint32_t key = 0;
-
+    am_usbd_printer_handle handle = p_handle;
     am_mdelay(3000);                               /* 模拟USB设备拔出的动作 */
 
     /* 初始化环形缓冲区*/

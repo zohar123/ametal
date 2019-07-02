@@ -123,10 +123,10 @@ static void  __softimer_callback_func(void * p_arg)
 /**
  * \brief usb device printer 流量计数例程入口
  */
-void demo_usbd_printer_counter_entry (am_usbd_printer_handle handle)
+void demo_usbd_printer_counter_entry (void* p_handle)
 {
     uint32_t key = 0;
-
+    am_usbd_printer_handle handle = p_handle;
     am_mdelay(3000);                                  /* 模拟USB设备拔出的动作 */
     am_softimer_t soft_time;                          /* 软件定时器handle*/
 
