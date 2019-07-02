@@ -50,7 +50,6 @@
 static void __rec_buffer_cb(void *p_arg, uint8_t *p_buff, uint16_t len)
 {
     //保存写入 flash数据
-    am_kprintf("USB content is %s \r\n",p_buff);
 }
 
 /**
