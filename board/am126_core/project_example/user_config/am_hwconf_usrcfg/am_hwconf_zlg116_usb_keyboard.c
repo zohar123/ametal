@@ -436,7 +436,7 @@ am_usbd_keyboard_handle am_zlg126_usbd_keyboard_inst_init (void)
 {
     return am_usbd_keyboard_init (&__g_usbd_keyboard_dev,
                                   &__g_usbd_keyboard_info,
-                                  am_zlg126_usbd_init(&__g_zlg_usbd_keyboard, &__g_zlg126_usbd_keyboard_info));
+								  am_zlg126_usbd_init(&__g_zlg_usbd_keyboard, &__g_zlg126_usbd_keyboard_info));
 }
 
 /** \brief usb_keyboard解初始化，获得usb_keyboard标准服务句柄 */

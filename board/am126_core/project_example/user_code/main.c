@@ -138,9 +138,8 @@ int am_main (void)
 //    demo_am116_zsn60x_picca_test_entry();
 //    demo_am116_zsn60x_piccb_test_entry();
 //    demo_am116_zsn60x_auto_detect_test_entry();
-
-    demo_zlg126_usbd_keyboard_entry();
-//    demo_zlg126_usbd_printer_entry();
+//    demo_zlg126_usbd_keyboard_entry();
+    demo_zlg126_usbd_printer_entry();
 //    demo_zlg126_usbd_msc_entry();
 //    demo_zlg126_usbd_vcom_entry();
     while (1) {
