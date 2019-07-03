@@ -23,6 +23,7 @@
  includes
  ***************************************************************************/
 #include "stdint.h"
+#include "amhw_zlg_eth_reg.h"
 
 #define ETHERNET_PHY_ADDRESS        0x05 
 
@@ -52,6 +53,6 @@
 /** \brief Valid link established */ 
 #define AM_ZLG_PHY_LINKED_STATUS        ((uint16_t)0x0004)
  
-uint16_t amhw_zlg_phy_read_reg(uint16_t phy_addr, uint16_t phy_reg);
-uint32_t amhw_zlg_phy_write_reg(uint16_t phy_addr, uint16_t phy_reg,
+uint16_t amhw_zlg_phy_read_reg(amhw_zlg_eth_t *p_hw_eth, uint16_t phy_addr, uint16_t phy_reg);
+uint32_t amhw_zlg_phy_write_reg(amhw_zlg_eth_t *p_hw_eth, uint16_t phy_addr, uint16_t phy_reg,
         uint16_t phy_value);

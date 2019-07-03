@@ -29,6 +29,7 @@
 #include "am_zlg_phy.h"
 #include "amhw_zlg_eth_reg.h"
 #include "zmf159_regbase.h"
+#include "zmf159_periph_map.h"
 /******************************************************************************/
 /*                                PHY functions                               */
 /******************************************************************************/
@@ -46,27 +47,27 @@
  * \retval AM_ZLG_ETH_ERROR: in case of timeout
  *         MAC MIIDR register value: Data read from the selected PHY register (correct read )
  */
-uint16_t amhw_zlg_phy_read_reg(uint16_t phy_addr, uint16_t phy_reg)
+uint16_t amhw_zlg_phy_read_reg(amhw_zlg_eth_t *p_hw_eth, uint16_t phy_addr, uint16_t phy_reg)
 {
     uint32_t tmp_reg = 0;
     __IO uint32_t timeout = 0;
 
-    tmp_reg = ETH->MACMIIAR;
+    tmp_reg = p_hw_eth->MACMIIAR;
     tmp_reg &= ~AM_ZLG_ETH_MACMIIAR_CR_MASK;
     tmp_reg |= (((uint32_t) phy_addr << 11) & AM_ZLG_ETH_MACMIIAR_PA);
     tmp_reg |= (((uint32_t) phy_reg << 6) & AM_ZLG_ETH_MACMIIAR_MR); 
     tmp_reg &= ~AM_ZLG_ETH_MACMIIAR_MW; 
     tmp_reg |= AM_ZLG_ETH_MACMIIAR_MB; 
-    ETH->MACMIIAR = tmp_reg;
+    p_hw_eth->MACMIIAR = tmp_reg;
     do {
         timeout++;
-        tmp_reg = ETH->MACMIIAR;
+        tmp_reg = p_hw_eth->MACMIIAR;
     } while ((tmp_reg & AM_ZLG_ETH_MACMIIAR_MB)
             && (timeout < (uint32_t) AM_ZLG_PHY_READ_TO));
     if (timeout == AM_ZLG_PHY_READ_TO) {
         return (uint16_t) AM_ZLG_ETH_ERROR;
     }
-    return (uint16_t) (ETH->MACMIIDR);
+    return (uint16_t) (p_hw_eth->MACMIIDR);
 }
 
 /**
@@ -81,25 +82,25 @@ uint16_t amhw_zlg_phy_read_reg(uint16_t phy_addr, uint16_t phy_reg)
  * \retval AM_ZLG_ETH_ERROR: in case of timeout
  *         AM_ZLG_ETH_SUCCESS: for correct write
  */
-uint32_t amhw_zlg_phy_write_reg(uint16_t phy_addr, uint16_t phy_reg,
+uint32_t amhw_zlg_phy_write_reg(amhw_zlg_eth_t *p_hw_eth, uint16_t phy_addr, uint16_t phy_reg,
         uint16_t phy_value)
 {
     uint32_t tmp_reg = 0;
     __IO uint32_t timeout = 0;
-    __assert_param(IS_ETH_PHY_ADDRESS(phy_addr));
-    __assert_param(IS_ETH_PHY_REG(phy_reg));
+    assert_param(IS_ETH_PHY_ADDRESS(phy_addr));
+    assert_param(IS_ETH_PHY_REG(phy_reg));
 
-    tmp_reg = ETH->MACMIIAR;
+    tmp_reg = p_hw_eth->MACMIIAR;
     tmp_reg &= ~AM_ZLG_ETH_MACMIIAR_CR_MASK;
     tmp_reg |= (((uint32_t) phy_addr << 11) & AM_ZLG_ETH_MACMIIAR_PA);
     tmp_reg |= (((uint32_t) phy_reg << 6) & AM_ZLG_ETH_MACMIIAR_MR); 
     tmp_reg |= AM_ZLG_ETH_MACMIIAR_MW; 
     tmp_reg |= AM_ZLG_ETH_MACMIIAR_MB; 
-    ETH->MACMIIDR = phy_value;
-    ETH->MACMIIAR = tmp_reg;
+    p_hw_eth->MACMIIDR = phy_value;
+    p_hw_eth->MACMIIAR = tmp_reg;
     do {
         timeout++;
-        tmp_reg = ETH->MACMIIAR;
+        tmp_reg = p_hw_eth->MACMIIAR;
     } while ((tmp_reg & AM_ZLG_ETH_MACMIIAR_MB)
             && (timeout < (uint32_t) AM_ZLG_ETH_PHY_WRITE_TO));
     if (timeout == AM_ZLG_ETH_PHY_WRITE_TO) {

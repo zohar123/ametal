@@ -32,6 +32,7 @@
 #include "amhw_zlg_eth_reg.h"
 #include "am_vdebug.h"
 #include "string.h"
+#include "zmf159_periph_map.h"
 
 /** \brief Network interface name */
 #define IFNAME0 's'
@@ -52,6 +53,7 @@ extern eth_dma_desc_type_t *g_dma_tx_desc_to_set;
 
 /** \brief Global pointer for last received frame infos */
 extern eth_dma_rx_frame_info_t *gp_rx_frame_desc;
+extern amhw_zlg_eth_t *gp_hw_eth;
 
 /**
  * \brief In this function, the hardware should be initialized.
@@ -63,6 +65,7 @@ extern eth_dma_rx_frame_info_t *gp_rx_frame_desc;
  */
 static void low_level_init(struct netif *netif)
 {
+    amhw_zlg_eth_t *p_hw_eth = gp_hw_eth;
     /** \brief set MAC hardware address length */
     netif->hwaddr_len = ETHARP_HWADDR_LEN;
 
@@ -84,15 +87,15 @@ static void low_level_init(struct netif *netif)
     netif->flags = NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP;
 
     /** \brief Initialize Tx Descriptors list: Chain Mode */
-    am_zlg_eth_dma_tx_desc_init(g_dma_tx_desc_tab, &g_tx_buff[0][0],
+    am_zlg_eth_dma_tx_desc_init(p_hw_eth, g_dma_tx_desc_tab, &g_tx_buff[0][0],
             AM_ZLG_ETH_TXBUFNB);
             
     /** \brief Initialize Rx Descriptors list: Chain Mode  */
-    am_zlg_eth_dma_rx_desc_init(g_dma_rx_desc_tab, &g_rx_buff[0][0],
+    am_zlg_eth_dma_rx_desc_init(p_hw_eth, g_dma_rx_desc_tab, &g_rx_buff[0][0],
             AM_ZLG_ETH_RXBUFNB);
 
     /** \brief Enable MAC and DMA transmission and reception */
-    am_zlg_eth_start();
+    am_zlg_eth_start(p_hw_eth);
 
 }
 
@@ -121,7 +124,7 @@ static err_t low_level_output(struct netif *netif, struct pbuf *p)
     uint32_t buffer_offset = 0;
     uint32_t bytes_left_to_copy = 0;
     uint32_t pay_load_offset = 0;
-
+    amhw_zlg_eth_t *p_hw_eth = gp_hw_eth;
     dma_tx_desc = g_dma_tx_desc_to_set;
     buffer_offset = 0;
 
@@ -176,16 +179,16 @@ static err_t low_level_output(struct netif *netif, struct pbuf *p)
     }
 
     /** \brief Prepare transmit descriptors to give to DMA*/
-    am_zlg_eth_prepare_transmit_desc(frame_length);
+    am_zlg_eth_prepare_transmit_desc(p_hw_eth, frame_length);
 
     err_val = ERR_OK;
 
-    error: if ((ETH->DMASR & AM_ZLG_ETH_DMASR_TUS) != (uint32_t) RESET) {
+    error: if ((p_hw_eth->DMASR & AM_ZLG_ETH_DMASR_TUS) != (uint32_t) RESET) {
         /** \brief Clear TUS ETHERNET DMA flag */
-        ETH->DMASR = AM_ZLG_ETH_DMASR_TUS;
+        p_hw_eth->DMASR = AM_ZLG_ETH_DMASR_TUS;
 
         /** \brief Resume DMA transmission */
-        ETH->DMATPDR = 0;
+        p_hw_eth->DMATPDR = 0;
     }
     return err_val;
 }
@@ -198,7 +201,7 @@ static err_t low_level_output(struct netif *netif, struct pbuf *p)
  * \retval a pbuf filled with the received packet (including MAC header)
  *         NULL on memory error
  */
-static struct pbuf * am_zlg_eth_low_level_input(struct netif *netif)
+static struct pbuf * am_zlg_eth_low_level_input(amhw_zlg_eth_t *p_hw_eth, struct netif *netif)
 {
     struct pbuf *p, *q;
     uint32_t len;
@@ -267,12 +270,12 @@ static struct pbuf * am_zlg_eth_low_level_input(struct netif *netif)
     gp_rx_frame_desc->ls_rx_desc = NULL;
     gp_rx_frame_desc->seg_count = 0;
 
-    if ((ETH->DMASR & AM_ZLG_ETH_DMASR_RBUS) != (uint32_t) RESET) {
+    if ((p_hw_eth->DMASR & AM_ZLG_ETH_DMASR_RBUS) != (uint32_t) RESET) {
         /** \brief Clear RBUS ETHERNET DMA flag */
-        ETH->DMASR = AM_ZLG_ETH_DMASR_RBUS;
+        p_hw_eth->DMASR = AM_ZLG_ETH_DMASR_RBUS;
         
         /** \brief Resume DMA reception */
-        ETH->DMARPDR = 0;
+        p_hw_eth->DMARPDR = 0;
     }
     return p;
 }
@@ -287,13 +290,13 @@ static struct pbuf * am_zlg_eth_low_level_input(struct netif *netif)
  * \param netif the lwip network interface structure for this ethernetif
  * \retval ERR_MEM or ERR_OK
  */
-err_t am_zlg_eth_ethernetif_input(struct netif *netif)
+err_t am_zlg_eth_ethernetif_input(amhw_zlg_eth_t *p_hw_eth, struct netif *netif)
 {
     err_t err;
     struct pbuf *p;
 
     /** \brief move received packet into a new pbuf */
-    p = am_zlg_eth_low_level_input(netif);
+    p = am_zlg_eth_low_level_input(p_hw_eth, netif);
 
     /** \brief no packet could be read, silently ignore this */
     if (p == NULL)

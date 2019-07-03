@@ -34,8 +34,8 @@
 #include "am_gpio.h"
 #include "amhw_zlg_eth.h"
 #include "amhw_zlg_phy.h"
+#include "zmf159_periph_map.h"
 
-am_eth_regs_conf g_eth_regs_config;
 
 /**
  * \brief  Initializes the ETHERNET peripheral according to the specified
@@ -46,15 +46,15 @@ am_eth_regs_conf g_eth_regs_config;
  * \retval AM_ZLG_ETH_ERROR: Ethernet initialization failed
  *         AM_ZLG_ETH_SUCCESS: Ethernet successfully initialized
  */
-uint32_t amhw_zlg_eth_reg_init(am_eth_regs_conf* p_eth_regs_config,
+uint32_t amhw_zlg_eth_reg_init(amhw_zlg_eth_t *p_hw_eth, am_eth_regs_conf* p_eth_regs_config,
         uint16_t phy_addr)
 {
     uint32_t reg_value = 0, tmp_reg = 0;
-    uint32_t clk_value = 0;
+    int clk_value = 0;
     __IO uint32_t timeout = 0, err = AM_ZLG_ETH_SUCCESS;
     printf("\r\n amhw_zlg_eth_reg_init! \r\n");
 
-    tmp_reg = ETH->MACMIIAR;
+    tmp_reg = p_hw_eth->MACMIIAR;
     tmp_reg &= AM_ZLG_ETH_MACMIIAR_CR_MASK;
     clk_value = am_clk_rate_get(CLK_AHB1);
     printf("\r\n am_clk_rate_get(CLK_AHB1) = %d \r\n", clk_value);
@@ -69,9 +69,9 @@ uint32_t amhw_zlg_eth_reg_init(am_eth_regs_conf* p_eth_regs_config,
     } else {
         tmp_reg |= (uint32_t) AM_ZLG_ETH_MACMIIAR_CR_DIV102;
     }
-    ETH->MACMIIAR = (uint32_t) tmp_reg;
+    p_hw_eth->MACMIIAR = (uint32_t) tmp_reg;
 
-    if (!(am_zlg_phy_write_reg(phy_addr, AM_ZLG_PHY_BCR, AM_ZLG_PHY_RESET))) {
+    if (!(am_zlg_phy_write_reg(p_hw_eth, phy_addr, AM_ZLG_PHY_BCR, AM_ZLG_PHY_RESET))) {
         err = AM_ZLG_ETH_ERROR;
         goto error;
     }
@@ -83,16 +83,16 @@ uint32_t amhw_zlg_eth_reg_init(am_eth_regs_conf* p_eth_regs_config,
         printf(".............................\r\n");
         do {
             timeout++;
-        } while (!(am_zlg_phy_read_reg(phy_addr, AM_ZLG_PHY_BSR)
+        } while (!(am_zlg_phy_read_reg(p_hw_eth, phy_addr, AM_ZLG_PHY_BSR)
                 & AM_ZLG_PHY_LINKED_STATUS));
         timeout = 0;
-        if (!(am_zlg_phy_write_reg(phy_addr, AM_ZLG_PHY_BCR,
+        if (!(am_zlg_phy_write_reg(p_hw_eth, phy_addr, AM_ZLG_PHY_BCR,
         AM_ZLG_PHY_AUTO_NEGOTIATION))) {
             err = AM_ZLG_ETH_ERROR;
         }
         do {
             timeout++;
-        } while (!(am_zlg_phy_read_reg(phy_addr, AM_ZLG_PHY_BSR)
+        } while (!(am_zlg_phy_read_reg(p_hw_eth, phy_addr, AM_ZLG_PHY_BSR)
                 & AM_ZLG_PHY_AUTO_NEGO_COMPLETE)
                 && (timeout < (uint32_t) AM_ZLG_PHY_READ_TO));
         if (timeout == AM_ZLG_PHY_READ_TO) {
@@ -100,7 +100,7 @@ uint32_t amhw_zlg_eth_reg_init(am_eth_regs_conf* p_eth_regs_config,
             goto error;
         }
         timeout = 0;
-        reg_value = am_zlg_phy_read_reg(phy_addr, AM_ZLG_PHY_SR);
+        reg_value = am_zlg_phy_read_reg(p_hw_eth, phy_addr, AM_ZLG_PHY_SR);
         if ((reg_value & AM_ZLG_PHY_DUPLEX_STATUS) != (uint32_t) RESET) {
             p_eth_regs_config->eth_mode = AM_ZLG_ETH_MODE_FULLDUPLEX;
             printf(
@@ -118,7 +118,7 @@ uint32_t amhw_zlg_eth_reg_init(am_eth_regs_conf* p_eth_regs_config,
             printf("Set mode by auto AM_ZLG_ETH_SPEED_100M.........\r\n");
         }
     } else {
-        if (!am_zlg_phy_write_reg(phy_addr, AM_ZLG_PHY_BCR,
+        if (!am_zlg_phy_write_reg(p_hw_eth, phy_addr, AM_ZLG_PHY_BCR,
                 ((uint16_t) (p_eth_regs_config->eth_mode >> 3)
                         | (uint16_t) (p_eth_regs_config->eth_speed >> 1)))) {
             printf("Set mode by mannual.........\r\n");
@@ -132,7 +132,7 @@ uint32_t amhw_zlg_eth_reg_init(am_eth_regs_conf* p_eth_regs_config,
         p_eth_regs_config->eth_speed = AM_ZLG_ETH_SPEED_100M;
     }
 
-    tmp_reg = ETH->MACCR;
+    tmp_reg = p_hw_eth->MACCR;
     tmp_reg &= AM_ZLG_ETH_MACCR_CLEAR_MASK;
     tmp_reg |= (uint32_t) (p_eth_regs_config->eth_watch_dog
             | p_eth_regs_config->eth_jabber
@@ -146,12 +146,12 @@ uint32_t amhw_zlg_eth_reg_init(am_eth_regs_conf* p_eth_regs_config,
             | p_eth_regs_config->eth_back_off_limit
             | p_eth_regs_config->eth_deferal_check);
     AM_BIT_SET(tmp_reg, 15); 
-    ETH->MACCR = (uint32_t) tmp_reg;
-    tmp_reg = ETH->MACCR;
+    p_hw_eth->MACCR = (uint32_t) tmp_reg;
+    tmp_reg = p_hw_eth->MACCR;
     AM_ZLG_ETH_DELAY(AM_ZLG_ETH_REG_WRITE_DELAY);
-    ETH->MACCR = tmp_reg;
+    p_hw_eth->MACCR = tmp_reg;
     
-    ETH->MACFFR = (uint32_t) (p_eth_regs_config->eth_receive_all
+    p_hw_eth->MACFFR = (uint32_t) (p_eth_regs_config->eth_receive_all
             | p_eth_regs_config->eth_source_addr_filter
             | p_eth_regs_config->eth_pass_ctl_frames
             | p_eth_regs_config->eth_broadcast_frames_reception
@@ -159,13 +159,13 @@ uint32_t amhw_zlg_eth_reg_init(am_eth_regs_conf* p_eth_regs_config,
             | p_eth_regs_config->eth_promiscuous_mode
             | p_eth_regs_config->eth_multicast_frames_filter
             | p_eth_regs_config->eth_unicast_frames_filter);
-    tmp_reg = ETH->MACFFR;
+    tmp_reg = p_hw_eth->MACFFR;
     AM_ZLG_ETH_DELAY(AM_ZLG_ETH_REG_WRITE_DELAY);
-    ETH->MACFFR = tmp_reg;
+    p_hw_eth->MACFFR = tmp_reg;
 
-    ETH->MACHTHR = (uint32_t) p_eth_regs_config->eth_hash_table_high;
-    ETH->MACHTLR = (uint32_t) p_eth_regs_config->eth_hash_table_low;
-    tmp_reg = ETH->DMAOMR;
+    p_hw_eth->MACHTHR = (uint32_t) p_eth_regs_config->eth_hash_table_high;
+    p_hw_eth->MACHTLR = (uint32_t) p_eth_regs_config->eth_hash_table_low;
+    tmp_reg = p_hw_eth->DMAOMR;
     tmp_reg &= AM_ZLG_ETH_DMAOMR_CLEAR_MASK;
     tmp_reg |= (uint32_t) (p_eth_regs_config->eth_transmit_store_forward
             | p_eth_regs_config->eth_transmit_threshold_ctl
@@ -173,19 +173,19 @@ uint32_t amhw_zlg_eth_reg_init(am_eth_regs_conf* p_eth_regs_config,
             | p_eth_regs_config->eth_forward_under_size_good_frames
             | p_eth_regs_config->eth_receive_threshold_ctl
             | p_eth_regs_config->eth_sec_frame_operate);
-    ETH->DMAOMR = (uint32_t) tmp_reg;
-    tmp_reg = ETH->DMAOMR;
+    p_hw_eth->DMAOMR = (uint32_t) tmp_reg;
+    tmp_reg = p_hw_eth->DMAOMR;
     AM_ZLG_ETH_DELAY(AM_ZLG_ETH_REG_WRITE_DELAY);
-    ETH->DMAOMR = tmp_reg;
+    p_hw_eth->DMAOMR = tmp_reg;
 
-    ETH->DMABMR = (uint32_t) (p_eth_regs_config->eth_fixed_burst
+    p_hw_eth->DMABMR = (uint32_t) (p_eth_regs_config->eth_fixed_burst
             | p_eth_regs_config->eth_dma_burst_len
             | (p_eth_regs_config->eth_desc_skip_len << 2)
             | p_eth_regs_config->eth_dma_arbitration |
             AM_ZLG_ETH_DMABMR_USP);
-    tmp_reg = ETH->DMABMR;
+    tmp_reg = p_hw_eth->DMABMR;
     AM_ZLG_ETH_DELAY(AM_ZLG_ETH_REG_WRITE_DELAY);
-    ETH->DMABMR = tmp_reg;
+    p_hw_eth->DMABMR = tmp_reg;
     if (err == AM_ZLG_ETH_SUCCESS) {
         return AM_ZLG_ETH_SUCCESS;
     } else
@@ -200,19 +200,19 @@ uint32_t amhw_zlg_eth_reg_init(am_eth_regs_conf* p_eth_regs_config,
  *   This parameter can be: ENABLE or DISABLE.
  * \retval None
  */
-void amhw_zlg_eth_mac_transmission_cmd(func_state_t new_state)
+void amhw_zlg_eth_mac_transmission_cmd(amhw_zlg_eth_t *p_hw_eth, func_state_t new_state)
 {
     __IO uint32_t tmp_reg = 0;
-    __assert_param(IS_FUNCTIONAL_STATE(new_state));
+    assert_param(IS_FUNCTIONAL_STATE(new_state));
 
     if (new_state != DISABLE) {
-        ETH->MACCR |= AM_ZLG_ETH_MACCR_TE;
+        p_hw_eth->MACCR |= AM_ZLG_ETH_MACCR_TE;
     } else {
-        ETH->MACCR &= ~AM_ZLG_ETH_MACCR_TE;
+        p_hw_eth->MACCR &= ~AM_ZLG_ETH_MACCR_TE;
     }
-    tmp_reg = ETH->MACCR;
+    tmp_reg = p_hw_eth->MACCR;
     AM_ZLG_ETH_DELAY(AM_ZLG_ETH_REG_WRITE_DELAY);
-    ETH->MACCR = tmp_reg;
+    p_hw_eth->MACCR = tmp_reg;
 }
 
 /**
@@ -221,19 +221,19 @@ void amhw_zlg_eth_mac_transmission_cmd(func_state_t new_state)
  *   This parameter can be: ENABLE or DISABLE.
  * \retval None
  */
-void amhw_zlg_eth_mac_reception_cmd(func_state_t new_state)
+void amhw_zlg_eth_mac_reception_cmd(amhw_zlg_eth_t *p_hw_eth, func_state_t new_state)
 {
     __IO uint32_t tmp_reg = 0;
-    __assert_param(IS_FUNCTIONAL_STATE(new_state));
+    assert_param(IS_FUNCTIONAL_STATE(new_state));
 
     if (new_state != DISABLE) {
-        ETH->MACCR |= AM_ZLG_ETH_MACCR_RE;
+        p_hw_eth->MACCR |= AM_ZLG_ETH_MACCR_RE;
     } else {
-        ETH->MACCR &= ~AM_ZLG_ETH_MACCR_RE;
+        p_hw_eth->MACCR &= ~AM_ZLG_ETH_MACCR_RE;
     }
-    tmp_reg = ETH->MACCR;
+    tmp_reg = p_hw_eth->MACCR;
     AM_ZLG_ETH_DELAY(AM_ZLG_ETH_REG_WRITE_DELAY);
-    ETH->MACCR = tmp_reg;
+    p_hw_eth->MACCR = tmp_reg;
 }
 
 /**
@@ -250,7 +250,7 @@ void amhw_zlg_eth_mac_reception_cmd(func_state_t new_state)
 void amhw_zlg_eth_mac_addr_config(uint32_t mac_addr, uint8_t *addr)
 {
     uint32_t tmp_reg;
-    __assert_param(IS_ETH_MAC_ADDRESS0123(mac_addr));
+    assert_param(IS_ETH_MAC_ADDRESS0123(mac_addr));
     tmp_reg = ((uint32_t) addr[5] << 8) | (uint32_t) addr[4];
     (*(__IO uint32_t *) (AM_ZLG_ETH_MAC_ADDR_HBASE + mac_addr)) = tmp_reg;
     tmp_reg = ((uint32_t) addr[3] << 24) | ((uint32_t) addr[2] << 16)
@@ -263,9 +263,9 @@ void amhw_zlg_eth_mac_addr_config(uint32_t mac_addr, uint8_t *addr)
  * \param  None
  * \retval None
  */
-void amhw_zlg_eth_soft_reset(void)
+void amhw_zlg_eth_soft_reset(amhw_zlg_eth_t *p_hw_eth)
 {
-    ETH->DMABMR |= AM_ZLG_ETH_DMABMR_SR;
+    p_hw_eth->DMABMR |= AM_ZLG_ETH_DMABMR_SR;
 }
 
 /**
@@ -273,10 +273,10 @@ void amhw_zlg_eth_soft_reset(void)
  * \param  None
  * \retval The new state of DMA Bus Mode register SR bit (SET or RESET).
  */
-flag_status_t amhw_zlg_eth_get_soft_reset_status(void)
+flag_status_t amhw_zlg_eth_get_soft_reset_status(amhw_zlg_eth_t *p_hw_eth)
 {
     flag_status_t bitstatus = RESET;
-    if ((ETH->DMABMR & AM_ZLG_ETH_DMABMR_SR) != (uint32_t) RESET) {
+    if ((p_hw_eth->DMABMR & AM_ZLG_ETH_DMABMR_SR) != (uint32_t) RESET) {
         bitstatus = SET;
     } else {
         bitstatus = RESET;
@@ -289,13 +289,13 @@ flag_status_t amhw_zlg_eth_get_soft_reset_status(void)
  * \param  None
  * \retval None
  */
-void amhw_zlg_eth_flush_transmit_fifo(void)
+void amhw_zlg_eth_flush_transmit_fifo(amhw_zlg_eth_t *p_hw_eth)
 {
     __IO uint32_t tmp_reg = 0;
-    ETH->DMAOMR |= AM_ZLG_ETH_DMAOMR_FTF;
-    tmp_reg = ETH->DMAOMR;
+    p_hw_eth->DMAOMR |= AM_ZLG_ETH_DMAOMR_FTF;
+    tmp_reg = p_hw_eth->DMAOMR;
     AM_ZLG_ETH_DELAY(AM_ZLG_ETH_REG_WRITE_DELAY);
-    ETH->DMAOMR = tmp_reg;
+    p_hw_eth->DMAOMR = tmp_reg;
 }
 
 /**
@@ -304,14 +304,14 @@ void amhw_zlg_eth_flush_transmit_fifo(void)
  *   This parameter can be: ENABLE or DISABLE.
  * \retval None
  */
-void amhw_zlg_eth_dma_transmission_cmd(func_state_t new_state)
+void amhw_zlg_eth_dma_transmission_cmd(amhw_zlg_eth_t *p_hw_eth, func_state_t new_state)
 {
-    __assert_param(IS_FUNCTIONAL_STATE(new_state));
+    assert_param(IS_FUNCTIONAL_STATE(new_state));
 
     if (new_state != DISABLE) {
-        ETH->DMAOMR |= AM_ZLG_ETH_DMAOMR_ST;
+        p_hw_eth->DMAOMR |= AM_ZLG_ETH_DMAOMR_ST;
     } else {
-        ETH->DMAOMR &= ~AM_ZLG_ETH_DMAOMR_ST;
+        p_hw_eth->DMAOMR &= ~AM_ZLG_ETH_DMAOMR_ST;
     }
 }
 
@@ -321,41 +321,32 @@ void amhw_zlg_eth_dma_transmission_cmd(func_state_t new_state)
  *   This parameter can be: ENABLE or DISABLE.
  * \retval None
  */
-void amhw_zlg_eth_dma_reception_cmd(func_state_t new_state)
+void amhw_zlg_eth_dma_reception_cmd(amhw_zlg_eth_t *p_hw_eth, func_state_t new_state)
 {
-    __assert_param(IS_FUNCTIONAL_STATE(new_state));
+    assert_param(IS_FUNCTIONAL_STATE(new_state));
 
     if (new_state != DISABLE) {
-        ETH->DMAOMR |= AM_ZLG_ETH_DMAOMR_SR;
+        p_hw_eth->DMAOMR |= AM_ZLG_ETH_DMAOMR_SR;
     } else {
-        ETH->DMAOMR &= ~AM_ZLG_ETH_DMAOMR_SR;
+        p_hw_eth->DMAOMR &= ~AM_ZLG_ETH_DMAOMR_SR;
     }
 }
 
-void amhw_zlg_eth_reset_eth(void)
-{
-    am_udelay(1000);
-    am_gpio_set(PIOC_0, 0);
-    am_udelay(100000);
-    am_gpio_set(PIOC_0, 1);
-    am_udelay(1000);
-}
-
-void amhw_zlg_eth_set_speed(amhw_zlg_eth_speed_t eth_speed)
+void amhw_zlg_eth_set_speed(amhw_zlg_eth_t *p_hw_eth, amhw_zlg_eth_speed_t eth_speed)
 {
     uint32_t tmp_reg;
-    __assert_param(IS_AMHW_ZLG_ETH_SPEED(eth_speed));
-    tmp_reg = ETH->MACCR;
+    assert_param(IS_AMHW_ZLG_ETH_SPEED(eth_speed));
+    tmp_reg = p_hw_eth->MACCR;
     tmp_reg |= (uint32_t) (eth_speed);
-    ETH->MACCR = (uint32_t) tmp_reg;
+    p_hw_eth->MACCR = (uint32_t) tmp_reg;
 }
 
-void amhw_zlg_eth_set_mode(amhw_zlg_eth_mode_t eth_mode)
+void amhw_zlg_eth_set_mode(amhw_zlg_eth_t *p_hw_eth, amhw_zlg_eth_mode_t eth_mode)
 {
     uint32_t tmp_reg;
-    __assert_param(IS_AMHW_ZLG_ETH_MODE(eth_mode));
-    tmp_reg = ETH->MACCR;
+    assert_param(IS_AMHW_ZLG_ETH_MODE(eth_mode));
+    tmp_reg = p_hw_eth->MACCR;
     tmp_reg |= (uint32_t) (eth_mode);
-    ETH->MACCR = (uint32_t) tmp_reg;
+    p_hw_eth->MACCR = (uint32_t) tmp_reg;
 }
 

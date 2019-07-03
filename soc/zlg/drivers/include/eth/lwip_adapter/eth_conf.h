@@ -55,8 +55,8 @@ extern uint8_t g_eth_gateway[4];
 #endif
 
 void am_zlg_eth_lwip_init(void);
-void am_zlg_eth_lwip_pkg_handle(void);
-void am_zlg_eth_lwip_periodic_handle(__IO uint32_t localtime);
+void am_zlg_eth_lwip_pkg_handle(amhw_zlg_eth_t *p_hw_eth);
+void am_zlg_eth_lwip_periodic_handle(amhw_zlg_eth_t *p_hw_eth, __IO uint32_t localtime);
 
 #ifdef __cplusplus
 }

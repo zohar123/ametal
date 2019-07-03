@@ -118,9 +118,9 @@ void am_zlg_eth_lwip_init(void)
  * \param  None
  * \retval None
  */
-void am_zlg_eth_lwip_pkg_handle(void)
+void am_zlg_eth_lwip_pkg_handle(amhw_zlg_eth_t *p_hw_eth)
 {
-    am_zlg_eth_ethernetif_input(&g_eth_netif);
+    am_zlg_eth_ethernetif_input(p_hw_eth, &g_eth_netif);
 }
 
 /**
@@ -128,7 +128,7 @@ void am_zlg_eth_lwip_pkg_handle(void)
  * \param  localtime the current LocalTime value
  * \retval None
  */
-void am_zlg_eth_lwip_periodic_handle(__IO uint32_t localtime)
+void am_zlg_eth_lwip_periodic_handle(amhw_zlg_eth_t *p_hw_eth, __IO uint32_t localtime)
 {
     if ((localtime + TCP_TMR_INTERVAL >= 4294967295UL)
             || (localtime + ARP_TMR_INTERVAL >= 4294967295UL)
@@ -149,7 +149,7 @@ void am_zlg_eth_lwip_periodic_handle(__IO uint32_t localtime)
 
         tcp_tmr();
         etharp_tmr();
-        am_zlg_eth_check_link_status(ETHERNET_PHY_ADDRESS);
+        am_zlg_eth_check_link_status(p_hw_eth, ETHERNET_PHY_ADDRESS);
         
 #ifdef USE_DHCP
         dhcp_fine_tmr();
@@ -180,7 +180,7 @@ void am_zlg_eth_lwip_periodic_handle(__IO uint32_t localtime)
     /* Check link status periodically */
     if ((localtime - LinkTimer) >= AM_ZLG_ETH_LINK_TIMER_INTERVAL) {
         LinkTimer = localtime;
-        am_zlg_eth_check_link_status(ETHERNET_PHY_ADDRESS);
+        am_zlg_eth_check_link_status(p_hw_eth, ETHERNET_PHY_ADDRESS);
     }
 
 #ifdef USE_DHCP

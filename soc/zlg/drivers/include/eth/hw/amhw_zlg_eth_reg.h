@@ -29,9 +29,9 @@ extern "C" {
 #endif 
 
 #pragma pack(push)
-#pragma pack(1)
+#pragma pack(4)
 
-typedef struct zlg_eth_reg {
+typedef struct amhw_zlg_eth {
     volatile uint32_t MACCR;    /**< \brief 0x0000  MAC Configuration Register */
     volatile uint32_t MACFFR;   /**< \brief 0x0004  MAC Frame Filter Register */
     volatile uint32_t MACHTHR;  /**< \brief 0x0008  MAC Hash Table High Register */
@@ -103,9 +103,8 @@ typedef struct zlg_eth_reg {
     volatile uint32_t DMACHTBAR;/**< \brief 0x1050  Buffer Addr Register */
     volatile uint32_t DMACHRBAR;/**< \brief 0x1054 Receive Buf Addr Register */
 
-} zlg_eth_reg_t;
-
-#define ETH                 ((zlg_eth_reg_t *) ZMF159_ETH_BASE)  
+} amhw_zlg_eth_t;
+#pragma pack(pop)
 
 #ifdef __cplusplus
 }

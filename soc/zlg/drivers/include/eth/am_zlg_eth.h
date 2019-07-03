@@ -643,12 +643,12 @@ typedef struct {
 #define  AM_ZLG_ETH_ERROR                     ((uint32_t)0)
 #define  AM_ZLG_ETH_SUCCESS                   ((uint32_t)1)
 
-void am_zlg_eth_bsp_config(void);
-void am_zlg_eth_check_link_status(uint16_t phy_addr);
+void am_zlg_eth_init(amhw_zlg_eth_t *p_hw_eth);
+void am_zlg_eth_check_link_status(amhw_zlg_eth_t *p_hw_eth, uint16_t phy_addr);
 
 typedef enum am_zlg_eth_link_st {
-    am_zlg_eth_link_st_up    = 0x00,    
-    am_zlg_eth_link_st_down  = 0x01   
+    AM_ZLG_ETH_LINK_ST_UP    = 0x00,    
+    AM_ZLG_ETH_LINK_ST_DOWN  = 0x01   
 }am_zlg_eth_link_st_t;
 
 extern __IO am_zlg_eth_link_st_t g_eth_link_status;
@@ -664,32 +664,34 @@ extern __IO am_zlg_eth_link_st_t g_eth_link_status;
 #endif
 
 #if (1 == ASSERT_PARAM_ENABLE)
-#define __assert_param(expr) \
+#define assert_param(expr) \
     do \
 	{ \
     	if(!(expr)) \
     	{ \
-    	    printf("__assert_param failed at line %d in %s\r\n",    \
+    	    printf("assert_param failed at line %d in %s\r\n",    \
     	                                        __LINE__, __FILE__); \
     	    while(1); \
     	} \
     } while(0)
 #else
-#define __assert_param(expr)
+#define assert_param(expr)
 #endif
 
-void am_zlg_eth_start(void);
-void am_zlg_eth_stop(void);
+void am_zlg_eth_start(amhw_zlg_eth_t *p_hw_eth);
+void am_zlg_eth_stop(amhw_zlg_eth_t *p_hw_eth);
 
 uint32_t am_zlg_eth_check_frame_received(void);
-uint32_t am_zlg_eth_prepare_transmit_desc(uint16_t frame_length);
+uint32_t am_zlg_eth_prepare_transmit_desc(amhw_zlg_eth_t *p_hw_eth, uint16_t frame_length);
 
 frame_type_def_t am_zlg_eth_get_rec_frame(void);
 
 void am_zlg_eth_dma_rx_desc_init(   \
+                amhw_zlg_eth_t *p_hw_eth, 
                 eth_dma_desc_type_t *p_dma_rx_desc_tab,
                 uint8_t *rx_buff, uint32_t rx_buff_cnt);
 void am_zlg_eth_dma_tx_desc_init(   \
+                amhw_zlg_eth_t *p_hw_eth,
                 eth_dma_desc_type_t *p_dma_tx_desc_tab,
                 uint8_t* tx_buff, uint32_t tx_buff_cnt);
 

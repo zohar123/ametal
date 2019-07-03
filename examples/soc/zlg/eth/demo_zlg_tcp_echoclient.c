@@ -1,14 +1,14 @@
 /*******************************************************************************
- *                                 AMetal
- *                       ----------------------------
- *                       innovating embedded platform
- *
- * Copyright (c) 2001-2018 Guangzhou ZHIYUAN Electronics Co., Ltd.
- * All rights reserved.
- *
- * Contact information:
- * web site:    http://www.zlg.cn/
- *******************************************************************************/
+*                                 AMetal
+*                       ----------------------------
+*                       innovating embedded platform
+*
+* Copyright (c) 2001-2018 Guangzhou ZHIYUAN Electronics Co., Ltd.
+* All rights reserved.
+*
+* Contact information:
+* web site:    http://www.zlg.cn/
+*******************************************************************************/
 
 /**
  * \file
@@ -34,65 +34,61 @@
 #include "eth_conf.h"
 #include "am_zlg_phy.h"
 #include "am_vdebug.h"
+
 #if LWIP_TCP
 
 u8_t recev_buf[50];
 __IO uint32_t message_count = 0;
-
 u8_t data[100];
 
 struct tcp_pcb *echoclient_pcb;
 
-/* ECHO protocol states */
 enum echoclient_states {
-    ES_NOT_CONNECTED = 0, ES_CONNECTED, ES_RECEIVED, ES_CLOSING,
+    ES_NOT_CONNECTED = 0, 
+    ES_CONNECTED, 
+    ES_RECEIVED, 
+    ES_CLOSING,
 };
 
-/* structure to be passed as argument to the tcp callbacks */
 struct echoclient {
-    enum echoclient_states state; /* connection status */
-    struct tcp_pcb *pcb; /* pointer on the current tcp_pcb */
-    struct pbuf *p_tx; /* pointer on pbuf to be transmitted */
+    enum   echoclient_states state; 
+    struct tcp_pcb          *pcb;   
+    struct pbuf             *p_tx;  
 };
 
 struct echoclient * echoclient_es;
 
-/* Private function prototypes -----------------------------------------------*/
-static err_t am_eth_tcp_echoclient_recv(void *arg, struct tcp_pcb *tpcb,
+static err_t eth_tcp_echoclient_recv(void *arg, struct tcp_pcb *tpcb,
         struct pbuf *p, err_t err);
-static void am_eth_tcp_echoclient_connection_close(struct tcp_pcb *tpcb,
+static void eth_tcp_echoclient_connection_close(struct tcp_pcb *tpcb,
         struct echoclient * es);
-static err_t am_eth_tcp_echoclient_poll(void *arg, struct tcp_pcb *tpcb);
-static err_t am_eth_tcp_echoclient_sent(void *arg, struct tcp_pcb *tpcb,
+static err_t eth_tcp_echoclient_poll(void *arg, struct tcp_pcb *tpcb);
+static err_t eth_tcp_echoclient_sent(void *arg, struct tcp_pcb *tpcb,
         u16_t len);
-static void am_eth_tcp_echoclient_send(struct tcp_pcb *tpcb,
+static void eth_tcp_echoclient_send(struct tcp_pcb *tpcb,
         struct echoclient * es);
-static err_t am_eth_tcp_echoclient_connected(void *arg, struct tcp_pcb *tpcb,
+static err_t eth_tcp_echoclient_connected(void *arg, struct tcp_pcb *tpcb,
         err_t err);
 
-/* Private functions ---------------------------------------------------------*/
 
 /**
- * @brief  Connects to the TCP echo server
- * @param  None
- * @retval None
+ * \brief  Connects to the TCP echo server
+ * \param  None
+ * \retval None
  */
-void am_eth_tcp_client_init(void)
+void am_zlg_eth_tcp_client_init(void)
 {
     struct ip_addr dest_ip_addr;
 
-    /* create new tcp pcb */
     echoclient_pcb = tcp_new();
 
     if (echoclient_pcb != NULL) {
         IP4_ADDR(&dest_ip_addr, g_eth_dest_ip[0], g_eth_dest_ip[1],
                 g_eth_dest_ip[2], g_eth_dest_ip[3]);
 
-        /* connect to destination address/port */
         tcp_connect(echoclient_pcb, &dest_ip_addr, g_eth_dest_port,
-                am_eth_tcp_echoclient_connected);
+                eth_tcp_echoclient_connected);
     } else {
-        /* deallocate the pcb */
         memp_free(MEMP_TCP_PCB, echoclient_pcb);
 #ifdef SERIAL_DEBUG
         printf("\n\r can not create tcp pcb");
@@ -101,32 +97,30 @@ void am_eth_tcp_client_init(void)
 }
 
 /**
- * @brief  Disconnects to the TCP echo server
- * @param  None
- * @retval None
+ * \brief  Disconnects to the TCP echo server
+ * \param  None
+ * \retval None
  */
-void am_eth_tcp_client_close(void)
+void am_zlg_eth_tcp_client_close(void)
 {
-    /* close connection */
-    am_eth_tcp_echoclient_connection_close(echoclient_pcb, echoclient_es);
+    eth_tcp_echoclient_connection_close(echoclient_pcb, echoclient_es);
 #ifdef SERIAL_DEBUG
     printf("\n\r close TCP connection");
 #endif 
 }
 
 /**
- * @brief Function called when TCP connection established
- * @param tpcb: pointer on the connection contol block
- * @param err: when connection correctly established err should be ERR_OK
- * @retval err_t: returned error
+ * \brief Function called when TCP connection established
+ * \param tpcb: pointer on the connection contol block
+ * \param err: when connection correctly established err should be ERR_OK
+ * \retval err_t: returned error
  */
-static err_t am_eth_tcp_echoclient_connected(void *arg, struct tcp_pcb *tpcb,
+static err_t eth_tcp_echoclient_connected(void *arg, struct tcp_pcb *tpcb,
         err_t err)
 {
     struct echoclient *es = NULL;
 
     if (err == ERR_OK) {
-        /* allocate structure es to maintain tcp connection informations */
         es = (struct echoclient *) mem_malloc(sizeof(struct echoclient));
         echoclient_es = es;
         if (es != NULL) {
@@ -136,53 +130,43 @@ static err_t am_eth_tcp_echoclient_connected(void *arg, struct tcp_pcb *tpcb,
             sprintf((char*) data, "sending tcp client message %u",
                     (unsigned int) message_count);
 
-            /* allocate pbuf */
             es->p_tx = pbuf_alloc(PBUF_TRANSPORT, strlen((char*) data),
                     PBUF_POOL);
 
             if (es->p_tx) {
-                /* copy data to pbuf */
                 pbuf_take(es->p_tx, (char*) data, strlen((char*) data));
 
-                /* pass newly allocated es structure as argument to tpcb */
                 tcp_arg(tpcb, es);
 
-                /* initialize LwIP tcp_recv callback function */
-                tcp_recv(tpcb, am_eth_tcp_echoclient_recv);
+                tcp_recv(tpcb, eth_tcp_echoclient_recv);
 
-                /* initialize LwIP tcp_sent callback function */
-                tcp_sent(tpcb, am_eth_tcp_echoclient_sent);
+                tcp_sent(tpcb, eth_tcp_echoclient_sent);
 
-                /* initialize LwIP tcp_poll callback function */
-                tcp_poll(tpcb, am_eth_tcp_echoclient_poll, 1);
+                tcp_poll(tpcb, eth_tcp_echoclient_poll, 1);
 
-                /* send data */
-                am_eth_tcp_echoclient_send(tpcb, es);
+                eth_tcp_echoclient_send(tpcb, es);
 
                 return ERR_OK;
             }
         } else {
-            /* close connection */
-            am_eth_tcp_echoclient_connection_close(tpcb, es);
+            eth_tcp_echoclient_connection_close(tpcb, es);
 
-            /* return memory allocation error */
             return ERR_MEM;
         }
     } else {
-        /* close connection */
-        am_eth_tcp_echoclient_connection_close(tpcb, es);
+        eth_tcp_echoclient_connection_close(tpcb, es);
     }
     return err;
 }
 
 /**
- * @brief tcp_receiv callback
- * @param arg: argument to be passed to receive callback
- * @param tpcb: tcp connection control block
- * @param err: receive error code
- * @retval err_t: retuned error
+ * \brief tcp_receiv callback
+ * \param arg: argument to be passed to receive callback
+ * \param tpcb: tcp connection control block
+ * \param err: receive error code
+ * \retval err_t: retuned error
  */
-static err_t am_eth_tcp_echoclient_recv(void *arg, struct tcp_pcb *tpcb,
+static err_t eth_tcp_echoclient_recv(void *arg, struct tcp_pcb *tpcb,
         struct pbuf *p, err_t err)
 {
     char *recdata = 0;
@@ -194,30 +178,22 @@ static err_t am_eth_tcp_echoclient_recv(void *arg, struct tcp_pcb *tpcb,
 
     es = (struct echoclient *) arg;
 
-    /* if we receive an empty tcp frame from server => close connection */
     if (p == NULL) {
-        /* remote host closed connection */
         es->state = ES_CLOSING;
         if (es->p_tx == NULL) {
-            /* we're done sending, close connection */
-            am_eth_tcp_echoclient_connection_close(tpcb, es);
+            eth_tcp_echoclient_connection_close(tpcb, es);
         } else {
-            /* send remaining data*/
-            am_eth_tcp_echoclient_send(tpcb, es);
+            eth_tcp_echoclient_send(tpcb, es);
         }
         ret_err = ERR_OK;
     }
-    /* else : a non empty frame was received from echo server but for some reason err != ERR_OK */
     else if (err != ERR_OK) {
-        /* free received pbuf*/
         pbuf_free(p);
 
         ret_err = err;
     } else if (es->state == ES_CONNECTED) {
-        /* increment message count */
         message_count++;
 
-        /* Acknowledge data reception */
         tcp_recved(tpcb, p->tot_len);
         recdata = (char *) malloc(p->len * sizeof(char));
         if (recdata != NULL) {
@@ -228,21 +204,16 @@ static err_t am_eth_tcp_echoclient_recv(void *arg, struct tcp_pcb *tpcb,
         es->p_tx = pbuf_alloc(PBUF_TRANSPORT, p->len * sizeof(char), PBUF_POOL);
         if (es->p_tx != NULL) {
             pbuf_take(es->p_tx, (char*) recdata, p->len * sizeof(char));
-            am_eth_tcp_echoclient_send(tpcb, es);
+            eth_tcp_echoclient_send(tpcb, es);
         }
         free(recdata);
 
-        /* free received pbuf*/
         pbuf_free(p);
         ret_err = ERR_OK;
     }
-
-    /* data received when connection already closed */
     else {
-        /* Acknowledge data reception */
         tcp_recved(tpcb, p->tot_len);
 
-        /* free pbuf and do nothing */
         pbuf_free(p);
         ret_err = ERR_OK;
     }
@@ -250,13 +221,13 @@ static err_t am_eth_tcp_echoclient_recv(void *arg, struct tcp_pcb *tpcb,
 }
 
 /**
- * @brief function used to send data
- * @param  tpcb: tcp control block
- * @param  es: pointer on structure of type echoclient containing info on data
+ * \brief function used to send data
+ * \param  tpcb: tcp control block
+ * \param  es: pointer on structure of type echoclient containing info on data
  *             to be sent
- * @retval None
+ * \retval None
  */
-static void am_eth_tcp_echoclient_send(struct tcp_pcb *tpcb,
+static void eth_tcp_echoclient_send(struct tcp_pcb *tpcb,
         struct echoclient * es)
 {
     struct pbuf *ptr;
@@ -265,25 +236,19 @@ static void am_eth_tcp_echoclient_send(struct tcp_pcb *tpcb,
     while ((wr_err == ERR_OK) && (es->p_tx != NULL)
             && (es->p_tx->len <= tcp_sndbuf(tpcb))) {
 
-        /* get pointer on pbuf from es structure */
         ptr = es->p_tx;
 
-        /* enqueue data for transmission */
         wr_err = tcp_write(tpcb, ptr->payload, ptr->len, 1);
 
         if (wr_err == ERR_OK) {
-            /* continue with next pbuf in chain (if any) */
             es->p_tx = ptr->next;
 
             if (es->p_tx != NULL) {
-                /* increment reference count for es->p */
                 pbuf_ref(es->p_tx);
             }
 
-            /* free pbuf: will free pbufs up to es->p (because es->p has a reference count > 0) */
             pbuf_free(ptr);
         } else if (wr_err == ERR_MEM) {
-            /* we are low on memory, try later, defer to poll */
             es->p_tx = ptr;
         } else {
             /* other problem ?? */
@@ -292,12 +257,12 @@ static void am_eth_tcp_echoclient_send(struct tcp_pcb *tpcb,
 }
 
 /**
- * @brief  This function implements the tcp_poll callback function
- * @param  arg: pointer on argument passed to callback
- * @param  tpcb: tcp connection control block
- * @retval err_t: error code
+ * \brief  This function implements the tcp_poll callback function
+ * \param  arg: pointer on argument passed to callback
+ * \param  tpcb: tcp connection control block
+ * \retval err_t: error code
  */
-static err_t am_eth_tcp_echoclient_poll(void *arg, struct tcp_pcb *tpcb)
+static err_t eth_tcp_echoclient_poll(void *arg, struct tcp_pcb *tpcb)
 {
     err_t ret_err;
     struct echoclient *es;
@@ -305,18 +270,14 @@ static err_t am_eth_tcp_echoclient_poll(void *arg, struct tcp_pcb *tpcb)
     es = (struct echoclient*) arg;
     if (es != NULL) {
         if (es->p_tx != NULL) {
-            /* there is a remaining pbuf (chain) , try to send data */
-            am_eth_tcp_echoclient_send(tpcb, es);
+            eth_tcp_echoclient_send(tpcb, es);
         } else {
-            /* no remaining pbuf (chain)  */
             if (es->state == ES_CLOSING) {
-                /* close tcp connection */
-                am_eth_tcp_echoclient_connection_close(tpcb, es);
+                eth_tcp_echoclient_connection_close(tpcb, es);
             }
         }
         ret_err = ERR_OK;
     } else {
-        /* nothing to be done */
         tcp_abort(tpcb);
         ret_err = ERR_ABRT;
     }
@@ -324,14 +285,14 @@ static err_t am_eth_tcp_echoclient_poll(void *arg, struct tcp_pcb *tpcb)
 }
 
 /**
- * @brief  This function implements the tcp_sent LwIP callback (called when ACK
+ * \brief  This function implements the tcp_sent LwIP callback (called when ACK
  *         is received from remote host for sent data)
- * @param  arg: pointer on argument passed to callback
- * @param  tcp_pcb: tcp connection control block
- * @param  len: length of data sent
- * @retval err_t: returned error code
+ * \param  arg: pointer on argument passed to callback
+ * \param  tcp_pcb: tcp connection control block
+ * \param  len: length of data sent
+ * \retval err_t: returned error code
  */
-static err_t am_eth_tcp_echoclient_sent(void *arg, struct tcp_pcb *tpcb,
+static err_t eth_tcp_echoclient_sent(void *arg, struct tcp_pcb *tpcb,
         u16_t len)
 {
     struct echoclient *es;
@@ -341,23 +302,21 @@ static err_t am_eth_tcp_echoclient_sent(void *arg, struct tcp_pcb *tpcb,
     es = (struct echoclient *) arg;
 
     if (es->p_tx != NULL) {
-        /* still got pbufs to send */
-        am_eth_tcp_echoclient_send(tpcb, es);
+        eth_tcp_echoclient_send(tpcb, es);
     }
 
     return ERR_OK;
 }
 
 /**
- * @brief This function is used to close the tcp connection with server
- * @param tpcb: tcp connection control block
- * @param es: pointer on echoclient structure
- * @retval None
+ * \brief This function is used to close the tcp connection with server
+ * \param tpcb: tcp connection control block
+ * \param es: pointer on echoclient structure
+ * \retval None
  */
-static void am_eth_tcp_echoclient_connection_close(struct tcp_pcb *tpcb,
+static void eth_tcp_echoclient_connection_close(struct tcp_pcb *tpcb,
         struct echoclient * es)
 {
-    /* remove callbacks */
     tcp_recv(tpcb, NULL);
     tcp_sent(tpcb, NULL);
     tcp_poll(tpcb, NULL, 0);
@@ -366,7 +325,6 @@ static void am_eth_tcp_echoclient_connection_close(struct tcp_pcb *tpcb,
         mem_free(es);
     }
 
-    /* close tcp connection */
     tcp_close(tpcb);
 
 }

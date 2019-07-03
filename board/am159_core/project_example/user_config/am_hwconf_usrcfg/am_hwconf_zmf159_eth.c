@@ -31,11 +31,25 @@
 #include "zmf159_regbase.h"
 
 /**
+ * \brief  Configures the eth reset.
+ * \param  None
+ * \retval None
+ */
+static void __zmf159_eth_reset_eth(void)
+{
+    am_udelay(1000);
+    am_gpio_set(PIOC_0, 0);
+    am_udelay(100000);
+    am_gpio_set(PIOC_0, 1);
+    am_udelay(1000);
+}
+
+/**
  * \brief  Configures the different GPIO ports.
  * \param  None
  * \retval None
  */
-void amhw_zlg_eth_gpio_config(void)
+void zmf159_eth_gpio_config(void)
 {
     printf("\r\n __am_eth_gpio_config! \r\n");
     /* enable enet clk */
@@ -49,7 +63,7 @@ void amhw_zlg_eth_gpio_config(void)
     /* ENET_nRST */
     am_gpio_pin_cfg(PIOC_0, PIOC_0_OUT_PP | AM_GPIO_OUTPUT_INIT_HIGH);
 
-    amhw_zlg_eth_reset_eth();
+    __zmf159_eth_reset_eth();
 
     /* ENET_MDIO */
     am_gpio_pin_cfg(PIOA_2,
@@ -125,7 +139,7 @@ void amhw_zlg_eth_gpio_config(void)
  *         which will be initialized.
  * \retval None
  */
-void amhw_zlg_eth_usr_config_init(am_eth_regs_conf *p_eth_regs_config)
+void zmf159_eth_usr_config(am_eth_regs_conf *p_eth_regs_config)
 {
     /* Full-Duplex mode selected */
     p_eth_regs_config->eth_mode = AM_ZLG_ETH_MODE_FULLDUPLEX;

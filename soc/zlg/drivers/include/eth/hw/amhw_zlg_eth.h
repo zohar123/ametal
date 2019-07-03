@@ -25,8 +25,10 @@
 extern "C" {
 #endif 
 
-#define AMHW_ZLG_ETH_GET_PHY_LINK_STATUS()		    \
-        (am_zlg_phy_read_reg(ETHERNET_PHY_ADDRESS, AM_ZLG_PHY_BSR) & 0x00000004)
+#include "amhw_zlg_eth_reg.h"
+
+#define AMHW_ZLG_ETH_GET_PHY_LINK_STATUS(p_hw_eth)		    \
+        (am_zlg_phy_read_reg(p_hw_eth, ETHERNET_PHY_ADDRESS, AM_ZLG_PHY_BSR) & 0x00000004)
 #define AMHW_ZLG_ETH_PIN_CFG_AF_PP(PIN_NAME)        \
         (PIN_NAME##_SPEED_50MHz | PIN_NAME##_AF_PP)
 #define AMHW_ZLG_ETH_PIN_CFG_INPUT_FLOAT(PIN_NAME)  (PIN_NAME##_INPUT_FLOAT)
@@ -75,6 +77,7 @@ typedef struct {
     uint32_t eth_dma_arbitration;           /**< \brief DMA Tx/Rx arbitration */
 } am_eth_regs_conf;
 
+
 typedef enum {
     RESET = 0, SET = !RESET
 } flag_status_t;
@@ -99,23 +102,19 @@ typedef enum amhw_zlg_eth_ {
 #define IS_AMHW_ZLG_ETH_MODE(MODE) (((MODE) == AMHW_ZLG_ETH_MODE_HALFDUPLEX) || \
                              ((MODE) == AMHW_ZLG_ETH_MODE_FULLDUPLEX))
 
-void amhw_zlg_eth_soft_reset(void);
+void amhw_zlg_eth_soft_reset(amhw_zlg_eth_t *p_hw_eth);
 void amhw_zlg_eth_mac_addr_config(uint32_t mac_addr, uint8_t *addr);
-void amhw_zlg_eth_mac_transmission_cmd(func_state_t new_state);
-void amhw_zlg_eth_mac_reception_cmd(func_state_t new_state);
-void amhw_zlg_eth_flush_transmit_fifo(void);
-void amhw_zlg_eth_dma_transmission_cmd(func_state_t new_state);
-void amhw_zlg_eth_dma_reception_cmd(func_state_t new_state);
-void amhw_zlg_eth_reset_eth(void);
-extern void amhw_zlg_eth_gpio_config(void);
-extern void amhw_zlg_eth_set_speed(amhw_zlg_eth_speed_t eth_speed);
-extern void amhw_zlg_eth_set_mode(amhw_zlg_eth_mode_t eth_mode);
-extern void amhw_zlg_eth_usr_config_init( \
-                                       am_eth_regs_conf *p_eth_regs_config);
-uint32_t amhw_zlg_eth_reg_init(am_eth_regs_conf* p_eth_regs_config,
+void amhw_zlg_eth_mac_transmission_cmd(amhw_zlg_eth_t *p_hw_eth, func_state_t new_state);
+void amhw_zlg_eth_mac_reception_cmd(amhw_zlg_eth_t *p_hw_eth, func_state_t new_state);
+void amhw_zlg_eth_flush_transmit_fifo(amhw_zlg_eth_t *p_hw_eth);
+void amhw_zlg_eth_dma_transmission_cmd(amhw_zlg_eth_t *p_hw_eth, func_state_t new_state);
+void amhw_zlg_eth_dma_reception_cmd(amhw_zlg_eth_t *p_hw_eth, func_state_t new_state);
+extern void amhw_zlg_eth_set_speed(amhw_zlg_eth_t *p_hw_eth, amhw_zlg_eth_speed_t eth_speed);
+extern void amhw_zlg_eth_set_mode(amhw_zlg_eth_t *p_hw_eth, amhw_zlg_eth_mode_t eth_mode);
+uint32_t amhw_zlg_eth_reg_init(amhw_zlg_eth_t *p_hw_eth, am_eth_regs_conf* p_eth_regs_config,
         uint16_t phy_addr);
 
-flag_status_t amhw_zlg_eth_get_soft_reset_status(void);
+flag_status_t amhw_zlg_eth_get_soft_reset_status(amhw_zlg_eth_t *p_hw_eth);
 
 #ifdef __cplusplus
 }

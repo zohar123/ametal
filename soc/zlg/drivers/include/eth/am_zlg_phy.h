@@ -27,6 +27,7 @@
 extern "C" {
 #endif
 #include "stdint.h"
+#include "amhw_zlg_eth_reg.h"
 
 #ifdef USE_Delay
 #define AM_ZLG_PHY_RESET_DELAY    ((uint32_t)0x00000032)
@@ -45,8 +46,8 @@ extern "C" {
 /** \brief PHY Duplex mask 1:Full duplex  0:Half duplex */
 #define AM_ZLG_PHY_DUPLEX_STATUS      ((uint16_t)0x0004)
 
-uint16_t am_zlg_phy_read_reg(uint16_t phy_addr, uint16_t phy_reg);
-uint32_t am_zlg_phy_write_reg(uint16_t phy_addr, uint16_t phy_reg,
+uint16_t am_zlg_phy_read_reg(amhw_zlg_eth_t *p_hw_eth, uint16_t phy_addr, uint16_t phy_reg);
+uint32_t am_zlg_phy_write_reg(amhw_zlg_eth_t *p_hw_eth, uint16_t phy_addr, uint16_t phy_reg,
         uint16_t phy_value);
         
 #ifdef __cplusplus
