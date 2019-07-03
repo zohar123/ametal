@@ -41,7 +41,7 @@
 #include "lpc84x_periph_map.h"
 #include "lpc84x_pin.h"
 /** \brief LED0 引脚 */
-#define __LED0_PIN  PIO1_8
+#define __LED_PIN  PIO1_8
 
 extern void demo_lpc845_hw_gpio_entry (amhw_lpc84x_gpio_t *p_hw_gpio,
                                        int                 pin);
@@ -55,9 +55,9 @@ void demo_am845_core_hw_gpio_entry (void)
     am_kprintf("demo am845_core hw gpio!\r\n");
   
     /* 配置引脚方向为输出 */
-    amhw_lpc84x_gpio_pin_dir_output(LPC84X_GPIO, __LED0_PIN);
+    amhw_lpc84x_gpio_pin_dir_output(LPC84X_GPIO, __LED_PIN);
 
-    demo_lpc845_hw_gpio_entry(LPC84X_GPIO, __LED0_PIN);
+    demo_lpc845_hw_gpio_entry(LPC84X_GPIO, __LED_PIN);
 }
 /** [src_am845_core_hw_gpio] */
 

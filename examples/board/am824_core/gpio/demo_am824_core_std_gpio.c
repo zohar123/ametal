@@ -43,7 +43,7 @@
 #include "demo_std_entries.h"
 
 /** \brief LED0 Òý½Å */
-#define __LED0_PIN  PIO0_11
+#define __LED_PIN  PIO0_11
 
 /** \brief °´¼üÒý½Å */
 #define __KEY_PIN  PIO0_1
@@ -56,7 +56,7 @@ void demo_am824_core_std_gpio_entry (void)
 
     AM_DBG_INFO("demo am824_core std gpio!\r\n");
 
-    demo_std_gpio_entry(__KEY_PIN, __LED0_PIN);
+    demo_std_gpio_entry(__KEY_PIN, __LED_PIN);
 }
 /** [src_am824_std_gpio] */
 
