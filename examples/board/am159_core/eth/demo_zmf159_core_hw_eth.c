@@ -14,13 +14,15 @@
  * \file
  * \brief ETH例程，通过HW层接口实现
  * - 操作步骤：
- *   1.使用本例程之前，需要下载移植LWIP协议栈(ametal/3rdparty)
- *   2.Demo已实现tcp_server & tcp_client，使用宏开关激活功能
+ *   1.使用本例程之前，需要下载移植LWIP协议栈(存放于ametal/3rdparty)，
+ *     并在配置工程（添加头文件路径，屏蔽IP6文件夹）.
+ *   2.Demo已实现tcp_server & tcp_client，使用宏AM_ZMF159_CORE_TCP_SERVER_TEST
+       & AM_ZMF159_CORE_TCP_CLIENT_TEST 激活对应功能
  *   3.用户可修改配置文件，对管脚，IP地址, port端口, 速率，双工信息等进行配置
- *      (amhw_zlg_usr_conf.c), 推荐使用默认配置，驱动将自动识别PHY功能
+ *      (am_hwconf_zmf159_eth.c), 推荐使用默认配置，驱动将自动识别PHY功能
  * - 实验现象
- *   1.使用tcp_server，使用网络测试工具创建客户端连接后，可进行loopback.
- *   2.使用tcp_client，使用网络测试工具创建服务器端连接后，可进行loopback.
+ *   1.使用tcp_server，使用网络测试工具创建客户端连接后，可进行收发测试.
+ *   2.使用tcp_client，使用网络测试工具创建服务器端连接后，可进行收发测试.
  *
  *\note
  *   1.为标识ETH程序正在工作，点亮LED1，实际使用可以去掉
