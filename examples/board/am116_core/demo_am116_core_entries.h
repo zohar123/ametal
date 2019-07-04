@@ -516,25 +516,45 @@ void demo_am116_core_bootloader_entry(void);
  */
 void demo_am116_core_application_entry(void);
 
-/**
- * \brief ZSN60x LED测试程序
- */
-void demo_am116_zsn60x_led_test_entry();
+///**
+// * \brief ZSN60x LED测试程序
+// */
+//void demo_am116_zsn60x_led_test_entry();
+
+///**
+// * \brief ZSN60x A类卡测试程序
+// */
+//void demo_am116_zsn60x_picca_test_entry();
+
+///**
+// * \brief ZSN60x B类卡测试程序
+// */
+//void demo_am116_zsn60x_piccb_test_entry();
+
+///**
+// * \brief ZSN60x 自动检测测试程序
+// */
+//void demo_am116_zsn60x_auto_detect_test_entry();
 
 /**
- * \brief ZSN60x A类卡测试程序
+ * \brief USBD键盘例程
  */
-void demo_am116_zsn60x_picca_test_entry();
+void demo_zlg126_usbd_keyboard_entry (void);
 
 /**
- * \brief ZSN60x B类卡测试程序
+ * \brief USBD打印机 例程
  */
-void demo_am116_zsn60x_piccb_test_entry();
+void demo_zlg126_usbd_printer_entry (void);
 
 /**
- * \brief ZSN60x 自动检测测试程序
+ * \brief USBD U盘 例程
  */
-void demo_am116_zsn60x_auto_detect_test_entry();
+void demo_zlg126_usbd_msc_entry (void);
+
+/**
+ * \brief USBD 虚拟串口  例程
+ */
+void demo_zlg126_usbd_vcom_entry (void);
 
 #ifdef __cplusplus
 }
