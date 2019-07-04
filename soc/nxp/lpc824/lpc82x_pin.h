@@ -38,6 +38,10 @@
 
 #include "am_lpc82x_gpio_util.h"
 
+#ifdef PIN_OUTSET
+    #include "am_lpc82x_pin_outset.h"
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif

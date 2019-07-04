@@ -31,6 +31,10 @@ extern "C" {
 
 #include "am_zlg116_gpio_util.h"
 
+#ifdef PIN_OUTSET
+    #include "zlg116_pin_outset.h"
+#endif
+
  /**
  * \addtogroup zlg116_if_pin
  * \copydoc zlg116_pin.h

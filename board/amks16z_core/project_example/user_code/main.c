@@ -45,7 +45,7 @@ int am_main (void)
      *
      * 注意：同一时刻只能运行一个 demo，即只能使某一行处于取消注释状态。
      */
-//    demo_amks16z_core_std_led_entry();
+    demo_amks16z_core_std_led_entry();
 //    demo_amks16z_core_hw_adc_int_entry();
 //    demo_amks16z_core_hw_adc_poll_entry();
 //    demo_amks16z_core_std_adc_descs_st_entry();
@@ -106,8 +106,8 @@ int am_main (void)
 //    demo_amks16z_core_hw_uart_tx_dma_entry();
 //    demo_amks16z_core_std_uart_polling_entry();
 //    demo_amks16z_core_std_uart_ringbuf_entry();
-    demo_amks16z_core_std_uart_dma_polling_entry();
-    demo_amks16z_core_std_uart_dma_ringbuf_entry();
+//    demo_amks16z_core_std_uart_dma_polling_entry();
+//    demo_amks16z_core_std_uart_dma_ringbuf_entry();
 //    demo_amks16z_core_microport_ds1302_entry();
 //    demo_amks16z_core_microport_eeprom_nvram_entry();
 //    demo_amks16z_core_microport_eeprom_entry();
