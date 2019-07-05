@@ -104,7 +104,7 @@ am_timer_handle_t am_system_tick_softimer_inst_init (void)
 		am_softimer_module_init(__SYSTEM_TICK_RATE);
 
 		/* 将定时器的中断优先级设置为最低 */
-		am_arm_nvic_priority_set(SysTick_IRQn, 0x03, 0x03);
+		am_arm_nvic_priority_set(__TIMER_INUM, 0x03, 0x03);
 
 		am_timer_callback_set(pit_handle,
 							  0,
