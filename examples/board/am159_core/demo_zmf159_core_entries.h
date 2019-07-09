@@ -465,4 +465,8 @@ void demo_zmf159_core_std_can_entry (void);
  */
 void demo_zmf159_core_std_sdcard_entry (void);
 
+/**
+ * \brief eth Àý³ÌÈë¿Ú
+ */
+void demo_zmf159_core_hw_eth_entry (void);
 /* end of file */

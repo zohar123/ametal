@@ -48,6 +48,7 @@ extern "C" {
 #include "hw/amhw_zlg_dma.h"
 #include "hw/amhw_zmf159_pwr.h"
 #include "hw/amhw_zmf159_usb.h"
+#include "hw/amhw_zlg_eth_reg.h"
 
 /**
  * \addtogroup amhw_zmf159_if_periph_map
@@ -172,6 +173,9 @@ extern "C" {
 
 /** \brief  */
 #define ZMF159_USB       ((amhw_zmf159_usb_t   *)ZMF159_USB_BASE)
+
+/** \brief  */
+#define ZMF159_ETH       ((amhw_zlg_eth_t      *) ZMF159_ETH_BASE)  
 
 /** @} */
 

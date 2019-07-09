@@ -120,9 +120,7 @@ int am_main (void)
 //    demo_zmf159_usbd_keyboard_entry();
 //    demo_zmf159_usbd_msc_entry();
 //    demo_zmf159_core_std_sdcard_entry();
-
+//    demo_zmf159_core_hw_eth_entry();
     while (1) {
     }
 }
-
-/* end of file */
