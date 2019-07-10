@@ -16,7 +16,7 @@
  *
  *
  * \par 源代码
- * \snippet am_boot_autobaud.c src_am_boot_autobaud
+ * \snippet am_baudrate_detect.c src_am_baudrate_detect
  *
  * \internal
  * \par Modification history
@@ -24,8 +24,9 @@
  * \endinternal
  */
 
-/** [src_am_boot_autobaud] */
-#include "am_boot_autobaud_soft.h"
+/** [src_am_baudrate_detect] */
+
+#include "am_baudrate_detect.h"
 #include "ametal.h"
 #include "am_vdebug.h"
 #include "am_timer.h"
@@ -56,7 +57,7 @@ static void __cap_callback (void *p_arg, unsigned int cap_now_val)
         handle->uart_data |= 0x01;
     }
 #endif
-    am_boot_autobaud_soft_dev_t * p_dev = (am_boot_autobaud_soft_dev_t *)p_arg;
+    am_baudrate_detect_dev_t *p_dev = (am_baudrate_detect_dev_t *)p_arg;
     /* 只需要处理一个字节  */
     if (p_dev->data_edge <= 9) {
         p_dev->data_pulse_width[p_dev->data_edge++] = cap_now_val;
@@ -71,7 +72,7 @@ static void __cap_callback (void *p_arg, unsigned int cap_now_val)
  */
 static void __softimer_callback (void *p_arg)
 {
-    am_boot_autobaud_soft_dev_t * p_dev = (am_boot_autobaud_soft_dev_t *)p_arg;
+    am_baudrate_detect_dev_t *p_dev = (am_baudrate_detect_dev_t *)p_arg;
     p_dev->time_out_ms++;
 
     if (p_dev->time_out_ms >= p_dev->p_devinfo->timer_out) {
@@ -86,8 +87,8 @@ static void __softimer_callback (void *p_arg)
 /**
  * \brief 获取波特率函数
  */
-static int __baudrate_get (am_boot_autobaud_soft_dev_t *p_dev,
-                           uint32_t                    *p_baudrate)
+static int __baudrate_get (am_baudrate_detect_dev_t *p_dev,
+                           uint32_t               *p_baudrate)
 {
     int      key;
     uint16_t i;
@@ -157,9 +158,9 @@ static int __baudrate_get (am_boot_autobaud_soft_dev_t *p_dev,
 /**
  * \brief 获取波特率函数接口
  */
-static int __boot_baudrate_get (void *p_arg, uint32_t *p_baudrate)
+int am_baudrate_get (am_baudrate_detect_handle_t handle, uint32_t *p_baudrate)
 {
-    am_boot_autobaud_soft_dev_t * p_dev = (am_boot_autobaud_soft_dev_t *)p_arg;
+    am_baudrate_detect_dev_t *p_dev = (am_baudrate_detect_dev_t *)handle;
 
     if ((p_dev->cap_flag   == AM_TRUE) &&
         (p_dev->data_edge  == 0)       &&
@@ -169,18 +170,14 @@ static int __boot_baudrate_get (void *p_arg, uint32_t *p_baudrate)
     return AM_ERROR;
 }
 
-static const struct am_boot_autobaud_drv_funcs __g_autobaud_soft_funcs = {
-        __boot_baudrate_get,
-};
+
 
 /**
  * \brief 自动波特率初始化函数
  */
-am_boot_autobaud_handle_t am_boot_autobaud_soft_init (
-    am_boot_autobaud_soft_dev_t     *p_dev,
-    am_boot_autobaud_soft_devinfo_t *p_devinfo,
-    am_cap_handle_t                  cap_handle,
-    int                              cap_pin)
+am_baudrate_detect_handle_t am_baudrate_detect_init (am_baudrate_detect_dev_t     *p_dev,
+                                                     am_baudrate_detect_devinfo_t *p_devinfo,
+                                                     am_cap_handle_t               cap_handle)
 {
     if (p_dev      == NULL ||
         p_devinfo  == NULL ||
@@ -188,7 +185,6 @@ am_boot_autobaud_handle_t am_boot_autobaud_soft_init (
         return NULL;
     }
 
-    p_dev->cap_pin = cap_pin;
 
     p_dev->uart_data     = 0;
     p_dev->data_edge     = 0;
@@ -197,6 +193,8 @@ am_boot_autobaud_handle_t am_boot_autobaud_soft_init (
     p_dev->cap_flag      = AM_FALSE;
 
     p_dev->cap_handle   = cap_handle;
+
+    p_dev->cap_pin = p_devinfo->cap_pin;
 
     p_dev->p_devinfo  = p_devinfo;
 
@@ -218,19 +216,17 @@ am_boot_autobaud_handle_t am_boot_autobaud_soft_init (
                      (void *)p_dev);
     am_softimer_start(&(p_dev->softimer), 1);
 
-    p_dev->autobaud_serv.p_funcs = &__g_autobaud_soft_funcs;
-    p_dev->autobaud_serv.p_drv   = p_dev;
 
-    return &p_dev->autobaud_serv;
+    return p_dev;
 }
 
 /**
  * \brief 自动波特率初解始化函数
  */
-void am_boot_autobaud_soft_deinit (am_boot_autobaud_handle_t handle)
+void am_baudrate_detect_deinit (am_baudrate_detect_handle_t handle)
 {
 
-    am_boot_autobaud_soft_dev_t *p_dev = (am_boot_autobaud_soft_dev_t *)handle;
+    am_baudrate_detect_dev_t *p_dev = (am_baudrate_detect_dev_t *)handle;
 
     am_softimer_stop(&(p_dev->softimer));
 

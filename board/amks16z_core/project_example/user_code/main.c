@@ -29,7 +29,6 @@
 #include "am_delay.h"
 #include "am_vdebug.h"
 #include "am_board.h"
-#include "demo_amks16rfid_entries.h"
 #include "demo_amks16z_core_all_entries.h"
 
 /**
@@ -45,7 +44,8 @@ int am_main (void)
      *
      * 注意：同一时刻只能运行一个 demo，即只能使某一行处于取消注释状态。
      */
-    demo_amks16z_core_std_led_entry();
+
+//    demo_amks16z_core_std_led_entry();
 //    demo_amks16z_core_hw_adc_int_entry();
 //    demo_amks16z_core_hw_adc_poll_entry();
 //    demo_amks16z_core_std_adc_descs_st_entry();
@@ -129,6 +129,7 @@ int am_main (void)
 //    demo_amks16z_core_miniport_zlg72128_entry();
 //    demo_amks16z_core_hw_wdt_entry();
 //    demo_amks16z_core_std_wdt_entry();
+//    demo_amks16z_core_uart_auto_baudrate_entry();
     /*
      * 以下demo为amks16rfid板特有demo
      */

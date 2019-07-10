@@ -12,7 +12,7 @@
 
 /**
  * \file
- * \brief 自动波特率服务，可以实现与未知波特率的串口设备自动匹配波特率(软件实现)
+ * \brief 自动波特率服务，可以实现与未知波特率的串口设备自动匹配波特率(模拟实现)
  *
  *
  * \internal
@@ -21,35 +21,32 @@
  * \endinternal
  */
 
-#ifndef __AM_AUTO_BAUDRATE_SOFT_H__
-#define __AM_AUTO_BAUDRATE_SOFT_H__
+#ifndef __AM_BAUDRATE_DETECT_H__
+#define __AM_BAUDRATE_DETECT_H__
 
+#include "ametal.h"
 #include "am_cap.h"
 #include "am_uart.h"
 #include "am_timer.h"
 #include "am_softimer.h"
-#include "am_boot_autobaud.h"
+
 /**
- * \brief 自动波特率设备信息
+ * \brief 串口自动波特率设备信息
  */
-typedef struct am_boot_autobaud_soft_devinfo {
-
-    uint8_t  cap_chanel;               /**< \brief CAP捕获通道 */
-    uint8_t  timer_width;              /**< \brief TIMER定时器位数 */
-
-    uint16_t timer_out;                /**< \brief 接收一次数据的超时时间，单位ms*/
-    uint32_t cap_trigger;              /**< \brief CAP捕获边沿方式选择选择 */
-
+typedef struct am_baudrate_detect_devinfo {
+    int        cap_pin;                /**< \brief 被检测引脚 */
+    uint8_t    cap_chanel;             /**< \brief CAP捕获通道 */
+    uint8_t    timer_width;            /**< \brief TIMER定时器位数 */
+    uint16_t   timer_out;              /**< \brief 接收一次数据的超时时间，单位ms*/
+    uint32_t   cap_trigger;            /**< \brief CAP捕获边沿方式选择选择 */
     void     (*pfn_plfm_init)(void);   /**< \brief 平台初始化函数 */
     void     (*pfn_plfm_deinit)(void); /**< \brief 平台解初始化函数 */
-} am_boot_autobaud_soft_devinfo_t;
+} am_baudrate_detect_devinfo_t;
 
 /**
  * \brief 自动波特率设备结构体
  */
-typedef struct am_boot_atuobaud_soft_dev {
-    /** \brief 自动波特率获取标准服务 */
-    am_boot_autobaud_serv_t autobaud_serv;
+typedef struct am_baudrate_detect_dev {
 
     /** \brief CAP捕获句柄*/
     am_cap_handle_t         cap_handle;
@@ -62,7 +59,6 @@ typedef struct am_boot_atuobaud_soft_dev {
 
     /** \brief 捕获中断标志*/
     volatile am_bool_t      cap_flag;
-
 
     /** \brief 串口接收数据*/
     uint16_t                uart_data;
@@ -80,10 +76,17 @@ typedef struct am_boot_atuobaud_soft_dev {
     uint32_t                data_pulse_width[32];
 
     /** \brief 自动波特率设备信息*/
-    am_boot_autobaud_soft_devinfo_t  *p_devinfo;
+    am_baudrate_detect_devinfo_t  *p_devinfo;
+} am_baudrate_detect_dev_t;
 
-} am_boot_autobaud_soft_dev_t;
+/** \brief 自动波特率 标准服务操作句柄类型定义 */
+typedef am_baudrate_detect_dev_t  *am_baudrate_detect_handle_t;
 
+
+/**
+ * \brief 获取波特率函数接口
+ */
+int am_baudrate_get (am_baudrate_detect_handle_t handle, uint32_t *p_baudrate);
 
 /**
  * \brief 自动波特率初始化函数
@@ -95,11 +98,9 @@ typedef struct am_boot_atuobaud_soft_dev {
  *
  * \return 自动波特率服务操作句柄
  */
-am_boot_autobaud_handle_t am_boot_autobaud_soft_init (
-    am_boot_autobaud_soft_dev_t     *p_dev,
-    am_boot_autobaud_soft_devinfo_t *p_devinfo,
-    am_cap_handle_t                  cap_handle,
-    int                              cap_pin);
+am_baudrate_detect_handle_t am_baudrate_detect_init (am_baudrate_detect_dev_t     *p_dev,
+                                                     am_baudrate_detect_devinfo_t *p_devinfo,
+                                                     am_cap_handle_t               cap_handle);
 
 /**
  * \brief 自动波特率解初始化函数
@@ -108,8 +109,7 @@ am_boot_autobaud_handle_t am_boot_autobaud_soft_init (
  *
  * \return 无
  */
-void am_boot_autobaud_soft_deinit (am_boot_autobaud_handle_t handle);
-
+void am_baudrate_detect_deinit (am_baudrate_detect_handle_t handle);
 
 #endif
 

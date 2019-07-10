@@ -628,5 +628,9 @@ void demo_amks16z_core_microport_rx8025t_entry (void);
  */
 void demo_amks16z_core_microport_usb_entry (void);
 
+/**
+ * \brief 串口波特率检测例程入口
+ */
+void demo_amks16z_core_uart_auto_baudrate_entry (void);
 
 /* end of file */
