@@ -496,8 +496,10 @@ int __spi_mst_sm_event (am_lpc_spi_poll_dev_t *p_dev)
                 __spi_write_data(p_dev);
 
                 while(p_dev->nbytes_to_recv != 0){
-                    /* SPI读取数据 */
-                    __spi_read_data(p_dev);
+                    if((amhw_lpc_spi_stat_get(p_hw_spi) & AMHW_LPC_SPI_STAT_RXRDY) != 0){
+                        /* SPI读取数据 */
+                        __spi_read_data(p_dev);
+                    }
                 }
             }
         }
