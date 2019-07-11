@@ -39,6 +39,7 @@ extern "C" {
 #include "am_zlg52810.h"
 #include "zsn60x.h"
 #include "am_xmodem.h"
+#include "am_baudrate_detect.h"
 /**
  * \brief EP24CXX 器件例程
  *
@@ -262,6 +263,17 @@ void demo_xmodem_rec_entry (am_xmodem_rec_handle_t  handle);
  * \return 无
  */
 void  demo_xmodem_tx_entry (am_xmodem_tx_handle_t  handle);
+
+/**
+ * \brief 串口波特率检测例程
+ *
+ * \param[in] baudrate_handle  波特率检测服务句柄
+ * \param[in] uart_handle      串口服务句柄
+ *
+ * \return 无
+ */
+void demo_uart_auto_baudrate_entry (am_baudrate_detect_handle_t baudrate_handle,
+                                    am_uart_handle_t            uart_handle);
 #ifdef __cplusplus
 }
 #endif

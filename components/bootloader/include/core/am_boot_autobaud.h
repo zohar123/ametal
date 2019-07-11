@@ -29,7 +29,7 @@
  */
 struct am_boot_autobaud_drv_funcs {
 
-    /** \brief 内存读操作 */
+    /** \brief 获取波特率*/
     int (*pfn_get_baudrate) (void *p_drv, uint32_t *p_baud);
 
 };

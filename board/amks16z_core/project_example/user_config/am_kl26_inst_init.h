@@ -37,6 +37,7 @@
 #include "am_wdt.h"
 #include "am_spi.h"
 #include "am_uart.h"
+#include "am_baudrate_detect.h"
 #include "am_hwconf_led_gpio.h"
 #include "am_hwconf_key_gpio.h"
 #include "am_hwconf_buzzer_pwm.h"
@@ -458,6 +459,11 @@ am_timer_handle_t am_kl26_systick_inst_init (void);
 /** \brief SYSTICK 实例解初始化 */
 void am_kl26_systick_inst_deinit (am_timer_handle_t handle);
 
+/** \brief 实例初始化，获得自动波特率服务句柄 */
+am_baudrate_detect_handle_t am_kl26_baudrate_detect_inst_init (void);
+
+/** \brief 实例解初始化*/
+void am_kl26_baudrate_detect_inst_deinit(am_baudrate_detect_handle_t handle);
 /**
  * @}
  */
