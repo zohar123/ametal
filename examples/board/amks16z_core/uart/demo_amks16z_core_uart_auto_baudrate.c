@@ -12,7 +12,7 @@
 
 /**
  * \file
- * \brief UART 波特率检测例程，通过标准接口实现
+ * \brief UART 波特率检测例程，通过标准接口实现(本例程波特率支持范围 1200~12800)
  *
  * - 实验现象：
  *   1. 串口输出 "uart connect success"；
@@ -52,10 +52,9 @@ void demo_amks16z_core_uart_auto_baudrate_entry (void)
     am_uart_handle_t uart_handle;
     am_baudrate_detect_handle_t baudrate_hande;
 
-
+    uint32_t baudrate;
     baudrate_hande = am_kl26_baudrate_detect_inst_init();
 
-    uint32_t baudrate;
     /** \brief 需要发送的字符串 */
 
     while(AM_OK != am_baudrate_get(baudrate_hande, &baudrate)) {

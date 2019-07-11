@@ -25,7 +25,7 @@ static am_cap_handle_t            cap_handle;
 void __kl26_plfm_baudrate_detect_init (void)
 {
     /* 预分频值越低，更容易检测更低的波特率；相反预分频值高，能够检测更高的波特率 */
-    amhw_fsl_tpm_prescale_set(KL26_TPM0, AMHW_FSL_TPM_DIVIDED_BY_1);
+    amhw_fsl_tpm_prescale_set(KL26_TPM0, AMHW_FSL_TPM_DIVIDED_BY_4);
 }
 
 /** \brief 自动波特率的平台解初始化  */
@@ -40,7 +40,7 @@ static am_baudrate_detect_devinfo_t __g_kl26_baudrate_detect_devinfo = {
     4,                                 /**< \brief CAP捕获通道号 */
     TIMER_WIDTH,                       /**< \brief TIMER定时器位数 */
     10,                                /**< \brief 接收一次数据的超时时间(ms)*/
-    AM_CAP_TRIGGER_FALL,               /**< \brief CAP捕获触发方式 */
+    AM_CAP_TRIGGER_BOTH_EDGES,               /**< \brief CAP捕获触发方式 */
     __kl26_plfm_baudrate_detect_init,  /**< \brief 平台初始化函数 */
     __kl26_plfm_baudrate_detect_deinit,/**< \brief 平台解初始化函数 */
 };
