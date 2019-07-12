@@ -132,6 +132,7 @@ int am_main (void)
      */
 //    demo_amks16rfid8_fm175xx_cpu_card();
 //    demo_amks16rfid8_fm175xx_lpcd_read_id();
+//    demo_amks16rfid8_dr_fm175xx_lpcd_vlps_read_id();
 //    demo_amks16rfid8_fm175xx_picca_8ante_read_id();
 //    demo_amks16rfid8_fm175xx_picca_read_block();
 //    demo_amks16rfid8_fm175xx_picca_write_block();

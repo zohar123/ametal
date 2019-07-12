@@ -86,6 +86,7 @@ extern "C" {
 #define AM_FM175XX_TESTPINVALUE_REG      0x34   /**< \brief 当被用于I/O总线时,定义D1-D7引脚的值（FM17510该寄存器未使用） */
 #define AM_FM175XX_TESTBUS_REG           0x35   /**< \brief 显示内部测试总线的状态 */
 #define AM_FM175XX_TESTCTRL_REG          0x36   /**< \brief 测试控制 */
+#define AM_FM175XX_VERSION_REG           0x37   /**< \brief 芯片版本*/
 #define AM_FM175XX_ANALOGTEST_REG        0x38   /**< \brief 控制引脚AUX1和AUX2 */
 #define AM_FM175XX_TESTDAC1_REG          0x39   /**< \brief 为TestDAC1定义测试值 */
 #define AM_FM175XX_TESTDAC2_REG          0x3a   /**< \brief 为TestDAC2定义测试值（FM17510该寄存器未使用） */

@@ -286,6 +286,44 @@ extern "C" {
 #define AM_FM175XX_LCPD_DETECT141US            31          /**< \brief 141us */
 /** @} */
 
+/**
+ * \name VMID 准备时间配置
+ *
+ * @{
+ */
+#define AM_FM175XX_LPCD_VMID_0MS                0          /**< \brief 0ms */
+#define AM_FM175XX_LPCD_VMID_0_4MS              2          /**< \brief 0.4ms */
+#define AM_FM175XX_LPCD_VMID_0_5MS              3          /**< \brief 0.5ms */
+#define AM_FM175XX_LPCD_VMID_0_6MS              4          /**< \brief 0.6ms */
+#define AM_FM175XX_LPCD_VMID_0_7MS              5          /**< \brief 0.7ms */
+#define AM_FM175XX_LPCD_VMID_0_8MS              6          /**< \brief 0.8ms */
+#define AM_FM175XX_LPCD_VMID_0_9MS              7          /**< \brief 0.9ms */
+#define AM_FM175XX_LPCD_VMID_1_0MS              8          /**< \brief 1.0ms */
+#define AM_FM175XX_LPCD_VMID_1_1MS              9          /**< \brief 1.1ms */
+#define AM_FM175XX_LPCD_VMID_1_2MS              10         /**< \brief 1.2ms */
+#define AM_FM175XX_LPCD_VMID_1_3MS              11         /**< \brief 1.3ms */
+#define AM_FM175XX_LPCD_VMID_1_4MS              12         /**< \brief 1.4ms */
+#define AM_FM175XX_LPCD_VMID_1_5MS              13         /**< \brief 1.5ms */
+#define AM_FM175XX_LPCD_VMID_1_6MS              14         /**< \brief 1.6ms */
+#define AM_FM175XX_LPCD_VMID_1_7MS              15         /**< \brief 1.7ms */
+#define AM_FM175XX_LPCD_VMID_1_8MS              16         /**< \brief 1.8ms */
+#define AM_FM175XX_LPCD_VMID_1_9MS              17         /**< \brief 1.9ms */
+#define AM_FM175XX_LPCD_VMID_2_0MS              18         /**< \brief 2.0ms */
+#define AM_FM175XX_LPCD_VMID_2_1MS              19         /**< \brief 2.1ms */
+#define AM_FM175XX_LPCD_VMID_2_2MS              20         /**< \brief 2.2ms */
+#define AM_FM175XX_LPCD_VMID_2_3MS              21         /**< \brief 2.3ms */
+#define AM_FM175XX_LPCD_VMID_2_4MS              22         /**< \brief 2.4ms */
+#define AM_FM175XX_LPCD_VMID_2_5MS              23         /**< \brief 2.5ms */
+#define AM_FM175XX_LPCD_VMID_2_6MS              24         /**< \brief 2.6ms */
+#define AM_FM175XX_LPCD_VMID_2_7MS              25         /**< \brief 2.7ms */
+#define AM_FM175XX_LPCD_VMID_2_8MS              26         /**< \brief 2.8ms */
+#define AM_FM175XX_LPCD_VMID_2_9MS              27         /**< \brief 2.9ms */
+#define AM_FM175XX_LPCD_VMID_3_0MS              28         /**< \brief 3.0ms */
+#define AM_FM175XX_LPCD_VMID_3_1MS              29         /**< \brief 3.1ms */
+#define AM_FM175XX_LPCD_VMID_3_2MS              30         /**< \brief 3.2ms */
+#define AM_FM175XX_LPCD_VMID_3_3MS              31         /**< \brief 3.3ms */
+/** @} */
+
 
 /**
  * \name LPCD发送驱动配置
@@ -306,7 +344,21 @@ extern "C" {
 #define AM_FM175XX_LCPD_RF_PMOS_6              5           /**< \brief LPCD 发射PMOS驱动配置为6欧姆 */
 #define AM_FM175XX_LCPD_RF_PMOS_3              6           /**< \brief LPCD 发射PMOS驱动配置为3欧姆 */
 #define AM_FM175XX_LCPD_RF_PMOS_1              7           /**< \brief LPCD 发射PMOS驱动配置为1.5欧姆 */
+/** @} */
 
+
+/**
+ * \name 偏置电流设置
+ *
+ * @{
+ * */
+#define AM_FM175XX_BIAS_CURRENT_50NA           1          /**< \brief LPCD 偏置电流50nA */
+#define AM_FM175XX_BIAS_CURRENT_100NA          2          /**< \brief LPCD 偏置电流150nA */
+#define AM_FM175XX_BIAS_CURRENT_150NA          3          /**< \brief LPCD 偏置电流200nA */
+#define AM_FM175XX_BIAS_CURRENT_200NA          4          /**< \brief LPCD 偏置电流250nA */
+#define AM_FM175XX_BIAS_CURRENT_250NA          5          /**< \brief LPCD 偏置电流300nA */
+#define AM_FM175XX_BIAS_CURRENT_300NA          6          /**< \brief LPCD 偏置电流350nA */
+#define AM_FM175XX_BIAS_CURRENT_350NA          7          /**< \brief LPCD 偏置电流400nA */
 /** @} */
 
 
@@ -473,17 +525,17 @@ typedef struct am_fm175xx_tpcl_prot_para {
 typedef struct am_fm175xx_lpcd_cfginfo {
     uint8_t         sleep_time;                      /**< \brief LPCD检测休眠阶段时间配置 */
     uint8_t         detect_time;                     /**< \brief LPCD检测阶段时间配置 */
+    uint8_t         vmid_time;                       /**< \brief VMID准备时间配置 */
 
-    uint8_t         tx2_rf_enable;                   /**< \brief LPCD是否使能TX2发射 */
-    uint8_t         cwn;                             /**< \brief LPCD发射NMOS驱动配置*/
-    uint8_t         cwp;                             /**< \brief LPCD发射PMOS驱动配置*/
-    float           detectsensitive;                 /**< \brief LPCD检测脉宽相对灵敏度数    0.04 - 0.15*/
+    uint8_t         detect_range;                    /**< \brief LPCD检测范围*/
+    uint8_t         detect_threshold;                /**< \brief LPCD检测阈值*/
 
     uint8_t         ie;                              /**< \brief LPCD中断使能配置*/
     uint8_t         auto_detect_times;               /**< \brief LPCD自动检测次数配置*/
     uint8_t         wake_up_enable;                  /**< \brief LPCD自动唤醒使能*/
     uint8_t         wake_up_time;                    /**< \brief LPCD自动唤醒时间配置*/
 
+    uint8_t         bias_current;                    /**< \brief 偏置电流设置  */
 
 } am_fm175xx_lpcd_cfginfo_t;
 
@@ -515,19 +567,26 @@ typedef struct am_fm175xx_lpcd_modeinfo {
 typedef struct am_fm175xx_lpcd_calibrate_info {
     uint8_t        detect_timer_clkdivk;       /**< \brief LPCD 检测定时器分频数 */
     uint8_t        bias_current;               /**< \brief LPCD LPCD基准电流配置 */
-    uint8_t        gain_reduce;                /**< \brief LPCD 衰减倍数 */
     uint8_t        gain_amplify;               /**< \brief LPCD 放大器倍数 */
     uint8_t        adc_reference;              /**< \brief LPCD ADC电压参照电平 */
 
     uint8_t        sleep_time;                 /**< \brief LPCD 睡眠时间 */
     uint8_t        ready_time;                 /**< \brief LPCD 检测准备时间 */
     uint8_t        detect_time;                /**< \brief LPCD 检测时间  */
+    uint8_t        detect_time_offset;         /**< \brief LPCD 检测时间偏移值  */
 
     uint8_t        adc_full_scale;             /**< \brief LPCD 定时器满幅下ADC值 */
     uint8_t        adc_threshold;              /**< \brief LPCD 检测幅度，设置为相对值 */
     uint8_t        lpcd_threshold_l;           /**< \brief LPCD 幅度低阈值 */
     uint8_t        lpcd_threshold_h;           /**< \brief LPCD 幅度高阈值 */
     uint8_t        adc_center;                 /**< \brief LPCD 幅度中心阈值 */
+
+    uint8_t        detect_threshold;           /**< \brief LPCD 电压检测阈值范围 */
+
+    uint8_t        cwn;
+    uint8_t        cwp;
+    uint8_t        tx2_en;
+
 }am_fm175xx_calibrate_info_t;
 
 /**
