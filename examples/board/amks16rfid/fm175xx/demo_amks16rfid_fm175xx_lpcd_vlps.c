@@ -13,37 +13,41 @@
 
 /**
  * \file
- * \brief FM175xx LPCD模式
+ * \brief LPCD模式  配合系统超低功耗停止模式  在超低功耗情况下实现卡片检测功能
+ *      在此例程中，KS16将会进入VLPS模式，即超低功耗停止模式。
+ *      在FM175xx进入LPCD模式之后，MUC进入VLPS模式，来降低MCU自身功耗
  *
  * - 操作步骤：
  *   1. 正确连接并配置好串口。
- *   2. 正确连接好天线。
+ *   2. 正确连接好天线，复位，即会打印相关提示信息，用户可以根据提示信息来判断是否进入LPCD模式成功
+ *   3. 进入LPCD模式成功后，将会进行读卡操作，并打印卡片相关信息。
  *
  * - 实验现象：
- *   1. 在执行操作步骤1 2后， 随后卡进入低功耗自动卡片检测（LPCD）模式
- *   2. 将卡放置感应区，FM175xx设备将产生卡进场中断标志，执行相应设定操作。
- *   3. 移开卡片后，达到设定的AUTO_WUP_TIME的时间时，FM175xx自动退出LPCD模式，自动进行调校。
+ *   1. 串口打印出卡片类型号和卡号及卡片信息
  *
  * \par 源代码
- * \snippet demo_fm175xx_picca_lpcd_read_id.c src_fm175xx_picca_lpcd_read_id
+ * \snippet demo_amks16rfid_dr_fm175xx_lpcd_vlps_read_id.c src_amks16rfid_dr_fm175xx_lpcd_vlps_read_id
  *
  * \internal
  * \par Modification history
- * - 1.00 18-08-20  htf, first implementation.
+ * - 1.00 19-07-012  htf, first implementation.
  * \endinternal
  */
 
 /**
- * \addtogroup demo_if_fm175xx_picca_lpcd_read_id
- * \copydoc demo_fm175xx_picca_lpcd_read_id.c
+ * \addtogroup demo_amks16rfid_core_dr_fm175xx_lpcd_vlps_read_id
+ * \copydoc demo_amks16rfid_core_dr_fm175xx_lpcd_vlps_read_id.c
  */
 
-/** [src_fm175xx_picca_lpcd_read_id] */
-#include "am_fm175xx.h"
-#include "am_fm175xx_reg.h"
-#include "am_vdebug.h"
-#include "am_delay.h"
+/** [src_amks16rfid_dr_fm175xx_lpcd_vlps_read_id] */
 
+#include "am_fm175xx.h"
+#include "am_vdebug.h"
+#include "am_fm175xx_reg.h"
+#include "am_kl26_pmu.h"
+#include "am_hwconf_fm175xx.h"
+#include "demo_components_entries.h"
+#include "demo_amks16rfid_entries.h"
 /**
  * \brief 触发卡进场回调函数  用户可自己任意配置   本例程以读取ID为例
  */
@@ -97,11 +101,13 @@ static void  __fm175xx_lpcd_cb(void *p_arg)
 }
 
 /**
- * \brief LPCD模式
+ * \brief A类LPCD模式 卡读卡类型和卡号例程
  */
-void demo_fm175xx_picca_lpcd_mode (am_fm175xx_handle_t handle)
+void demo_amks16rfid_dr_fm175xx_lpcd_vlps_read_id (void)
 {
     int int_flag = 0;
+    am_fm175xx_handle_t handle = am_fm175xx_inst_init();
+
 
     am_kprintf("FM175xx LPCD mode test!\n");
 
@@ -114,10 +120,16 @@ void demo_fm175xx_picca_lpcd_mode (am_fm175xx_handle_t handle)
     /* 进入LPCD模式 */
     am_fm175xx_lpcd_mode_entry(handle);
 
+    am_kprintf("Enter VLPS_MODE.\n");
+    if(am_kl26_pmu_mode_into(AM_KL26_PMU_MODE_VLPS) != AM_OK) {
+        am_kprintf("Enter VLPS_MODE Failed !\r\n");
+    } else {
+        am_kprintf("Wake Up from VLPS_MODE !\r\n");
+    }
     while(1){
         uint8_t isr;
 
-         /* 触发卡进场回调函数 
+         /* 触发卡进场回调函数
           * 注意，LPCD模式只会触发两种中断，卡进场中断以及自动唤醒中断
           */
         if(int_flag == 1){
@@ -141,10 +153,19 @@ void demo_fm175xx_picca_lpcd_mode (am_fm175xx_handle_t handle)
             /* 再次进入LPCD模式 */
             am_fm175xx_lpcd_mode_entry(handle);
 
+            am_kprintf("Enter VLPS_MODE.\n");
+            if(am_kl26_pmu_mode_into(AM_KL26_PMU_MODE_VLPS) != AM_OK) {
+                am_kprintf("Enter VLPS_MODE Failed !\r\n");
+            } else {
+                am_kprintf("Wake Up from VLPS_MODE !\r\n");
+            }
         }
     }
 }
 
-/** [src_fm175xx_picca_lpcd_read_id] */
+/** [demo_amks16rfid_core_dr_fm175xx_lpcd_vlps_read_id] */
 
 /* end of file */
+
+
+

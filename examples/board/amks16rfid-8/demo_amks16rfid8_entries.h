@@ -57,4 +57,8 @@ void demo_amks16rfid8_fm175xx_picca_read_id (void);
  */
 void demo_amks16rfid8_fm175xx_picca_val_operate (void);
 
+/**
+ * \brief LPCD模式  配合MCU低功耗模式
+ */
+void demo_amks16rfid8_dr_fm175xx_lpcd_vlps_read_id (void);
 /* end of file */

@@ -62,4 +62,8 @@ void demo_amks16rfid_dr_fm175xx_piccb_read_id (void);
  */
 void demo_amks16rfid_dr_fm11rf005m_operate (void);
 
+/**
+ * \brief FM175xx 超低功耗读卡   配合MCU低功耗模式
+ */
+void demo_amks16rfid_dr_fm175xx_lpcd_vlps_read_id (void);
 /* end of file */
