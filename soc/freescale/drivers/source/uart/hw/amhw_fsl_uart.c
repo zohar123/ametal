@@ -179,6 +179,7 @@ int amhw_fsl_uart_ver1_baudrate_set (amhw_fsl_uart_t *p_hw_uart, uint32_t sysclk
 {
 
     uint32_t sbr_val  = 0;
+    uint32_t temp1, temp2;
     /* 确保有效的 clock value*/
     if ((sysclk > 50000000) || (sysclk < 32000)) {
         sysclk = 0;
@@ -190,9 +191,10 @@ int amhw_fsl_uart_ver1_baudrate_set (amhw_fsl_uart_t *p_hw_uart, uint32_t sysclk
 
     /* 在改变UART1/2寄存器值前 接收发送禁能 */
     amhw_fsl_uart_disable(p_hw_uart);
+    temp1 = sysclk / (baud * 16);
+    temp2 = sysclk % (baud * 16);
 
-	sbr_val = (uint16_t)((sysclk)/(baud * 16));
-
+	sbr_val = (uint16_t)(temp1 + ((temp2 > ((baud * 16) / 2)) ? 1 : 0));
 
     amhw_fsl_uart_bdh_sbr_set(p_hw_uart,((sbr_val&0x1F00)>>8));
     amhw_fsl_uart_bdl_sbr_set(p_hw_uart,sbr_val & AMHW_FSL_UART_BDL_SBR_MASK);
