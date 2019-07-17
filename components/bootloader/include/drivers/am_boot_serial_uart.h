@@ -24,7 +24,6 @@
 #define __AM_BOOT_SERIAL_UART_H
 
 #include "am_boot_serial_byte.h"
-#include "am_boot_autobaud.h"
 #include "am_uart.h"
 
 #ifdef __cplusplus

@@ -51,6 +51,7 @@ extern "C" {
 #include "am_hc595.h"
 #include "am_ili9341.h"
 #include "am_rx8025t.h"
+#include "am_baudrate_detect.h"
 #include "am_digitron_disp.h"
 #include "am_ep24cxx.h"
 #include "am_mx25xx.h"
@@ -845,6 +846,16 @@ am_wdt_handle_t am_zlg217_wwdg_inst_init (void);
  */
 void am_zlg217_wwdg_inst_deinit (am_wdt_handle_t handle);
 
+/** \brief 波特率检测 实例初始化，获得自动波特率服务句柄
+ *
+ *   \return 无
+ */
+am_baudrate_detect_handle_t am_zlg217_baudrate_detect_inst_init (void);
+
+/** \brief  波特率检测 实例解初始化
+ *
+ */
+void am_zlg217_baudrate_detect_inst_deinit(am_baudrate_detect_handle_t handle);
 /**
  * @}
  */

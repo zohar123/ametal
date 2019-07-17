@@ -32,7 +32,7 @@
 #include "demo_boot_entries.h"
 #include "am_zlg217_inst_init.h"
 #include "am_bootconf_zlg217.h"
-#include "am_boot_autobaud_soft.h"
+#include "am_baudrate_detect.h"
 
 #define RAM_START_ADDR 0x20000000
 #define RAM_SIZE       20 * 1024
@@ -42,7 +42,7 @@ void demo_zlg217_core_bootloader_kft_entry (void)
     am_uart_handle_t             uart_handle;
     am_boot_flash_handle_t       flash_handle;
     am_boot_mem_handle_t         memory_handle;
-    am_boot_autobaud_handle_t    autobaud_handle;
+    am_baudrate_detect_handle_t  autobaud_handle;
     am_boot_enter_check_handle_t enter_check_handle;
 
     flash_handle  = am_zlg217_boot_kft_flash_inst_init();
@@ -57,12 +57,12 @@ void demo_zlg217_core_bootloader_kft_entry (void)
         am_boot_go_application();
     }
 
-    autobaud_handle = am_zlg217_boot_autobaud_inst_init();
+    autobaud_handle = am_zlg217_baudrate_detect_inst_init();
 
     int ret;
     uint32_t baund;
     while(1) {
-       ret = am_boot_baudrate_get(autobaud_handle, &baund);
+       ret = am_baudrate_get(autobaud_handle, &baund);
        if (ret == AM_OK) {
            if(baund <= 7200 && baund > 3000) {
                baund = 4800;
@@ -73,7 +73,7 @@ void demo_zlg217_core_bootloader_kft_entry (void)
        }
     }
 
-    am_boot_autobaud_soft_deinit(autobaud_handle);
+    am_zlg217_baudrate_detect_inst_deinit(autobaud_handle);
     /* 串口初始化应该在获取波特率之后 */
     uart_handle = am_zlg217_uart1_inst_init();
 

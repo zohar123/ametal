@@ -133,7 +133,7 @@
             <UseExternalTool>0</UseExternalTool>
             <RunIndependent>0</RunIndependent>
             <UpdateFlashBeforeDebugging>1</UpdateFlashBeforeDebugging>
-            <Capability>1</Capability>
+            <Capability>0</Capability>
             <DriverSelection>4096</DriverSelection>
           </Flash1>
           <bUseTDR>1</bUseTDR>
@@ -756,6 +756,11 @@
               <FileName>am_crc_table_def.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\components\service\source\am_crc_table_def.c</FilePath>
+            </File>
+            <File>
+              <FileName>am_baudrate_detect.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\components\service\source\am_baudrate_detect.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1692,6 +1697,11 @@
               <FileType>1</FileType>
               <FilePath>..\user_config\am_bootconf_usrcfg\am_bootconf_zlg217_single.c</FilePath>
             </File>
+            <File>
+              <FileName>am_hwconf_baudrate_detect.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\user_config\am_hwconf_usrcfg\am_hwconf_baudrate_detect.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1766,11 +1776,6 @@
               <FileName>am_boot_serial_uart.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\components\bootloader\source\drivers\am_boot_serial_uart.c</FilePath>
-            </File>
-            <File>
-              <FileName>am_boot_autobaud_soft.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\components\bootloader\source\drivers\am_boot_autobaud_soft.c</FilePath>
             </File>
           </Files>
         </Group>
