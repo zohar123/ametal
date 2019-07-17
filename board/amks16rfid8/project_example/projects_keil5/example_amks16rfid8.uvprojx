@@ -641,6 +641,16 @@
               <FileType>4</FileType>
               <FilePath>..\..\..\..\components\drivers\source\fm175xx\am_fm175xx_kl16.lib</FilePath>
             </File>
+            <File>
+              <FileName>am_fm175xx_uartcmd_k116.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\..\..\components\drivers\source\fm175xx\am_fm175xx_uartcmd_k116.lib</FilePath>
+            </File>
+            <File>
+              <FileName>am_fm175xx_ant.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\components\drivers\source\fm175xx\am_fm175xx_ant.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -980,11 +990,6 @@
               <FileName>am_kl26_wdt.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\soc\freescale\drivers\source\wdt\am_kl26_wdt.c</FilePath>
-            </File>
-            <File>
-              <FileName>am_fm175xx_ant.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\components\drivers\source\fm175xx\am_fm175xx_ant.c</FilePath>
             </File>
             <File>
               <FileName>am_kl26_spi_poll.c</FileName>
@@ -1480,6 +1485,31 @@
               <FileName>demo_amks16rfid8_fm175xx_picca_write_block.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\examples\board\amks16rfid-8\fm175xx\demo_amks16rfid8_fm175xx_picca_write_block.c</FilePath>
+            </File>
+            <File>
+              <FileName>demo_amks16rfid8_fm175xx_lpcd_vlps.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\examples\board\amks16rfid-8\fm175xx\demo_amks16rfid8_fm175xx_lpcd_vlps.c</FilePath>
+            </File>
+            <File>
+              <FileName>demo_amks16rfid8_uartcmd_handle.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\examples\board\amks16rfid-8\uart_cmd_read_card\demo_amks16rfid8_uartcmd_handle.c</FilePath>
+            </File>
+            <File>
+              <FileName>demo_amks16rfid8_uartcmd_picca_8ante_read_id.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\examples\board\amks16rfid-8\uart_cmd_read_card\demo_amks16rfid8_uartcmd_picca_8ante_read_id.c</FilePath>
+            </File>
+            <File>
+              <FileName>demo_amks16rfid8_uartcmd_picca_auto_detect.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\examples\board\amks16rfid-8\uart_cmd_read_card\demo_amks16rfid8_uartcmd_picca_auto_detect.c</FilePath>
+            </File>
+            <File>
+              <FileName>demo_amks16rfid8_uartcmd_ultralight_write_block.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\examples\board\amks16rfid-8\uart_cmd_read_card\demo_amks16rfid8_uartcmd_ultralight_write_block.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -2895,6 +2925,16 @@
               <FileType>4</FileType>
               <FilePath>..\..\..\..\components\drivers\source\fm175xx\am_fm175xx_kl16.lib</FilePath>
             </File>
+            <File>
+              <FileName>am_fm175xx_uartcmd_k116.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\..\..\components\drivers\source\fm175xx\am_fm175xx_uartcmd_k116.lib</FilePath>
+            </File>
+            <File>
+              <FileName>am_fm175xx_ant.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\components\drivers\source\fm175xx\am_fm175xx_ant.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -3234,11 +3274,6 @@
               <FileName>am_kl26_wdt.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\soc\freescale\drivers\source\wdt\am_kl26_wdt.c</FilePath>
-            </File>
-            <File>
-              <FileName>am_fm175xx_ant.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\components\drivers\source\fm175xx\am_fm175xx_ant.c</FilePath>
             </File>
             <File>
               <FileName>am_kl26_spi_poll.c</FileName>
@@ -3734,6 +3769,31 @@
               <FileName>demo_amks16rfid8_fm175xx_picca_write_block.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\examples\board\amks16rfid-8\fm175xx\demo_amks16rfid8_fm175xx_picca_write_block.c</FilePath>
+            </File>
+            <File>
+              <FileName>demo_amks16rfid8_fm175xx_lpcd_vlps.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\examples\board\amks16rfid-8\fm175xx\demo_amks16rfid8_fm175xx_lpcd_vlps.c</FilePath>
+            </File>
+            <File>
+              <FileName>demo_amks16rfid8_uartcmd_handle.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\examples\board\amks16rfid-8\uart_cmd_read_card\demo_amks16rfid8_uartcmd_handle.c</FilePath>
+            </File>
+            <File>
+              <FileName>demo_amks16rfid8_uartcmd_picca_8ante_read_id.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\examples\board\amks16rfid-8\uart_cmd_read_card\demo_amks16rfid8_uartcmd_picca_8ante_read_id.c</FilePath>
+            </File>
+            <File>
+              <FileName>demo_amks16rfid8_uartcmd_picca_auto_detect.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\examples\board\amks16rfid-8\uart_cmd_read_card\demo_amks16rfid8_uartcmd_picca_auto_detect.c</FilePath>
+            </File>
+            <File>
+              <FileName>demo_amks16rfid8_uartcmd_ultralight_write_block.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\examples\board\amks16rfid-8\uart_cmd_read_card\demo_amks16rfid8_uartcmd_ultralight_write_block.c</FilePath>
             </File>
           </Files>
         </Group>

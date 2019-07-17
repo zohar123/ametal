@@ -61,4 +61,23 @@ void demo_amks16rfid8_fm175xx_picca_val_operate (void);
  * \brief LPCD模式  配合MCU低功耗模式
  */
 void demo_amks16rfid8_dr_fm175xx_lpcd_vlps_read_id (void);
+
+
+void demo_amks16rfid8_uartcmd_handle_entry (void);
+
+/**
+ * \uartcmd 8天线读取卡片ID
+ */
+void demo_amks16rfid8_uartcmd_picca_8ante_read_id_entry (void);
+
+/**
+ * \uartcmd 自动检测测试例程
+ */
+void demo_amks16rfid8_uartcmd_picca_auto_detect_entry (void);
+
+/**
+ * \brief uartcmd 读取写ultralight块
+ */
+void demo_amks16rfid8_uartcmd_ultralight_write_block_entry (void);
+
 /* end of file */
