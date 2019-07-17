@@ -139,6 +139,10 @@ int am_main (void)
 //    demo_amks16rfid8_fm175xx_picca_halt();
 //    demo_amks16rfid8_fm175xx_picca_read_id();
 //    demo_amks16rfid8_fm175xx_picca_val_operate();
+//    demo_amks16rfid8_uartcmd_handle_entry();
+//    demo_amks16rfid8_uartcmd_picca_8ante_read_id_entry();
+//    demo_amks16rfid8_uartcmd_picca_auto_detect_entry();
+//    demo_amks16rfid8_uartcmd_ultralight_write_block_entry();
     while (1) {
     }
 }
