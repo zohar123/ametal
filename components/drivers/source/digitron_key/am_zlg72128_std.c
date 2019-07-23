@@ -16,10 +16,12 @@
  *
  * \internal
  * \par Modification History
+ * - 1.01 19-04-21  xgg, adjust new frame
  * - 1.00 17-05-22  tee, first implementation.
  * \endinternal
  */
 #include "ametal.h"
+#include "am_gpio.h"
 #include "am_input.h"
 #include "am_zlg72128_std.h"
 #include "am_event_input_key.h"
@@ -42,7 +44,6 @@ static int __zlg72128_key_code_get (am_zlg72128_std_dev_t *p_dev,
                                     int                   *p_key_code)
 {
     const   am_zlg72128_std_devinfo_t *p_info = p_dev->p_info;
-
     int     i;
     uint8_t flags;
     uint8_t actual_row = row;
@@ -192,7 +193,7 @@ static int __digitron_blink_set (void *p_cookie, int index, am_bool_t blink)
 
     AM_BIT_MODIFY(p_dev->blink_flags, index, blink);
 
-    am_zlg72128_digitron_flash_ctrl(p_dev->handle, p_dev->blink_flags);
+    zlg72128_digitron_flash_ctrl(p_dev->handle, p_dev->blink_flags);
 
     return AM_OK;
 }
@@ -206,10 +207,10 @@ static int __digitron_disp_at (void *p_cookie, int index, uint16_t seg)
         return -AM_EINVAL;
     }
 
-    am_zlg72128_digitron_dispbuf_set(p_dev->handle,
-                                     index,
-                                     (uint8_t *)&seg,
-                                      1);
+    zlg72128_digitron_dispbuf_set(p_dev->handle,
+                                  index,
+                                  (uint8_t *)&seg,
+                                  1);
 
     return AM_OK;
 }
@@ -225,7 +226,7 @@ static int __digitron_disp_char_at (void *p_cookie, int index, const char ch)
         return -AM_EINVAL;
     }
 
-    if (am_zlg72128_digitron_disp_char(p_dev->handle,
+    if (zlg72128_digitron_disp_char(p_dev->handle,
                                        index,
                                        ch,
                                        AM_FALSE,
@@ -233,9 +234,9 @@ static int __digitron_disp_char_at (void *p_cookie, int index, const char ch)
 
         if ('.' == ch) {
 
-            am_zlg72128_digitron_seg_ctrl(p_dev->handle,
+            zlg72128_digitron_seg_ctrl(p_dev->handle,
                                           index,
-                                          AM_ZLG72128_DIGITRON_SEG_DP,
+                                          ZLG72128_DIGITRON_SEG_DP,
                                           AM_TRUE);
         } else {
 
@@ -243,10 +244,10 @@ static int __digitron_disp_char_at (void *p_cookie, int index, const char ch)
                 seg = p_dev->pfn_decode(ch);
             }
 
-            am_zlg72128_digitron_dispbuf_set(p_dev->handle,
-                                             index,
-                                             &seg,
-                                              1);
+            zlg72128_digitron_dispbuf_set(p_dev->handle,
+                                          index,
+                                          &seg,
+                                          1);
         }
     }
 
@@ -267,7 +268,7 @@ static int __digitron_disp_str (void       *p_cookie,
         return -AM_EINVAL;
     }
 
-    am_zlg72128_digitron_disp_str(p_dev->handle, index, p_str);
+    zlg72128_digitron_disp_str(p_dev->handle, index, p_str);
 
     return AM_OK;
 }
@@ -282,7 +283,7 @@ static int __digitron_clr (void *p_cookie)
         return -AM_EINVAL;
     }
 
-    am_zlg72128_digitron_disp_reset(p_dev->handle);
+    zlg72128_digitron_disp_reset(p_dev->handle);
 
     return AM_OK;
 }
@@ -296,7 +297,7 @@ static int __digitron_enable (void *p_cookie)
         return -AM_EINVAL;
     }
 
-    am_zlg72128_digitron_disp_ctrl(p_dev->handle, 0x0000);
+    zlg72128_digitron_disp_ctrl(p_dev->handle, 0x0000);
 
     return AM_OK;
 }
@@ -309,7 +310,7 @@ static int __digitron_disable (void *p_cookie)
     if (p_dev == NULL) {
         return -AM_EINVAL;
     }
-    am_zlg72128_digitron_disp_ctrl(p_dev->handle, 0xFFFF);
+    zlg72128_digitron_disp_ctrl(p_dev->handle, 0xFFFF);
 
     return AM_OK;
 }
@@ -331,10 +332,9 @@ static const am_digitron_disp_ops_t __g_zlg72128_digitron_dev_ops = {
 
 /******************************************************************************/
 int am_zlg72128_std_init (am_zlg72128_std_dev_t           *p_dev,
-                          const am_zlg72128_std_devinfo_t *p_info,
-                          am_i2c_handle_t                  i2c_handle)
+                          const am_zlg72128_std_devinfo_t *p_info)
 {
-    uint8_t i;
+    uint8_t i = 0;
     
     if ((p_dev == NULL) || (p_info == NULL)) {
         return -AM_EINVAL;
@@ -345,13 +345,11 @@ int am_zlg72128_std_init (am_zlg72128_std_dev_t           *p_dev,
     p_dev->f_key       = 0xFF;
     p_dev->num_cols    = 0;
     p_dev->num_rows    = 0;
-    p_dev->handle      = am_zlg72128_init(&p_dev->zlg72128_dev,
-                                          &p_info->base_info,
-                                          i2c_handle);
+    p_dev->handle      = zlg72128_init(&(p_dev->zlg72128_dev),
+                                       &p_info->base_info);
     if (p_dev->handle == NULL) {
         return -AM_EINVAL;
     }
-
     for (i = 0; i < 8; i++) {
 
         if (p_info->key_use_col_flags & (1 << i)) {
@@ -363,11 +361,11 @@ int am_zlg72128_std_init (am_zlg72128_std_dev_t           *p_dev,
         }
     }
 
-    am_zlg72128_key_cb_set(p_dev->handle, __zlg72128_key_process, p_dev);
+    zlg72128_key_cb_set(p_dev->handle, __zlg72128_key_process, p_dev);
 
-    am_zlg72128_digitron_disp_reset(p_dev->handle);
+    zlg72128_digitron_disp_reset(p_dev->handle);
 
-    am_zlg72128_digitron_flash_time_cfg(p_dev->handle,
+    zlg72128_digitron_flash_time_cfg(p_dev->handle,
                                         p_info->blink_on_time,
                                         p_info->blink_off_time);
 
