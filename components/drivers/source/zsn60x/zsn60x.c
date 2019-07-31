@@ -243,7 +243,7 @@ static int __zsn60x_i2c_message_rx_analysis(void           *p_drv,
                                             uint8_t        *p_data,
                                             uint32_t       *p_data_lenght)
 {
-    uint8_t ret              =  0;
+    uint8_t ret                =  0;
     uint32_t  count            =  0;
     uint32_t  check_sum        =  0;
     uint32_t  check_sum_rx     =  0;
@@ -952,7 +952,7 @@ uint8_t zsn60x_get_auto_detect(zsn60x_handle_t             handle,
                                uint8_t                     ctrl_mode,
                                zsn60x_auto_detect_data_t  *p_data)
 {
-    uint8_t  ret        = -1;
+    uint8_t  ret        = 0xff;
     uint8_t  data[31]   = {0};
     uint32_t data_count =  0;
 

@@ -138,7 +138,7 @@ zlg72128_handle_t zlg72128_init (zlg72128_dev_t           *p_dev,
 
     ret = zlg72128_plfm_init(&p_dev->plfm,
                              &p_devinfo->plfm_info,
-                              (void *)__zlg72128_keyval_report,
+                              __zlg72128_keyval_report,
                               p_dev);
 
     if (ret) {
@@ -468,7 +468,7 @@ int zlg72128_digitron_scan_set (zlg72128_handle_t  handle,
 {
     uint8_t cmd;
 
-    if ((handle == NULL) || (num < 0)) {
+    if (handle == NULL) {
         return -2;
     }
 

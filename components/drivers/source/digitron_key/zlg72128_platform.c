@@ -240,7 +240,7 @@ int zlg72128_plfm_init (zlg72128_plfm_t                  *p_plfm,
     } else {
         /* 使用软件定时器以一定的时间间隔扫描 */
         ret = am_softimer_init(&(p_plfm->timer),
-                               (void *)__timer_keyval_i2c_read,
+                               (am_pfnvoid_t)__timer_keyval_i2c_read,
                                (void *)p_plfm);
 
         if (ret) {
@@ -276,7 +276,7 @@ int zlg72128_plfm_deinit(zlg72128_plfm_t *p_plfm)
         }
         /* 删除引脚回调函数*/
         ret = am_gpio_trigger_disconnect(p_plfm->p_devinfo->int_pin,
-                                         (void *)__int_keyval_i2c_read,
+                                         (am_pfnvoid_t)__int_keyval_i2c_read,
                                          (void *)p_plfm);
         if (ret) {
             return ret;

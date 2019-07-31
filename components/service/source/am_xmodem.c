@@ -1146,7 +1146,7 @@ am_xmodem_tx_handle_t  am_xmodem_tx_init (
 
     if (p_tx_devinfo->tx_timeout != 0) {
         if (am_softimer_init(&p_dev->tx_softimer,
-                             (void *)__xmodem_tx_time_callback,
+                             __xmodem_tx_time_callback,
                              (void *)p_dev) != AM_OK) {
             return NULL;
         }
