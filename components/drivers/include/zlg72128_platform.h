@@ -34,6 +34,7 @@ extern "C" {
 #include "am_delay.h"
 #include "am_gpio.h"
 #include "am_i2c.h"
+#include "am_types.h"
 
 /**
  * \name 数据类型定义
@@ -57,7 +58,7 @@ typedef unsigned char  bool_t;
 #define NULL ((void *)0)
 #endif
 
- /** @}
+/** @} */
 
 /**
  * \name 工具函数
