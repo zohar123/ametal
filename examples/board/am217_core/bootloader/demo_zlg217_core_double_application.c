@@ -14,12 +14,26 @@
  * \file
  * \brief bootloader 例程，本demo是作为应用程序固件。
  *
+ * - 操作步骤:
+ *   1.eclipse工程打开demo_am217_core_boot_application.ld文件，打开:
+ *
+ *       FLASH (rx)  : ORIGIN = 0x08004000, LENGTH = 56k  //double
+ *
+ *     的配置, 屏蔽其他flash配置。
+ *
+ *     keil工程打开demo_am217_core_application.sct文件，打开双区的配置，屏蔽其他配置
+ *
+ *   2.编译工程
+ *   3.固件处理，参考下面note提示
+ *
  * - 例程现象：
  *   1. LED灯闪烁，串口循环打印。
  *   2. 等待用户输入升级命令（在应用中升级固件）
  *   
  *
  * \note
+ *    工程编译后会生成对应的工程bin文件，需要将bin文件进行处理后才能作为固件发送
+ *
  *    固件处理：
  *
  *    打开在ametal/tools/bootloader/固件校验/ 文件夹，目录下有一个bin_chek_sum.bin的执行文件，
@@ -49,7 +63,7 @@
 
 void demo_zlg217_core_double_application_entry (void)
 {
-    AM_DBG_INFO("application : am217_core application start up successful!\r\n");
+    AM_DBG_INFO("application : am217_core double application start up successful!\r\n");
 
     am_uart_handle_t             uart_handle;
     am_boot_firmware_handle_t    firmware_handle;
@@ -74,7 +88,7 @@ void demo_zlg217_core_double_application_entry (void)
 
         am_led_toggle(0);
         am_mdelay(1000);
-		AM_DBG_INFO("application : am217_core application running!\r\n");
+		AM_DBG_INFO("application : am217_core double application running!\r\n");
     }
 }
 

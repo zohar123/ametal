@@ -35,7 +35,15 @@
 
 int am_main (void)
 {
+
+    /* 单区bootloader 的测试应用程序 demo */
+    //demo_zlg217_core_single_application_entry();
+
+    /* 双区bootloader 的测试应用程序 demo */
     demo_zlg217_core_double_application_entry();
+
+    /* 基于上位机的 bootloader 的测试应用程序 demo */
+    //demo_zlg217_core_kft_application_entry();
 
     while (1) {
 

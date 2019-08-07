@@ -14,7 +14,21 @@
  * \file
  * \brief bootloader 例程，本demo是作为bootloader，该demo需要配合kboot的上位机KinetiesFlashTools。
  *
+ * - 操作步骤（本地升级）：
+ *   1. eclipse工程打开demo_am217_core_bootloader.ld文件，打开:
  *
+ *       FLASH (rx)  : ORIGIN = 0x08000000, LENGTH = 28K   // kft
+ *
+ *      的配置, 屏蔽其他flash配置。
+ *
+ *      keil工程打开demo_am217_core_application.sct文件，打开上位机的配置，屏蔽其他配置
+ *
+ *   2. 打开上位机KinetiesFlashTools : 在port set栏中选择uart;
+ *   3. 下载本程序到开发板运行
+ *   4. 点击上位机的connect，如果正确连接，会有打印信息提示
+ *   5. 打开Update选项栏
+ *   6. 选择升级的固件，并设置目标地址，也就是固件在目标板flash中存放的起始地址
+ *   7. 点击update按键，查看打印信息是否升级成功
  *
  * \internal
  * \par Modification History

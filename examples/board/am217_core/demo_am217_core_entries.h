@@ -476,7 +476,12 @@ void demo_zlg217_core_dr_fm175xx_picca_lpcd_read_id(void);
 /**
  * \brief 基于KinetisFlashTool上位机的bootloader 例程
  */
-void demo_zlg217_core_bootloader_kft_entry (void);
+void demo_zlg217_core_kft_bootloader_entry (void);
+
+/**
+ * \brief 基于KinetisFlashTool上位机的bootloader的测试应用例程
+ */
+void demo_zlg217_core_kft_application_entry (void);
 
 /**
 
