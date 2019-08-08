@@ -45,6 +45,7 @@ am_bool_t __boot_enter_check_key(void *p_drv)
 }
 static const struct am_boot_enter_check_drv_funcs __g_enter_check_drv_funcs = {
     __boot_enter_check_key,
+    NULL,
 };
 
 static am_boot_enter_check_key_dev_t __g_enter_check_key_dev;

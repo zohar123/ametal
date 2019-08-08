@@ -30,7 +30,15 @@
 
 int am_main (void)
 {
+
+    /* 单区bootloader demo */
+    //demo_zlg217_core_single_bootloader_uart_entry();
+
+    /* 双区bootloader demo */
     demo_zlg217_core_double_bootloader_uart_entry();
+
+    /* 基于上位机的 bootloader demo */
+    //demo_zlg217_core_bootloader_kft_entry();
 
     while (1) {
 
