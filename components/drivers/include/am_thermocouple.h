@@ -12,12 +12,11 @@
 
 /**
  * \file
- * \brief FM175XX底层驱动库头文件
+ * \brief 热电偶相关头文件定义
  *
  * \internal
  * \par Modification history
- * - 1.00 15-12-23  sky, first implementation.
- * - 1.01 17-10-31  sdq, make some changes.
+ * - 1.00 19-8-28  htf, first implementation.
  * \endinternal
  */
 
@@ -30,42 +29,74 @@
 #include <stdint.h>
 
 
-/*******************************************************************************
- 热电偶类型定义
-*******************************************************************************/
-#define AM_THERMOCOUPLIE_J        0     /**< \brief J型热电偶 */
-#define AM_THERMOCOUPLIE_K        1     /**< \brief K型热电偶 */
-#define AM_THERMOCOUPLIE_T        2     /**< \brief T型热电偶 */
-#define AM_THERMOCOUPLIE_N        3     /**< \brief N型热电偶 */
-#define AM_THERMOCOUPLIE_R        4     /**< \brief R型热电偶 */
-#define AM_THERMOCOUPLIE_E        5     /**< \brief E型热电偶 */
-
 /**< \brief 热电偶电压值转温度函数定义 */
-typedef am_err_t (*pf__n_v_to_temperature_t) (double ,double *);
+typedef am_err_t (*pfn_vol_to_tem_t) (double, double *);
 /**< \brief 热电偶温度转电压函数 */
-typedef am_err_t (*pf__n_temperature_to_v_t) (double ,double *);
-/**
- * \brief  热电偶计算公式初始化
- *
+typedef am_err_t (*pfn_tem_to_vol_t) (double, double *);
+
+/**< \brief 热点偶温度电压转换funcs结构体 */
+typedef struct  am_therconversion {
+    pfn_vol_to_tem_t   pfn_v2t;
+    pfn_tem_to_vol_t   pfn_t2v;
+}am_ther_conversion_t;
+
+
+typedef  am_ther_conversion_t*  am_ther_formula_t;
+
+/*
+ * \brief  J型热电偶计算电压转温度
+ * \param[in]  p_dev  : 热电偶设备结构体
  */
-void am_thermocouplie_init(void);
-/**
- * \brief  热电偶计算电压转温度
- * \param[in] type   : 热电偶类型
- * \param[in] voltage   : 电压
- * \param[out] p_temperature   :温度
+am_ther_formula_t am_thermocouple_j_init(am_ther_conversion_t *p_dev);
+
+/*
+ * \brief  K型热电偶计算电压转温度
+ * \param[in]  p_dev  : 热电偶设备结构体
  */
-void am_thermocouplie_v2t(uint8_t            type,
-                          double             voltage,
-                          double            *p_temperature);
-/**
- * \brief  热电偶计算温度转电压
- * \param[in] type   : 热电偶类型
- * \param[in] temperature   : 温度
- * \param[out] p_voltage   : 电压
+am_ther_formula_t am_thermocouple_k_init(am_ther_conversion_t *p_dev);
+
+/*
+ * \brief  T型热电偶计算电压转温度
+ * \param[in]  p_dev  : 热电偶设备结构体
  */
-void am_thermocouplie_t2v(uint8_t            type,
-                          double             temperature,
-                          double            *p_voltage );
+am_ther_formula_t am_thermocouple_t_init(am_ther_conversion_t *p_dev);
+
+/*
+ * \brief  N型热电偶计算电压转温度
+ * \param[in]  p_dev  : 热电偶设备结构体
+ */
+am_ther_formula_t am_thermocouple_n_init(am_ther_conversion_t *p_dev);
+
+/*
+ * \brief  R型热电偶计算电压转温度
+ * \param[in]  p_dev  : 热电偶设备结构体
+ */
+am_ther_formula_t am_thermocouple_r_init(am_ther_conversion_t *p_dev);
+
+/*
+ * \brief  E型热电偶计算电压转温度
+ * \param[in]  p_dev  : 热电偶设备结构体
+ */
+am_ther_formula_t am_thermocouple_e_init(am_ther_conversion_t *p_dev);
+
+/*
+ * \brief  热电偶温度转电压
+ * \param[in]  handle       : 热电偶公式句柄
+ * \param[in]  temperature  : 待转换的温度
+ * \param[in]  p_voltage    : 保存转换后电压的指针
+ */
+am_err_t am_ther_tem_to_vol(am_ther_formula_t handle,
+                            double            temperature,
+                            double           *p_voltage);
+
+/*
+ * \brief  热电偶温度转电压
+ * \param[in]  handle        : 热电偶公式句柄
+ * \param[in]  voltage       : 待转换的电压
+ * \param[in]  p_temperature : 保存转换后温度的指针
+ */
+am_err_t am_ther_vol_to_tem(am_ther_formula_t handle,
+                            double            voltage,
+                            double           *p_temperature);
 
 #endif

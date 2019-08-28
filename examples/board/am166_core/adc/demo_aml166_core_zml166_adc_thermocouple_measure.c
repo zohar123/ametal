@@ -35,17 +35,16 @@
  */
 
 /** [src_aml166_core_adc24_thermistor_measure] */
-
-#include <am_aml166_inst_init.h>
-#include "am_hwconf_zml166_adc.h"
-#include "am_zml166_adc.h"
 #include "string.h"
 #include "am_zlg_flash.h"
+#include "am_zml166_adc.h"
 #include "am_thermocouple.h"
+#include "demo_zlg_entries.h"
 #include "zlg116_periph_map.h"
+#include "am_aml166_inst_init.h"
+#include "am_hwconf_zml166_adc.h"
 #include "demo_components_entries.h"
 #include "demo_aml166_core_entries.h"
-#include "demo_zlg_entries.h"
 
 /**
  * \brief 热电偶测温例程
@@ -54,10 +53,10 @@ void demo_aml166_core_zml166_adc_thermocouple_measure (void)
 {
     int   i  = 0;
     float para[16];
-    am_zml166_adc_handle_t  handle = am_zml166_adc_inst_init();
+    am_ther_conversion_t    tem_dev;
+    am_zml166_adc_handle_t  handle     = am_zml166_adc_inst_init();
+    am_ther_formula_t       tem_handle = am_thermocouple_j_init(&tem_dev);
 
-    /* 热电偶计算以及电压校准参数初始化 */
-    am_thermocouplie_init();
     am_zlg_flash_init(ZLG116_FLASH);
     memcpy((void *)para, (uint32_t *)((FLASH_BLOCK_NUM * 1024)), 4 * 16);
 
@@ -68,8 +67,8 @@ void demo_aml166_core_zml166_adc_thermocouple_measure (void)
         }
     }
     dome_zml166_adc_thermocouple_measure_entry((void *)handle,
-                                                       para,
-                                                       AM_THERMOCOUPLIE_K);
+                                                para,
+                                               (void *)tem_handle);
 }
 
 /** [src_aml166_core_adc24_thermistor_measure] */
