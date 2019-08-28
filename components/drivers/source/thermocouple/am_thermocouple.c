@@ -13,7 +13,7 @@
 
 /**
  * \file
- * \brief  ÈÈµçÅ¼¼ÆËã¹«Ê½
+ * \brief  çƒ­ç”µå¶è®¡ç®—å…¬å¼
  *
  * \internal
  * \par modification history:
@@ -24,10 +24,10 @@
 #include "math.h"
 #include "am_thermocouple.h"
 /*******************************************************************************
-  T¡¢N¡¢R¡¢J¡¢KĞÍÈÈÅ¼£¬ÎÂ¶È×ªµçÑ¹£¬µçÑ¹×ªÎÂ¶ÈÏµÊı
+  Tã€Nã€Rã€Jã€Kã€Eå‹çƒ­å¶ï¼Œæ¸©åº¦è½¬ç”µå‹ï¼Œç”µå‹è½¬æ¸©åº¦ç³»æ•°
 *******************************************************************************/
 /**
- * \brief KĞÍÎÂ¶È×ªµçÑ¹µÄÏµÊı
+ * \brief Kå‹æ¸©åº¦è½¬ç”µå‹çš„ç³»æ•°
  */
 static const double __g_var_t_to_v_k[3][12] = {
     {
@@ -48,7 +48,7 @@ static const double __g_var_t_to_v_k[3][12] = {
 };
 
 /**
- * \brief KĞÍµçÑ¹×ªÎÂ¶ÈµÄÏµÊı
+ * \brief Kå‹ç”µå‹è½¬æ¸©åº¦çš„ç³»æ•°
  */
 static const double __g_var_v_to_t_k[3][10] = {
     {
@@ -70,7 +70,7 @@ static const double __g_var_v_to_t_k[3][10] = {
 };
 
 /**
- * \brief TĞÍÎÂ¶È×ªµçÑ¹µÄÏµÊı
+ * \brief Tå‹æ¸©åº¦è½¬ç”µå‹çš„ç³»æ•°
  */
 static const double __g_var_t_to_v_t[2][15] = {
     {
@@ -89,7 +89,7 @@ static const double __g_var_t_to_v_t[2][15] = {
 };
 
 /**
- * \brief TĞÍµçÑ¹×ªÎÂ¶ÈµÄÏµÊı
+ * \brief Tå‹ç”µå‹è½¬æ¸©åº¦çš„ç³»æ•°
  */
 static const double __g_var_v_to_t_t[2][8] = {
     {
@@ -105,7 +105,7 @@ static const double __g_var_v_to_t_t[2][8] = {
 };
 
 /**
- * \brief NĞÍÎÂ¶È×ªµçÑ¹µÄÏµÊı
+ * \brief Nå‹æ¸©åº¦è½¬ç”µå‹çš„ç³»æ•°
  */
 static const double __g_var_t_to_v_n[2][11] = {
     {
@@ -123,7 +123,7 @@ static const double __g_var_t_to_v_n[2][11] = {
 };
 
 /**
- * \brief NĞÍµçÑ¹×ªÎÂ¶ÈµÄÏµÊı
+ * \brief Nå‹ç”µå‹è½¬æ¸©åº¦çš„ç³»æ•°
  */
 static const double __g_var_v_to_t_n[3][10] = {
     {
@@ -145,7 +145,7 @@ static const double __g_var_v_to_t_n[3][10] = {
 
 
 /**
- * \brief RĞÍÎÂ¶È×ªµçÑ¹µÄÏµÊı
+ * \brief Rå‹æ¸©åº¦è½¬ç”µå‹çš„ç³»æ•°
  */
 static const double __g_var_t_to_v_r[3][10] = {
     {
@@ -165,7 +165,7 @@ static const double __g_var_t_to_v_r[3][10] = {
 };
 
 /**
- * \brief RĞÍµçÑ¹×ªÎÂ¶ÈÏµÊı
+ * \brief Rå‹ç”µå‹è½¬æ¸©åº¦ç³»æ•°
  */
 static const double __g_var_v_to_t_r[4][11] = {
     {
@@ -191,7 +191,7 @@ static const double __g_var_v_to_t_r[4][11] = {
 };
 
 /**
- * \brief JĞÍÎÂ¶È×ªµçÑ¹ÏµÊı
+ * \brief Jå‹æ¸©åº¦è½¬ç”µå‹ç³»æ•°
  */
 static const double  __g_var_t_to_v_j[2][9] = {
     {
@@ -206,7 +206,7 @@ static const double  __g_var_t_to_v_j[2][9] = {
 };
 
 /**
- * \brief JĞÍµçÑ¹×ªÎÂ¶ÈÏµÊı
+ * \brief Jå‹ç”µå‹è½¬æ¸©åº¦ç³»æ•°
  */
 static const double __g_var_v_to_t_j[3][9] = {
     {
@@ -225,12 +225,48 @@ static const double __g_var_v_to_t_j[3][9] = {
     },
 };
 
+/**
+ * \brief Eå‹æ¸©åº¦è½¬ç”µå‹ç³»æ•°
+ */
+static const double  __g_var_t_to_v_e[2][14]=
+{
+		{
+      0,                 5.8665508708/1e2,  4.5410977124/1e5, 
+      -7.7998048686/1e7, -2.5800160843/1e8, -5.9452583057/1e10,
+      -9.3214058667/1e12,-1.0287605534/1e13, -8.0370123621/1e16,
+      -4.3979497391/1e18,-1.6414776355/1e20, -3.9673619516/1e23, 
+      -5.5827328721/1e26,-3.4657842013/1e29
+    },
+		{
+      0,                  5.8665508710/1e2,   4.5032275582/1e5, 
+      2.8908407212/1e8,   -3.3056896652/1e10, 6.50244033/1e13, 
+      -1.9197495594/1e16, -1.2536600497/1e18, 2.1489217569/1e21,
+      -1.4388041782/1e24,3.5960899481/1e28
+    },
+};
 
+/**
+ * \brief Eå‹ç”µå‹è½¬æ¸©åº¦ç³»æ•°
+ */
+static const double __g_var_v_to_t_e[2][10]=
+{
+	{
+    0,               1.6977288e1,  -4.3514970/1e1, 
+    -1.5859697/1e1, -9.2502871/1e2,-2.6084314/1e2, 
+    -4.1360199/1e3, -3.4034030/1e4, -1.1564890/1e5
+  },
+	{
+    0,              1.7057035e1,  -2.3301759/1e1,
+    6.5435585/1e3, -7.3562749/1e5,-1.7896001/1e6, 
+    8.4036165/1e8, -1.3735879/1e9,1.0629823/1e11, 
+    -3.2447087/1e14
+  },
+};
 /*******************************************************************************
- ÈÈµçÅ¼ÎÂ¶È×ªµçÑ¹£¬µçÑ¹×ªÎÂ¶Èº¯ÊıÊı×é
+ çƒ­ç”µå¶æ¸©åº¦è½¬ç”µå‹ï¼Œç”µå‹è½¬æ¸©åº¦å‡½æ•°æ•°ç»„
 *******************************************************************************/
 /**
- * \brief jĞÍÈÈµçÅ¼ ÎÂ¶È×ªÈÈµçÅ¼µçÑ¹
+ * \brief jå‹çƒ­ç”µå¶ æ¸©åº¦è½¬çƒ­ç”µå¶ç”µå‹
  */
 am_err_t __j_temperature_to_v (double             temperature,
                                double            *p_v )
@@ -255,7 +291,7 @@ am_err_t __j_temperature_to_v (double             temperature,
 }
 
 /**
- * \brief jĞÍÈÈµçÅ¼ µçÑ¹×ªÎÂ¶È
+ * \brief jå‹çƒ­ç”µå¶ ç”µå‹è½¬æ¸©åº¦
  */
 am_err_t __j_v_to_temperature (double              v,
                                double             *p_temperature)
@@ -284,7 +320,7 @@ am_err_t __j_v_to_temperature (double              v,
 }
 
 /**
- * \brief rĞÍÈÈµçÅ¼ ÎÂ¶È×ªÈÈµçÅ¼µçÑ¹(Àä¶ËÎÂ¶ÈÎª0)
+ * \brief rå‹çƒ­ç”µå¶ æ¸©åº¦è½¬çƒ­ç”µå¶ç”µå‹(å†·ç«¯æ¸©åº¦ä¸º0)
  */
 am_err_t __r_temperature_to_v (double             temperature,
                                double            *p_v )
@@ -315,7 +351,7 @@ am_err_t __r_temperature_to_v (double             temperature,
 }
 
 /**
- * \brief RĞÍÈÈµçÅ¼ µçÑ¹×ªÎÂ¶È(Àä¶ËÎÂ¶ÈÎª0)
+ * \brief Rå‹çƒ­ç”µå¶ ç”µå‹è½¬æ¸©åº¦(å†·ç«¯æ¸©åº¦ä¸º0)
  */
 am_err_t __r_v_to_temperature (double              v,
                                double             *p_temperature)
@@ -350,7 +386,7 @@ am_err_t __r_v_to_temperature (double              v,
 
 
 /**
- * \brief NĞÍÈÈµçÅ¼ ÎÂ¶È×ªÈÈµçÅ¼µçÑ¹(Àä¶ËÎÂ¶ÈÎª0)
+ * \brief Nå‹çƒ­ç”µå¶ æ¸©åº¦è½¬çƒ­ç”µå¶ç”µå‹(å†·ç«¯æ¸©åº¦ä¸º0)
  */
 am_err_t __n_temperature_to_v (double             temperature,
                                double            *p_v )
@@ -376,7 +412,7 @@ am_err_t __n_temperature_to_v (double             temperature,
 }
 
 /**
- * \brief NĞÍÈÈµçÅ¼ µçÑ¹×ªÎÂ¶È(Àä¶ËÎÂ¶ÈÎª0)
+ * \brief Nå‹çƒ­ç”µå¶ ç”µå‹è½¬æ¸©åº¦(å†·ç«¯æ¸©åº¦ä¸º0)
  */
 am_err_t __n_v_to_temperature (double              v,
                                double              *p_temperature)
@@ -405,7 +441,7 @@ am_err_t __n_v_to_temperature (double              v,
 }
 
 /**
- * \brief TĞÍÈÈµçÅ¼ ÎÂ¶È×ªÈÈµçÅ¼µçÑ¹(Àä¶ËÎÂ¶ÈÎª0)
+ * \brief Tå‹çƒ­ç”µå¶ æ¸©åº¦è½¬çƒ­ç”µå¶ç”µå‹(å†·ç«¯æ¸©åº¦ä¸º0)
  */
 am_err_t __t_temperature_to_v (double             temperature,
                                double            *p_v )
@@ -431,7 +467,7 @@ am_err_t __t_temperature_to_v (double             temperature,
 }
 
 /**
- * \brief TĞÍÈÈµçÅ¼ µçÑ¹×ªÎÂ¶È(Àä¶ËÎÂ¶ÈÎª0)
+ * \brief Tå‹çƒ­ç”µå¶ ç”µå‹è½¬æ¸©åº¦(å†·ç«¯æ¸©åº¦ä¸º0)
  */
 am_err_t __t_v_to_temperature (double              v,
                              double             *p_temperature)
@@ -455,14 +491,15 @@ am_err_t __t_v_to_temperature (double              v,
 }
 
 /**
- * \brief KĞÍÈÈµçÅ¼ ÎÂ¶È×ªÈÈµçÅ¼µçÑ¹(Àä¶ËÎÂ¶ÈÎª0)
+ * \brief Kå‹çƒ­ç”µå¶ æ¸©åº¦è½¬çƒ­ç”µå¶ç”µå‹(å†·ç«¯æ¸©åº¦ä¸º0)
  */
 am_err_t __k_temperature_to_v (double             temperature,
                                double            *p_v )
 {
     uint8_t   i     = 0;
     double    value = 0;
-    if ((temperature < -270) && (temperature > 1370.0)){
+   // if ((temperature < -270) && (temperature > 1370.0)){   //æœ¬æ¡é”™è¯¯
+   if ((temperature < -270) || (temperature > 1370.0)){
         return AM_ERROR;
     } else if (temperature > -270 && temperature < 0) {
         value = __g_var_t_to_v_k[0][10];
@@ -481,12 +518,13 @@ am_err_t __k_temperature_to_v (double             temperature,
                 * (temperature - 126.9686)
                 * (temperature - 126.9686));
     }
-    *p_v = value / 1000.0;
+   // *p_v = value / 1000.0;  //å•ä½ä¸å…¶å®ƒç±»å‹ä¿æŒä¸€è‡´
+    *p_v = value ;  
      return AM_OK;
 }
 
 /**
- * \brief KĞÍÈÈµçÅ¼ µçÑ¹×ªÎÂ¶È(Àä¶ËÎÂ¶ÈÎª0)
+ * \brief Kå‹çƒ­ç”µå¶ ç”µå‹è½¬æ¸©åº¦(å†·ç«¯æ¸©åº¦ä¸º0)
  */
 am_err_t __k_v_to_temperature (double              v,
                                double             *p_temperature)
@@ -513,29 +551,80 @@ am_err_t __k_v_to_temperature (double              v,
     *p_temperature = value;
      return AM_OK;
 }
-
-/**< \brief ÈÈµçÅ¼µçÑ¹Öµ×ªÎÂ¶Èº¯ÊıÊı×é */
+/**
+ * \brief Eå‹çƒ­ç”µå¶ æ¸©åº¦è½¬çƒ­ç”µå¶ç”µå‹(å†·ç«¯æ¸©åº¦ä¸º0)
+ */
+am_err_t __e_temperature_to_v (double             temperature,
+                               double            *p_v )
+{
+	uint8_t i = 0;
+	double  value = 0;
+	if((temperature < -270) || (temperature > 1000.0))
+	{
+		return AM_ERROR;
+	}
+	else if(temperature < 0)
+	{
+		value = __g_var_t_to_v_e[0][13];
+		for(i = 13; i > 0; i--)
+			value = temperature * value + __g_var_t_to_v_e[0][i-1];
+	}
+	else
+	{
+		value = __g_var_t_to_v_e[1][10];
+		for(i = 10; i > 0; i--)
+			value = temperature * value + __g_var_t_to_v_e[1][i-1];
+	}
+ *p_v = value ;
+ return AM_OK; 
+}
+/**
+ * \brief Eå‹çƒ­ç”µå¶ ç”µå‹è½¬æ¸©åº¦(å†·ç«¯æ¸©åº¦ä¸º0)
+ */
+am_err_t __e_v_to_temperature (double              v,
+                               double             *p_temperature)
+{
+	uint8_t i = 0;
+	double value = 0;
+	if(v >= -9.845 && v < 0)
+	{
+		value = __g_var_v_to_t_e[0][8];
+	for(i = 8; i > 0; i--)
+	value = v * value + __g_var_v_to_t_e[0][i-1];
+	}
+	else if(v>=0 && v<=76.393)
+	{
+	value = __g_var_v_to_t_e[1][9];
+	for(i = 9; i > 0; i--)
+	value = v * value + __g_var_v_to_t_e[1][i-1];
+	}
+	*p_temperature = value;
+   return AM_OK;
+}
+/**< \brief çƒ­ç”µå¶ç”µå‹å€¼è½¬æ¸©åº¦å‡½æ•°æ•°ç»„ */
 static pf__n_v_to_temperature_t __v_to_temperature[10];
-/**< \brief ÈÈµçÅ¼ÎÂ¶È×ªµçÑ¹Öµº¯ÊıÊı×é */
+/**< \brief çƒ­ç”µå¶æ¸©åº¦è½¬ç”µå‹å€¼å‡½æ•°æ•°ç»„ */
 static pf__n_temperature_to_v_t __temperature_to_v[10];
 /*
- * ³õÊ¼»¯ÈÈµçÅ¼×ª»¯Ëã·¨
+ * åˆå§‹åŒ–çƒ­ç”µå¶è½¬åŒ–ç®—æ³•
  */
 void am_thermocouplie_init(void)
 {
-    /* °ÑÈÈµçÅ¼µÄµçÑ¹×ªÎÂ¶ÈÌí¼Óµ½Ö¸ÕëÊı×éÖĞ */
+    /* æŠŠçƒ­ç”µå¶çš„ç”µå‹è½¬æ¸©åº¦æ·»åŠ åˆ°æŒ‡é’ˆæ•°ç»„ä¸­ */
     __v_to_temperature[AM_THERMOCOUPLIE_J] = __j_v_to_temperature;
     __v_to_temperature[AM_THERMOCOUPLIE_K] = __k_v_to_temperature;
     __v_to_temperature[AM_THERMOCOUPLIE_T] = __t_v_to_temperature;
-    //    __g_v_to_temperature[AM_THERMOCOUPLIE_N] = __n_v_to_temperature;
-    //    __g_v_to_temperature[AM_THERMOCOUPLIE_R] = __r_v_to_temperature;
+   //    __g_v_to_temperature[AM_THERMOCOUPLIE_N] = __n_v_to_temperature;
+   //    __g_v_to_temperature[AM_THERMOCOUPLIE_R] = __r_v_to_temperature;
+   //    __g_v_to_temperature[AM_THERMOCOUPLIE_E] = __e_v_to_temperature;
 
-    /* °ÑÈÈµçÅ¼µÄÎÂ¶È×ªµçÑ¹Ìí¼Óµ½Ö¸ÕëÊı×éÖĞ */
+    /* æŠŠçƒ­ç”µå¶çš„æ¸©åº¦è½¬ç”µå‹æ·»åŠ åˆ°æŒ‡é’ˆæ•°ç»„ä¸­ */
     __temperature_to_v[AM_THERMOCOUPLIE_J] = __j_temperature_to_v;
     __temperature_to_v[AM_THERMOCOUPLIE_K] = __k_temperature_to_v;
     __temperature_to_v[AM_THERMOCOUPLIE_T] = __t_temperature_to_v;
     //    __g_temperature_to_v[AM_THERMOCOUPLIE_N] = __n_temperature_to_v;
     //    __g_temperature_to_v[AM_THERMOCOUPLIE_R] = __r_temperature_to_v;
+    //    __g_temperature_to_v[AM_THERMOCOUPLIE_E] = __e_temperature_to_v;
 }
 
 
