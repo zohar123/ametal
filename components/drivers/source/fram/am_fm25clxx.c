@@ -100,7 +100,7 @@ static int __fm25clxx_write_enb (am_fm25clxx_dev_t *p_dev)
 }
 
 /******************************************************************************/
-
+/*
 static int __fm25clxx_write_dis (am_fm25clxx_dev_t *p_dev)
 {
  
@@ -112,7 +112,7 @@ static int __fm25clxx_write_dis (am_fm25clxx_dev_t *p_dev)
                                    NULL,
                                    0);
 }
-
+*/
 /******************************************************************************/
 static int __fm25clxx_reg_read (am_fm25clxx_dev_t  *p_dev,
                                 uint8_t            *p_val)

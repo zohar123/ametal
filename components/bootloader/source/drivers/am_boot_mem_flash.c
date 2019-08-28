@@ -25,12 +25,19 @@
 static int __boot_flash_mem_write(void *p_drv, uint32_t address, uint8_t *p_buf, uint32_t length)
 {
     am_boot_mem_flash_dev_t *p_dev = (am_boot_mem_flash_dev_t *)p_drv;
-    int ret;
-    ret = am_boot_flash_erase_region(p_dev->flash_handle,
-                                     address,
-                                     length);
-    if(ret != AM_OK) {
-        return AM_ERROR;
+    int ret, i;
+    uint8_t data;
+    for(i = 0; i < length; i++) {
+        data = *(uint8_t *)(address + i);;
+        if(data != 0xff) {
+            ret = am_boot_flash_erase_region(p_dev->flash_handle,
+                                             address,
+                                             length);
+            if(ret != AM_OK) {
+                return AM_ERROR;
+            }
+            break;
+        }
     }
 
     return am_boot_flash_program(p_dev->flash_handle,
