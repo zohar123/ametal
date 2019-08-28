@@ -12,7 +12,7 @@
 
 /**
  * \file
- * \brief FM175XXµ×²ãÇı¶¯¿âÍ·ÎÄ¼ş
+ * \brief FM175XXåº•å±‚é©±åŠ¨åº“å¤´æ–‡ä»¶
  *
  * \internal
  * \par Modification history
@@ -31,38 +31,38 @@
 
 
 /*******************************************************************************
- ÈÈµçÅ¼ÀàĞÍ¶¨Òå
+ çƒ­ç”µå¶ç±»å‹å®šä¹‰
 *******************************************************************************/
-#define AM_THERMOCOUPLIE_J        0     /**< \brief JĞÍÈÈµçÅ¼ */
-#define AM_THERMOCOUPLIE_K        1     /**< \brief KĞÍÈÈµçÅ¼ */
-#define AM_THERMOCOUPLIE_T        2     /**< \brief TĞÍÈÈµçÅ¼ */
-#define AM_THERMOCOUPLIE_N        3     /**< \brief NĞÍÈÈµçÅ¼ */
-#define AM_THERMOCOUPLIE_R        4     /**< \brief RĞÍÈÈµçÅ¼ */
+#define AM_THERMOCOUPLIE_J        0     /**< \brief Jå‹çƒ­ç”µå¶ */
+#define AM_THERMOCOUPLIE_K        1     /**< \brief Kå‹çƒ­ç”µå¶ */
+#define AM_THERMOCOUPLIE_T        2     /**< \brief Tå‹çƒ­ç”µå¶ */
+#define AM_THERMOCOUPLIE_N        3     /**< \brief Nå‹çƒ­ç”µå¶ */
+#define AM_THERMOCOUPLIE_R        4     /**< \brief Rå‹çƒ­ç”µå¶ */
+#define AM_THERMOCOUPLIE_E        5     /**< \brief Eå‹çƒ­ç”µå¶ */
 
-
-/**< \brief ÈÈµçÅ¼µçÑ¹Öµ×ªÎÂ¶Èº¯Êı¶¨Òå */
+/**< \brief çƒ­ç”µå¶ç”µå‹å€¼è½¬æ¸©åº¦å‡½æ•°å®šä¹‰ */
 typedef am_err_t (*pf__n_v_to_temperature_t) (double ,double *);
-/**< \brief ÈÈµçÅ¼ÎÂ¶È×ªµçÑ¹º¯Êı */
+/**< \brief çƒ­ç”µå¶æ¸©åº¦è½¬ç”µå‹å‡½æ•° */
 typedef am_err_t (*pf__n_temperature_to_v_t) (double ,double *);
 /**
- * \brief  ÈÈµçÅ¼¼ÆËã¹«Ê½³õÊ¼»¯
+ * \brief  çƒ­ç”µå¶è®¡ç®—å…¬å¼åˆå§‹åŒ–
  *
  */
 void am_thermocouplie_init(void);
 /**
- * \brief  ÈÈµçÅ¼¼ÆËãµçÑ¹×ªÎÂ¶È
- * \param[in] type   : ÈÈµçÅ¼ÀàĞÍ
- * \param[in] voltage   : µçÑ¹
- * \param[out] p_temperature   :ÎÂ¶È
+ * \brief  çƒ­ç”µå¶è®¡ç®—ç”µå‹è½¬æ¸©åº¦
+ * \param[in] type   : çƒ­ç”µå¶ç±»å‹
+ * \param[in] voltage   : ç”µå‹
+ * \param[out] p_temperature   :æ¸©åº¦
  */
 void am_thermocouplie_v2t(uint8_t            type,
                           double             voltage,
                           double            *p_temperature);
 /**
- * \brief  ÈÈµçÅ¼¼ÆËãÎÂ¶È×ªµçÑ¹
- * \param[in] type   : ÈÈµçÅ¼ÀàĞÍ
- * \param[in] temperature   : ÎÂ¶È
- * \param[out] p_voltage   : µçÑ¹
+ * \brief  çƒ­ç”µå¶è®¡ç®—æ¸©åº¦è½¬ç”µå‹
+ * \param[in] type   : çƒ­ç”µå¶ç±»å‹
+ * \param[in] temperature   : æ¸©åº¦
+ * \param[out] p_voltage   : ç”µå‹
  */
 void am_thermocouplie_t2v(uint8_t            type,
                           double             temperature,
