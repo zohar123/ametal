@@ -46,7 +46,7 @@ am_local am_zml166_adc_dev_t __g_zml166_adc_dev;
  */
 am_zml166_adc_handle_t am_zml166_adc_inst_init (void)
 {
-    return am_zml166_adc_init(&__g_zml166_adc_dev, &__g_zml166_adc_devinfo);;
+    return am_zml166_adc_init(&__g_zml166_adc_dev, &__g_zml166_adc_devinfo);
 }
 
 /**

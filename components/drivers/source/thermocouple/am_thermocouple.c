@@ -230,14 +230,14 @@ static const double __g_var_v_to_t_j[3][9] = {
  */
 static const double  __g_var_t_to_v_e[2][14]=
 {
-		{
+    {
       0,                 5.8665508708/1e2,  4.5410977124/1e5, 
       -7.7998048686/1e7, -2.5800160843/1e8, -5.9452583057/1e10,
       -9.3214058667/1e12,-1.0287605534/1e13, -8.0370123621/1e16,
       -4.3979497391/1e18,-1.6414776355/1e20, -3.9673619516/1e23, 
       -5.5827328721/1e26,-3.4657842013/1e29
     },
-		{
+    {
       0,                  5.8665508710/1e2,   4.5032275582/1e5, 
       2.8908407212/1e8,   -3.3056896652/1e10, 6.50244033/1e13, 
       -1.9197495594/1e16, -1.2536600497/1e18, 2.1489217569/1e21,
@@ -250,12 +250,12 @@ static const double  __g_var_t_to_v_e[2][14]=
  */
 static const double __g_var_v_to_t_e[2][10]=
 {
-	{
+    {
     0,               1.6977288e1,  -4.3514970/1e1, 
     -1.5859697/1e1, -9.2502871/1e2,-2.6084314/1e2, 
     -4.1360199/1e3, -3.4034030/1e4, -1.1564890/1e5
-  },
-	{
+    },
+    {
     0,              1.7057035e1,  -2.3301759/1e1,
     6.5435585/1e3, -7.3562749/1e5,-1.7896001/1e6, 
     8.4036165/1e8, -1.3735879/1e9,1.0629823/1e11, 
@@ -327,7 +327,7 @@ am_err_t __r_temperature_to_v (double             temperature,
 {
     uint8_t   i     = 0;
     double    value = 0;
-    if ((temperature < -50) && (temperature > 1760.0)){
+    if ((temperature < -50) || (temperature > 1760.0)){
         return AM_ERROR;
     } else if (temperature > -50 && temperature < 1064.18) {
         value = __g_var_t_to_v_r[0][9];
@@ -393,7 +393,7 @@ am_err_t __n_temperature_to_v (double             temperature,
 {
     uint8_t   i     = 0;
     double    value = 0;
-    if ((temperature < -270) && (temperature > 1300.0)){
+    if ((temperature < -270) || (temperature > 1300.0)){
         return AM_ERROR;
     } else if (temperature > -270 && temperature < 0) {
         value = __g_var_t_to_v_n[0][8];
@@ -448,7 +448,7 @@ am_err_t __t_temperature_to_v (double             temperature,
 {
     uint8_t   i     = 0;
     double    value = 0;
-    if ((temperature < -270) && (temperature > 400.0)){
+    if ((temperature < -270) || (temperature > 400.0)){
         return AM_ERROR;
     } else if (temperature > -270 && temperature < 0) {
         value = __g_var_t_to_v_t[0][14];
@@ -470,7 +470,7 @@ am_err_t __t_temperature_to_v (double             temperature,
  * \brief T型热电偶 电压转温度(冷端温度为0)
  */
 am_err_t __t_v_to_temperature (double              v,
-                             double             *p_temperature)
+                               double             *p_temperature)
 {
     uint8_t  i     = 0;
     double   value = 0;
@@ -498,7 +498,7 @@ am_err_t __k_temperature_to_v (double             temperature,
 {
     uint8_t   i     = 0;
     double    value = 0;
-   // if ((temperature < -270) && (temperature > 1370.0)){   //本条错误
+
    if ((temperature < -270) || (temperature > 1370.0)){
         return AM_ERROR;
     } else if (temperature > -270 && temperature < 0) {
@@ -518,7 +518,7 @@ am_err_t __k_temperature_to_v (double             temperature,
                 * (temperature - 126.9686)
                 * (temperature - 126.9686));
     }
-   // *p_v = value / 1000.0;  //单位与其它类型保持一致
+
     *p_v = value ;  
      return AM_OK;
 }
@@ -555,28 +555,35 @@ am_err_t __k_v_to_temperature (double              v,
  * \brief E型热电偶 温度转热电偶电压(冷端温度为0)
  */
 am_err_t __e_temperature_to_v (double             temperature,
-                               double            *p_v )
+                               double            *p_v)
 {
-	uint8_t i = 0;
-	double  value = 0;
-	if((temperature < -270) || (temperature > 1000.0))
-	{
-		return AM_ERROR;
-	}
-	else if(temperature < 0)
-	{
-		value = __g_var_t_to_v_e[0][13];
-		for(i = 13; i > 0; i--)
-			value = temperature * value + __g_var_t_to_v_e[0][i-1];
-	}
-	else
-	{
-		value = __g_var_t_to_v_e[1][10];
-		for(i = 10; i > 0; i--)
-			value = temperature * value + __g_var_t_to_v_e[1][i-1];
-	}
- *p_v = value ;
- return AM_OK; 
+    uint8_t i = 0;
+    double  value = 0;
+
+    if((temperature < -270) || (temperature > 1000.0)) {
+
+        return AM_ERROR;
+
+    } else if(temperature < 0) {
+
+        value = __g_var_t_to_v_e[0][13];
+
+        for(i = 13; i > 0; i--){
+            value = temperature * value + __g_var_t_to_v_e[0][i-1];
+        }
+
+    } else {
+
+        value = __g_var_t_to_v_e[1][10];
+
+        for(i = 10; i > 0; i--){
+            value = temperature * value + __g_var_t_to_v_e[1][i-1];
+        }
+    }
+
+    *p_v = value ;
+
+    return AM_OK;
 }
 /**
  * \brief E型热电偶 电压转温度(冷端温度为0)
@@ -584,60 +591,131 @@ am_err_t __e_temperature_to_v (double             temperature,
 am_err_t __e_v_to_temperature (double              v,
                                double             *p_temperature)
 {
-	uint8_t i = 0;
-	double value = 0;
-	if(v >= -9.845 && v < 0)
-	{
-		value = __g_var_v_to_t_e[0][8];
-	for(i = 8; i > 0; i--)
-	value = v * value + __g_var_v_to_t_e[0][i-1];
-	}
-	else if(v>=0 && v<=76.393)
-	{
-	value = __g_var_v_to_t_e[1][9];
-	for(i = 9; i > 0; i--)
-	value = v * value + __g_var_v_to_t_e[1][i-1];
-	}
-	*p_temperature = value;
-   return AM_OK;
+    uint8_t i = 0;
+    double  value = 0;
+    if(v >= -9.845 && v < 0) {
+        value = __g_var_v_to_t_e[0][8];
+        for(i = 8; i > 0; i--){
+            value = v * value + __g_var_v_to_t_e[0][i-1];
+        }
+    }else if(v>=0 && v<=76.393) {
+        value = __g_var_v_to_t_e[1][9];
+        for(i = 9; i > 0; i--){
+            value = v * value + __g_var_v_to_t_e[1][i-1];
+        }
+    }
+
+    *p_temperature = value;
+
+    return AM_OK;
 }
-/**< \brief 热电偶电压值转温度函数数组 */
-static pf__n_v_to_temperature_t __v_to_temperature[10];
-/**< \brief 热电偶温度转电压值函数数组 */
-static pf__n_temperature_to_v_t __temperature_to_v[10];
+
 /*
- * 初始化热电偶转化算法
+ * J型热电偶计算函数初始化
  */
-void am_thermocouplie_init(void)
+am_ther_formula_t am_thermocouple_j_init(am_ther_conversion_t *p_dev)
 {
-    /* 把热电偶的电压转温度添加到指针数组中 */
-    __v_to_temperature[AM_THERMOCOUPLIE_J] = __j_v_to_temperature;
-    __v_to_temperature[AM_THERMOCOUPLIE_K] = __k_v_to_temperature;
-    __v_to_temperature[AM_THERMOCOUPLIE_T] = __t_v_to_temperature;
-   //    __g_v_to_temperature[AM_THERMOCOUPLIE_N] = __n_v_to_temperature;
-   //    __g_v_to_temperature[AM_THERMOCOUPLIE_R] = __r_v_to_temperature;
-   //    __g_v_to_temperature[AM_THERMOCOUPLIE_E] = __e_v_to_temperature;
+    if(p_dev == NULL){
+        return NULL;
+    }
 
-    /* 把热电偶的温度转电压添加到指针数组中 */
-    __temperature_to_v[AM_THERMOCOUPLIE_J] = __j_temperature_to_v;
-    __temperature_to_v[AM_THERMOCOUPLIE_K] = __k_temperature_to_v;
-    __temperature_to_v[AM_THERMOCOUPLIE_T] = __t_temperature_to_v;
-    //    __g_temperature_to_v[AM_THERMOCOUPLIE_N] = __n_temperature_to_v;
-    //    __g_temperature_to_v[AM_THERMOCOUPLIE_R] = __r_temperature_to_v;
-    //    __g_temperature_to_v[AM_THERMOCOUPLIE_E] = __e_temperature_to_v;
+    p_dev->pfn_t2v = __j_temperature_to_v;
+    p_dev->pfn_v2t = __j_v_to_temperature;
+
+    return p_dev;
+}
+
+/*
+ * K型热电偶计算函数初始化
+ */
+am_ther_formula_t am_thermocouple_k_init(am_ther_conversion_t *p_dev)
+{
+    if(p_dev == NULL){
+        return NULL;
+    }
+
+    p_dev->pfn_t2v = __k_temperature_to_v;
+    p_dev->pfn_v2t = __k_v_to_temperature;
+
+    return p_dev;
+}
+
+/*
+ * T型热电偶计算函数初始化
+ */
+am_ther_formula_t am_thermocouple_t_init(am_ther_conversion_t *p_dev)
+{
+    if(p_dev == NULL){
+        return NULL;
+    }
+
+    p_dev->pfn_t2v = __t_temperature_to_v;
+    p_dev->pfn_v2t = __t_v_to_temperature;
+
+    return p_dev;
+}
+
+/*
+ * N型热电偶计算函数初始化
+ */
+am_ther_formula_t am_thermocouple_n_init(am_ther_conversion_t *p_dev)
+{
+    if(p_dev == NULL){
+        return NULL;
+    }
+
+    p_dev->pfn_t2v = __n_temperature_to_v;
+    p_dev->pfn_v2t = __n_v_to_temperature;
+
+    return p_dev;
+}
+
+/*
+ * R型热电偶计算函数初始化
+ */
+am_ther_formula_t am_thermocouple_r_init(am_ther_conversion_t *p_dev)
+{
+
+    if(p_dev == NULL){
+        return NULL;
+    }
+
+    p_dev->pfn_t2v = __r_temperature_to_v;
+    p_dev->pfn_v2t = __r_v_to_temperature;
+
+    return p_dev;
+}
+
+/*
+ * R型热电偶计算函数初始化
+ */
+am_ther_formula_t am_thermocouple_e_init(am_ther_conversion_t *p_dev)
+{
+
+    if(p_dev == NULL){
+        return NULL;
+    }
+
+    p_dev->pfn_t2v = __e_temperature_to_v;
+    p_dev->pfn_v2t = __e_v_to_temperature;
+
+    return p_dev;
+}
+
+am_err_t am_ther_tem_to_vol(am_ther_formula_t handle,
+                            double            temperature,
+                            double           *p_voltage)
+{
+    return handle->pfn_t2v(temperature, p_voltage);
+}
+
+am_err_t am_ther_vol_to_tem(am_ther_formula_t handle,
+                            double            voltage,
+                            double           *p_temperature)
+{
+    return handle->pfn_v2t(voltage, p_temperature);
 }
 
 
-void am_thermocouplie_v2t(uint8_t            type,
-                          double             voltage,
-                          double            *p_temperature)
-{
-    __v_to_temperature[type](voltage, p_temperature);
-}
 
-void am_thermocouplie_t2v(uint8_t            type,
-                          double             temperature,
-                          double            *p_voltage )
-{
-    __temperature_to_v[type](temperature, p_voltage);
-}
+

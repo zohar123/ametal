@@ -398,7 +398,7 @@ void dome_zml166_adc_vol_measure_entry(void                   *p_handle,
  */
 void dome_zml166_adc_thermocouple_measure_entry(void              *p_handle,
                                                 float             *p_para,
-                                                uint8_t            type);
+                                                void              *temp_handle);
 
 /**
  * \brief ZML166 ADC 电压校准程序
