@@ -502,17 +502,17 @@ void demo_aml166_core_sensor_hts221_int_entry (void);
 void demo_aml166_core_zml166_adc_thermocouple_measure (void);
 
 /**
- * \brief CS1239 PT100测温例程
+ * \brief ZML166 24位ADC  PT100测温例程
  */
 void demo_aml166_core_zml166_adc_pt100_measure (void);
 
 /**
- * \brief CS1239固定电压测量例程
+ * \brief ZML166 24位ADC  固定电压测量例程
  */
 void demo_aml166_core_zml166_adc_vol_measure (void);
 
 /**
- * \brief CS1239校准参数获取例程
+ * \brief ZML166 24位ADC  校准参数获取例程
  */
 void demo_aml166_core_zml166_adc_vol_para_adjuet (void);
 

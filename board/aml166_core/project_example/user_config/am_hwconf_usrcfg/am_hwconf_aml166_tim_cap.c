@@ -95,7 +95,7 @@ am_zlg_tim_cap_dev_t  __g_tim1_cap_dev;
 am_cap_handle_t am_zlg116_tim1_cap_inst_init (void)
 {
     return am_zlg_tim_cap_init(&__g_tim1_cap_dev,
-                                  &__g_tim1_cap_devinfo);
+                               &__g_tim1_cap_devinfo);
 }
 
 /** \brief tim1 cap实例解初始化 */
