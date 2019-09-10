@@ -44,7 +44,7 @@
 #include "am_hwconf_zml166_adc.h"
 #include "demo_zlg_entries.h"
 /**
- * \brief CS1239 PT100²âÎÂÀı³Ì
+ * \brief ZML166 24Î»ADC  PT100²âÎÂÀı³Ì
  */
 void demo_aml166_core_zml166_adc_pt100_measure (void)
 {

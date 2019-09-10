@@ -46,7 +46,7 @@
 #include "demo_zlg_entries.h"
 
 /**
- * \brief CS1239校准参数获取例程
+ * \brief ZML166 24位ADC 校准参数获取例程
  */
 void demo_aml166_core_zml166_adc_vol_para_adjuet (void)
 {

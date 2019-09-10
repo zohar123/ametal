@@ -46,9 +46,6 @@ int am_main (void)
      */
     demo_aml166_core_std_led_entry();
 //    demo_aml166_core_std_delay_entry();
-//    demo_aml166_core_hw_adc_int_entry();
-//    demo_aml166_core_std_adc_entry();
-//    demo_aml166_core_std_adc_ntc_entry();
 //    demo_aml166_core_std_buzzer_entry();
 //    demo_aml166_core_hw_clk_entry();
 //    demo_aml166_core_drv_dma_m2m_entry();

@@ -512,16 +512,6 @@
               <FilePath>..\..\..\..\components\drivers\source\digitron\am_digitron_scan_hc595_gpio.c</FilePath>
             </File>
             <File>
-              <FileName>am_zlg72128.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\components\drivers\source\digitron_key\am_zlg72128.c</FilePath>
-            </File>
-            <File>
-              <FileName>am_zlg72128_std.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\components\drivers\source\digitron_key\am_zlg72128_std.c</FilePath>
-            </File>
-            <File>
               <FileName>am_ts10x.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\components\drivers\source\fingerprint\am_ts10x.c</FilePath>
@@ -1097,11 +1087,6 @@
               <FilePath>..\user_config\am_hwconf_usrcfg\am_hwconf_miniport_view_key.c</FilePath>
             </File>
             <File>
-              <FileName>am_hwconf_miniport_zlg72128.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\user_config\am_hwconf_usrcfg\am_hwconf_miniport_zlg72128.c</FilePath>
-            </File>
-            <File>
               <FileName>am_hwconf_system_tick_softimer.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\user_config\am_hwconf_usrcfg\am_hwconf_system_tick_softimer.c</FilePath>
@@ -1115,11 +1100,6 @@
               <FileName>am_servconf_nvram.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\user_config\am_servconf_usrcfg\am_servconf_nvram.c</FilePath>
-            </File>
-            <File>
-              <FileName>am_hwconf_aml166_adc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\user_config\am_hwconf_usrcfg\am_hwconf_aml166_adc.c</FilePath>
             </File>
             <File>
               <FileName>am_hwconf_aml166_clk.c</FileName>
@@ -1726,16 +1706,6 @@
               <FilePath>..\..\..\..\components\drivers\source\digitron\am_digitron_scan_hc595_gpio.c</FilePath>
             </File>
             <File>
-              <FileName>am_zlg72128.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\components\drivers\source\digitron_key\am_zlg72128.c</FilePath>
-            </File>
-            <File>
-              <FileName>am_zlg72128_std.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\components\drivers\source\digitron_key\am_zlg72128_std.c</FilePath>
-            </File>
-            <File>
               <FileName>am_ts10x.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\components\drivers\source\fingerprint\am_ts10x.c</FilePath>
@@ -2311,11 +2281,6 @@
               <FilePath>..\user_config\am_hwconf_usrcfg\am_hwconf_miniport_view_key.c</FilePath>
             </File>
             <File>
-              <FileName>am_hwconf_miniport_zlg72128.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\user_config\am_hwconf_usrcfg\am_hwconf_miniport_zlg72128.c</FilePath>
-            </File>
-            <File>
               <FileName>am_hwconf_system_tick_softimer.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\user_config\am_hwconf_usrcfg\am_hwconf_system_tick_softimer.c</FilePath>
@@ -2329,11 +2294,6 @@
               <FileName>am_servconf_nvram.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\user_config\am_servconf_usrcfg\am_servconf_nvram.c</FilePath>
-            </File>
-            <File>
-              <FileName>am_hwconf_aml166_adc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\user_config\am_hwconf_usrcfg\am_hwconf_aml166_adc.c</FilePath>
             </File>
             <File>
               <FileName>am_hwconf_aml166_clk.c</FileName>

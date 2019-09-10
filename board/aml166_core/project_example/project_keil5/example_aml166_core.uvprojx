@@ -512,16 +512,6 @@
               <FilePath>..\..\..\..\components\drivers\source\digitron\am_digitron_scan_hc595_gpio.c</FilePath>
             </File>
             <File>
-              <FileName>am_zlg72128.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\components\drivers\source\digitron_key\am_zlg72128.c</FilePath>
-            </File>
-            <File>
-              <FileName>am_zlg72128_std.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\components\drivers\source\digitron_key\am_zlg72128_std.c</FilePath>
-            </File>
-            <File>
               <FileName>am_ts10x.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\components\drivers\source\fingerprint\am_ts10x.c</FilePath>
@@ -982,21 +972,6 @@
               <FilePath>..\..\..\..\examples\board\am166_core\buzzer\demo_aml166_core_std_buzzer.c</FilePath>
             </File>
             <File>
-              <FileName>demo_aml166_core_hw_adc_int.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\examples\board\am166_core\adc\demo_aml166_core_hw_adc_int.c</FilePath>
-            </File>
-            <File>
-              <FileName>demo_aml166_core_std_adc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\examples\board\am166_core\adc\demo_aml166_core_std_adc.c</FilePath>
-            </File>
-            <File>
-              <FileName>demo_aml166_core_std_adc_ntc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\examples\board\am166_core\adc\demo_aml166_core_std_adc_ntc.c</FilePath>
-            </File>
-            <File>
               <FileName>demo_aml166_core_std_delay.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\examples\board\am166_core\delay\demo_aml166_core_std_delay.c</FilePath>
@@ -1165,11 +1140,6 @@
               <FileName>demo_aml166_core_miniport_led.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\examples\board\am166_core\miniport_board\demo_aml166_core_miniport_led.c</FilePath>
-            </File>
-            <File>
-              <FileName>demo_aml166_core_miniport_zlg72128.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\examples\board\am166_core\miniport_board\demo_aml166_core_miniport_zlg72128.c</FilePath>
             </File>
             <File>
               <FileName>demo_aml166_core_std_softimer.c</FileName>
@@ -1892,11 +1862,6 @@
               <FilePath>..\user_config\am_hwconf_usrcfg\am_hwconf_miniport_view_key.c</FilePath>
             </File>
             <File>
-              <FileName>am_hwconf_miniport_zlg72128.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\user_config\am_hwconf_usrcfg\am_hwconf_miniport_zlg72128.c</FilePath>
-            </File>
-            <File>
               <FileName>am_hwconf_sensor_hts221.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\user_config\am_hwconf_usrcfg\am_hwconf_sensor_hts221.c</FilePath>
@@ -1925,11 +1890,6 @@
               <FileName>am_servconf_nvram.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\user_config\am_servconf_usrcfg\am_servconf_nvram.c</FilePath>
-            </File>
-            <File>
-              <FileName>am_hwconf_aml166_adc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\user_config\am_hwconf_usrcfg\am_hwconf_aml166_adc.c</FilePath>
             </File>
             <File>
               <FileName>am_hwconf_aml166_clk.c</FileName>
@@ -2090,11 +2050,6 @@
               <FileName>am_hwconf_miniport_view_key.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\user_config\am_hwconf_usrcfg\am_hwconf_miniport_view_key.h</FilePath>
-            </File>
-            <File>
-              <FileName>am_hwconf_miniport_zlg72128.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\user_config\am_hwconf_usrcfg\am_hwconf_miniport_zlg72128.h</FilePath>
             </File>
             <File>
               <FileName>am_hwconf_sensor_hts221.h</FileName>
@@ -2621,16 +2576,6 @@
               <FilePath>..\..\..\..\components\drivers\source\digitron\am_digitron_scan_hc595_gpio.c</FilePath>
             </File>
             <File>
-              <FileName>am_zlg72128.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\components\drivers\source\digitron_key\am_zlg72128.c</FilePath>
-            </File>
-            <File>
-              <FileName>am_zlg72128_std.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\components\drivers\source\digitron_key\am_zlg72128_std.c</FilePath>
-            </File>
-            <File>
               <FileName>am_ts10x.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\components\drivers\source\fingerprint\am_ts10x.c</FilePath>
@@ -3091,21 +3036,6 @@
               <FilePath>..\..\..\..\examples\board\am166_core\buzzer\demo_aml166_core_std_buzzer.c</FilePath>
             </File>
             <File>
-              <FileName>demo_aml166_core_hw_adc_int.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\examples\board\am166_core\adc\demo_aml166_core_hw_adc_int.c</FilePath>
-            </File>
-            <File>
-              <FileName>demo_aml166_core_std_adc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\examples\board\am166_core\adc\demo_aml166_core_std_adc.c</FilePath>
-            </File>
-            <File>
-              <FileName>demo_aml166_core_std_adc_ntc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\examples\board\am166_core\adc\demo_aml166_core_std_adc_ntc.c</FilePath>
-            </File>
-            <File>
               <FileName>demo_aml166_core_std_delay.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\examples\board\am166_core\delay\demo_aml166_core_std_delay.c</FilePath>
@@ -3274,11 +3204,6 @@
               <FileName>demo_aml166_core_miniport_led.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\examples\board\am166_core\miniport_board\demo_aml166_core_miniport_led.c</FilePath>
-            </File>
-            <File>
-              <FileName>demo_aml166_core_miniport_zlg72128.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\examples\board\am166_core\miniport_board\demo_aml166_core_miniport_zlg72128.c</FilePath>
             </File>
             <File>
               <FileName>demo_aml166_core_std_softimer.c</FileName>
@@ -4001,11 +3926,6 @@
               <FilePath>..\user_config\am_hwconf_usrcfg\am_hwconf_miniport_view_key.c</FilePath>
             </File>
             <File>
-              <FileName>am_hwconf_miniport_zlg72128.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\user_config\am_hwconf_usrcfg\am_hwconf_miniport_zlg72128.c</FilePath>
-            </File>
-            <File>
               <FileName>am_hwconf_sensor_hts221.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\user_config\am_hwconf_usrcfg\am_hwconf_sensor_hts221.c</FilePath>
@@ -4034,11 +3954,6 @@
               <FileName>am_servconf_nvram.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\user_config\am_servconf_usrcfg\am_servconf_nvram.c</FilePath>
-            </File>
-            <File>
-              <FileName>am_hwconf_aml166_adc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\user_config\am_hwconf_usrcfg\am_hwconf_aml166_adc.c</FilePath>
             </File>
             <File>
               <FileName>am_hwconf_aml166_clk.c</FileName>
@@ -4199,11 +4114,6 @@
               <FileName>am_hwconf_miniport_view_key.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\user_config\am_hwconf_usrcfg\am_hwconf_miniport_view_key.h</FilePath>
-            </File>
-            <File>
-              <FileName>am_hwconf_miniport_zlg72128.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\user_config\am_hwconf_usrcfg\am_hwconf_miniport_zlg72128.h</FilePath>
             </File>
             <File>
               <FileName>am_hwconf_sensor_hts221.h</FileName>

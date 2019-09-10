@@ -30,17 +30,17 @@ extern "C" {
 #endif
 
 /**
- * \brief CS1239设备实例初始化
+ * \brief ZML166 24位ADC 设备实例初始化
  *
  * \param 无
  *
- * \return CS1239 标准服务句柄，若为 NULL，表明初始化失败
+ * \return ZML166 24位ADC  标准服务句柄，若为 NULL，表明初始化失败
  */
 am_zml166_adc_handle_t am_zml166_adc_inst_init (void);
 
 
 /**
- * \brief adc24 实例解初始化
+ * \brief ZML166 24位ADC  实例解初始化
  */
 void am_zml166_adc_inst_deinit (am_zml166_adc_handle_t handle);
 
