@@ -34,7 +34,6 @@
  */
 int am_main (void)
 {
-    demo_am116_core_bootloader_entry();
     while(1) {
 
 		}	
