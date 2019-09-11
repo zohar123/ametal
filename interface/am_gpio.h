@@ -175,8 +175,9 @@ int am_gpio_toggle(int pin);
  * \param[in] pin  : 引脚编号，值为 PIO* (#PIO0_0)
  * \param[in] flag : 配置参数，参见
  *                   \ref grp_am_gpio_pin_trigger_function
- * \note:使用该接口，应选调用am_gpio_pin_cfg设置gpio的引脚为输入并且选择合适的引脚模式
- * 
+ * \note: 1. 使用该接口，应先调用am_gpio_pin_cfg设置gpio的引脚为输入并且选择合适的引脚模式
+ *        2. 使用该接口，应首先调用am_gpio_trigger_connect连接引脚的中断回调函数
+ *
  * \retval AM_OK   : 配置成功
  */
 int am_gpio_trigger_cfg(int pin, uint32_t flag);
