@@ -10,7 +10,8 @@
       <TargetName>debug</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060300::V5.06 update 3 (build 300)::ARMCC</pCCUsed>
+      <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
+      <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>MKL16Z128xxx4</Device>
@@ -183,6 +184,7 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>0</RvdsVP>
+            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -323,6 +325,7 @@
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>1</uC99>
+            <uGnu>0</uGnu>
             <useXO>0</useXO>
             <v6Lang>0</v6Lang>
             <v6LangP>0</v6LangP>
@@ -470,11 +473,6 @@
               <FilePath>..\..\..\..\components\drivers\source\digitron\com\am_digitron_com_gpio.c</FilePath>
             </File>
             <File>
-              <FileName>am_zlg72128.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\components\drivers\source\digitron_key\am_zlg72128.c</FilePath>
-            </File>
-            <File>
               <FileName>am_zlg72128_std.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\components\drivers\source\digitron_key\am_zlg72128_std.c</FilePath>
@@ -598,6 +596,16 @@
               <FileName>am_zlg600.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\components\drivers\source\zlg600\am_zlg600.c</FilePath>
+            </File>
+            <File>
+              <FileName>zlg72128.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\components\drivers\source\digitron_key\zlg72128.c</FilePath>
+            </File>
+            <File>
+              <FileName>zlg72128_platform.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\components\drivers\source\digitron_key\zlg72128_platform.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -2083,6 +2091,7 @@
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <pCCUsed>5060061::V5.06 update 1 (build 61)::ARMCC</pCCUsed>
+      <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>MKL16Z128xxx4</Device>
@@ -2255,6 +2264,7 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>0</RvdsVP>
+            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -2395,6 +2405,7 @@
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>1</uC99>
+            <uGnu>0</uGnu>
             <useXO>0</useXO>
             <v6Lang>0</v6Lang>
             <v6LangP>0</v6LangP>
@@ -2542,11 +2553,6 @@
               <FilePath>..\..\..\..\components\drivers\source\digitron\com\am_digitron_com_gpio.c</FilePath>
             </File>
             <File>
-              <FileName>am_zlg72128.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\components\drivers\source\digitron_key\am_zlg72128.c</FilePath>
-            </File>
-            <File>
               <FileName>am_zlg72128_std.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\components\drivers\source\digitron_key\am_zlg72128_std.c</FilePath>
@@ -2670,6 +2676,16 @@
               <FileName>am_zlg600.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\components\drivers\source\zlg600\am_zlg600.c</FilePath>
+            </File>
+            <File>
+              <FileName>zlg72128.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\components\drivers\source\digitron_key\zlg72128.c</FilePath>
+            </File>
+            <File>
+              <FileName>zlg72128_platform.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\components\drivers\source\digitron_key\zlg72128_platform.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -4151,5 +4167,11 @@
       </Groups>
     </Target>
   </Targets>
+
+  <RTE>
+    <apis/>
+    <components/>
+    <files/>
+  </RTE>
 
 </Project>

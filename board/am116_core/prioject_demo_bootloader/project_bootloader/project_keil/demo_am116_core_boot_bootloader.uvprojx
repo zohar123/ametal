@@ -133,7 +133,7 @@
             <UseExternalTool>0</UseExternalTool>
             <RunIndependent>0</RunIndependent>
             <UpdateFlashBeforeDebugging>1</UpdateFlashBeforeDebugging>
-            <Capability>1</Capability>
+            <Capability>0</Capability>
             <DriverSelection>4096</DriverSelection>
           </Flash1>
           <bUseTDR>1</bUseTDR>
@@ -478,11 +478,6 @@
               <FilePath>..\..\..\..\..\components\drivers\source\digitron\am_digitron_scan_hc595_gpio.c</FilePath>
             </File>
             <File>
-              <FileName>am_zlg72128.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\components\drivers\source\digitron_key\am_zlg72128.c</FilePath>
-            </File>
-            <File>
               <FileName>am_zlg72128_std.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\components\drivers\source\digitron_key\am_zlg72128_std.c</FilePath>
@@ -611,6 +606,16 @@
               <FileName>am_sensor_hts221.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\components\drivers\source\sensor\am_sensor_hts221.c</FilePath>
+            </File>
+            <File>
+              <FileName>zlg72128.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\components\drivers\source\digitron_key\zlg72128.c</FilePath>
+            </File>
+            <File>
+              <FileName>zlg72128_platform.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\components\drivers\source\digitron_key\zlg72128_platform.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -936,21 +941,6 @@
               <FileName>am_zlg_wwdg.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\soc\zlg\drivers\source\wdt\am_zlg_wwdg.c</FilePath>
-            </File>
-            <File>
-              <FileName>am_zlg116_boot.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\soc\zlg\zlg116\bootloader\source\am_zlg116_boot.c</FilePath>
-            </File>
-            <File>
-              <FileName>am_zlg116_boot_firmware_flash.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\soc\zlg\zlg116\bootloader\source\am_zlg116_boot_firmware_flash.c</FilePath>
-            </File>
-            <File>
-              <FileName>am_zlg116_boot_flash.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\soc\zlg\zlg116\bootloader\source\am_zlg116_boot_flash.c</FilePath>
             </File>
             <File>
               <FileName>am_zlg_spi_poll.c</FileName>
@@ -1416,11 +1406,6 @@
               <FileName>demo_am116_core_dr_fm175xx_piccb_read_id.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\examples\board\am116_core\fm175xx\demo_am116_core_dr_fm175xx_piccb_read_id.c</FilePath>
-            </File>
-            <File>
-              <FileName>demo_am116_core_bootloader.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\examples\board\am116_core\bootloader\demo_am116_core_bootloader.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -2046,11 +2031,6 @@
               <FileName>am_hwconf_sensor_hts221.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\user_config\am_hwconf_usrcfg\am_hwconf_sensor_hts221.c</FilePath>
-            </File>
-            <File>
-              <FileName>am_bootconf_zlg116.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\user_config\am_bootconf_usrcfg\am_bootconf_zlg116.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -2528,11 +2508,6 @@
               <FilePath>..\..\..\..\..\components\drivers\source\digitron\am_digitron_scan_hc595_gpio.c</FilePath>
             </File>
             <File>
-              <FileName>am_zlg72128.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\components\drivers\source\digitron_key\am_zlg72128.c</FilePath>
-            </File>
-            <File>
               <FileName>am_zlg72128_std.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\components\drivers\source\digitron_key\am_zlg72128_std.c</FilePath>
@@ -2661,6 +2636,16 @@
               <FileName>am_sensor_hts221.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\components\drivers\source\sensor\am_sensor_hts221.c</FilePath>
+            </File>
+            <File>
+              <FileName>zlg72128.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\components\drivers\source\digitron_key\zlg72128.c</FilePath>
+            </File>
+            <File>
+              <FileName>zlg72128_platform.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\components\drivers\source\digitron_key\zlg72128_platform.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -2986,21 +2971,6 @@
               <FileName>am_zlg_wwdg.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\soc\zlg\drivers\source\wdt\am_zlg_wwdg.c</FilePath>
-            </File>
-            <File>
-              <FileName>am_zlg116_boot.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\soc\zlg\zlg116\bootloader\source\am_zlg116_boot.c</FilePath>
-            </File>
-            <File>
-              <FileName>am_zlg116_boot_firmware_flash.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\soc\zlg\zlg116\bootloader\source\am_zlg116_boot_firmware_flash.c</FilePath>
-            </File>
-            <File>
-              <FileName>am_zlg116_boot_flash.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\soc\zlg\zlg116\bootloader\source\am_zlg116_boot_flash.c</FilePath>
             </File>
             <File>
               <FileName>am_zlg_spi_poll.c</FileName>
@@ -3466,11 +3436,6 @@
               <FileName>demo_am116_core_dr_fm175xx_piccb_read_id.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\examples\board\am116_core\fm175xx\demo_am116_core_dr_fm175xx_piccb_read_id.c</FilePath>
-            </File>
-            <File>
-              <FileName>demo_am116_core_bootloader.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\examples\board\am116_core\bootloader\demo_am116_core_bootloader.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -4096,11 +4061,6 @@
               <FileName>am_hwconf_sensor_hts221.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\user_config\am_hwconf_usrcfg\am_hwconf_sensor_hts221.c</FilePath>
-            </File>
-            <File>
-              <FileName>am_bootconf_zlg116.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\user_config\am_bootconf_usrcfg\am_bootconf_zlg116.c</FilePath>
             </File>
           </Files>
         </Group>
