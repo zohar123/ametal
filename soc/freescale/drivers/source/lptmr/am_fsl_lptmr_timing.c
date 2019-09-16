@@ -168,6 +168,7 @@ static int __lptmr_timing_prescale_get (void     *p_drv,
 {
     am_fsl_lptmr_timing_dev_t *p_dev      = (am_fsl_lptmr_timing_dev_t *)p_drv;
     amhw_fsl_lptmr_t          *p_hw_tim;
+    uint32_t                   psr        = 0;
 
     if ((p_dev == NULL) || (p_prescale == NULL) || (chan != 0)) {
         return -AM_EINVAL;
@@ -176,7 +177,10 @@ static int __lptmr_timing_prescale_get (void     *p_drv,
     p_hw_tim = (amhw_fsl_lptmr_t *)p_dev->p_devinfo->p_hw_lptmr;
 
     /* 获取分频值 */
-    *p_prescale = amhw_fsl_lptmr_ps_reg_get(p_hw_tim);
+    psr = amhw_fsl_lptmr_prescaler_get(p_hw_tim);
+
+    /* 实际分频值(pre)与读出值(n)成2的指数关系：pre = 2^n+1 */
+    *p_prescale = 2 << psr;
 
     return AM_OK;
 }

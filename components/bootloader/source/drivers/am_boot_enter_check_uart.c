@@ -84,6 +84,7 @@ am_bool_t  __boot_enter_check_uart(void *p_drv)
 
 static const struct am_boot_enter_check_drv_funcs __g_enter_check_uart_drv_funcs = {
     __boot_enter_check_uart,
+    NULL
 };
 
 static am_boot_enter_check_uart_dev_t __g_enter_check_uart_dev;

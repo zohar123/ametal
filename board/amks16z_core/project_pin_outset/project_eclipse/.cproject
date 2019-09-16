@@ -111,6 +111,7 @@
 								</option>
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.defs.209409753" name="Defined symbols (-D)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.defs" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="AM_VDEBUG"/>
+									<listOptionValue builtIn="false" value="PIN_OUTSET"/>
 									<listOptionValue builtIn="false" value="AM_CORTEX_M0"/>
 								</option>
 								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.input.672529060" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.input"/>
@@ -305,6 +306,7 @@
 								</option>
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.defs.1490707958" name="Defined symbols (-D)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.defs" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="AM_VDEBUG"/>
+									<listOptionValue builtIn="false" value="PIN_OUTSET"/>
 									<listOptionValue builtIn="false" value="AM_CORTEX_M0"/>
 								</option>
 								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.input.853712118" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.input"/>

@@ -16,6 +16,7 @@
  *
  * \internal
  * \par Modification History
+ * - 1.01 19-04-21  xgg, adjust new frame
  * - 1.00 17-05-22  tee, first implementation.
  * \endinternal
  */
@@ -28,8 +29,8 @@ extern "C" {
 #endif
 
 #include "am_common.h"
-#include "am_zlg72128.h"
 #include "am_digitron_dev.h"
+#include "zlg72128.h"
 
 /**
  * @addtogroup am_if_zlg72128_std
@@ -55,14 +56,14 @@ extern "C" {
  * \brief ZLG72128用作通用数码管和按键的设备信息
  */
 typedef struct am_zlg72128_std_devinfo {
-    am_zlg72128_devinfo_t  base_info;         /**< \brief 基础设备信息         */
+    zlg72128_devinfo_t     base_info;         /**< \brief 基础设备信息         */
     am_digitron_devinfo_t  id_info;           /**< \brief 数码管显示器ID         */
     uint16_t               blink_on_time;     /**< \brief 一个闪烁周期内，点亮的时间，如 500ms */
     uint16_t               blink_off_time;    /**< \brief 一个闪烁周期内，熄灭的时间，如 500ms */
     uint8_t                key_use_row_flags; /**< \brief 实际使用的行标志  */
     uint8_t                key_use_col_flags; /**< \brief 实际使用的列标志 */
-    const int             *p_key_codes;    /**< \brief 按键编码， 其大小为 key_rows * key_cols */
-    uint8_t                num_digitron;   /**< \brief 实际使用的数码管个数 */
+    const int             *p_key_codes;  /**< \brief 按键编码， 其大小为 key_rows * key_cols */
+    uint8_t                num_digitron; /**< \brief 实际使用的数码管个数 */
 } am_zlg72128_std_devinfo_t;
 
 /**
@@ -71,13 +72,13 @@ typedef struct am_zlg72128_std_devinfo {
 typedef struct am_zlg72128_std_digitron_key_dev {
 
     /** 使用底层的ZLG72128功能    */
-    am_zlg72128_dev_t     zlg72128_dev;
+    zlg72128_dev_t        zlg72128_dev;
 
     /** \brief 数码管设备      */
     am_digitron_dev_t     digitron_dev;
 
     /** \brief ZLG72128句柄      */
-    am_zlg72128_handle_t  handle;
+    zlg72128_handle_t     handle;
 
     /** \brief 功能键值，将功能键转换为通用按键使用      */
     uint8_t               f_key;
@@ -111,8 +112,7 @@ typedef struct am_zlg72128_std_digitron_key_dev {
  * \return AM_OK，初始化成功；否则，初始化失败
  */
 int am_zlg72128_std_init (am_zlg72128_std_dev_t           *p_dev,
-                          const am_zlg72128_std_devinfo_t *p_info,
-                          am_i2c_handle_t                  i2c_handle);
+                          const am_zlg72128_std_devinfo_t *p_info);
 
 /** @} */
 

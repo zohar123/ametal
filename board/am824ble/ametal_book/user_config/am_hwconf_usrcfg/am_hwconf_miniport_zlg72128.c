@@ -45,10 +45,16 @@ am_local am_const int __g_miniport_zlg72128_codes[] = {
 /** \brief MiniPort-ZLG72128 设备信息 */
 am_local am_const am_zlg72128_std_devinfo_t __g_miniport_zlg72128_devinfo = {
     {
-        PIO0_6,                     /* 复位引脚 */
-        AM_TRUE,                    /* 使用中断引脚 */
-        PIO0_1,                     /* 中断引脚 */
-        5                           /* 查询时间间隔，使用中断引脚时，该值无意义 */
+        {
+            0X33,
+            PIO0_6,                     /* 复位引脚 */
+            AM_TRUE,                    /* 使用中断引脚 */
+            PIO0_1,                     /* 中断引脚 */
+            5,
+            am_lpc82x_i2c2_inst_init,
+            am_lpc82x_i2c2_inst_deinit
+        }
+                         /* 查询时间间隔，使用中断引脚时，该值无意义 */
     },
     {
         0                           /* 数码管显示器的编号 */
@@ -70,8 +76,7 @@ am_local am_zlg72128_std_dev_t __g_miniport_zlg72128_dev;
 int am_miniport_zlg72128_inst_init (void)
 {
     return am_zlg72128_std_init(&__g_miniport_zlg72128_dev,
-                                &__g_miniport_zlg72128_devinfo,
-                                 am_lpc82x_i2c2_inst_init());
+                                &__g_miniport_zlg72128_devinfo);
 }
 
 /**

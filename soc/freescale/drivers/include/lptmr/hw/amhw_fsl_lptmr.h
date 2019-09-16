@@ -174,6 +174,19 @@ uint32_t amhw_fsl_lptmr_ps_reg_get (amhw_fsl_lptmr_t *p_hw_lptmr)
 }
 
 /**
+ * \brief 预分频因子获取
+ *
+ * \param[in] p_hw_lptmr : 指向LPTMR寄存器块的指针
+ *
+ * \return 预分频的值
+ */
+am_static_inline
+uint32_t amhw_fsl_lptmr_prescaler_get (amhw_fsl_lptmr_t *p_hw_lptmr)
+{
+    return (p_hw_lptmr->prescale >> 3);
+}
+
+/**
  * \brief 预分频因子设定
  *
  * \param[in] p_hw_lptmr : 指向LPTMR寄存器块的指针

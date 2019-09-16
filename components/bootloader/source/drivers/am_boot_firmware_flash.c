@@ -62,11 +62,6 @@ static int __firmware_flash_start (void *p_drv)
         return AM_ENOMEM;
     }
 
-    if(0 != ((p_dev->firmware_dst_addr - flash_info->flash_start_addr) &
-            (flash_info->flash_sector_size - 1))) {
-        return AM_EFAULT;
-    }
-
     p_dev->firmware_total_size     = 0;
     p_dev->erase_sector_start_addr = p_dev->firmware_dst_addr;
     p_dev->curr_program_flash_addr = p_dev->firmware_dst_addr;

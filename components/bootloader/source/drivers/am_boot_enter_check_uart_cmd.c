@@ -78,9 +78,8 @@ static void __callback_timer_handle(void *p_arg)
     index_t = 0;
 }
 
-am_bool_t  __boot_enter_check_uart_cmd(void *p_drv)
+static am_bool_t  __boot_enter_check_uart_cmd(void *p_drv)
 {
-
     if(cmd_flag == CMD_RIGHT) {
         cmd_flag = CMD_ERROR;
          return AM_TRUE;
@@ -92,8 +91,20 @@ am_bool_t  __boot_enter_check_uart_cmd(void *p_drv)
     return AM_FALSE;
 }
 
-static const struct am_boot_enter_check_drv_funcs __g_enter_check_uart_cmd__drv_funcs = {
+static void __enter_check_uart_cmd_reinit(void *p_drv)
+{
+    am_boot_enter_check_uart_cmd_dev_t *p_dev = (am_boot_enter_check_uart_cmd_dev_t *)p_drv;
+
+    /* 使能串口中断模式 */
+    am_uart_ioctl(p_dev->uart_handle, AM_UART_MODE_SET, (void *)AM_UART_MODE_INT);
+    /* 注册发送回调函数 */
+    am_uart_callback_set(p_dev->uart_handle, AM_UART_CALLBACK_RXCHAR_PUT, __uart_rec_callback, NULL);
+
+    am_softimer_init(&receive_callback_timer, __callback_timer_handle, NULL);
+}
+static const struct am_boot_enter_check_drv_funcs __g_enter_check_uart_cmd_drv_funcs = {
     __boot_enter_check_uart_cmd,
+    __enter_check_uart_cmd_reinit,
 };
 
 static am_boot_enter_check_uart_cmd_dev_t __g_enter_check_uart_cmd_dev;
@@ -101,7 +112,7 @@ static am_boot_enter_check_uart_cmd_dev_t __g_enter_check_uart_cmd_dev;
 am_boot_enter_check_handle_t am_boot_enter_check_uart_cmd_init(am_uart_handle_t uart_handle)
 {
     __g_enter_check_uart_cmd_dev.enter_check_serv.p_drv   = &__g_enter_check_uart_cmd_dev;
-    __g_enter_check_uart_cmd_dev.enter_check_serv.p_funcs = &__g_enter_check_uart_cmd__drv_funcs;
+    __g_enter_check_uart_cmd_dev.enter_check_serv.p_funcs = &__g_enter_check_uart_cmd_drv_funcs;
     __g_enter_check_uart_cmd_dev.uart_handle              = uart_handle;
 
     /* 使能串口中断模式 */

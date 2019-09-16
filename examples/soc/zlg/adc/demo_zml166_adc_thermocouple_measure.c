@@ -40,18 +40,18 @@
 /**
  * \brief 测试AML166外接热电偶测量温度例程
  */
-void dome_zml166_adc_thermocouple_measure_entry(void                   *p_handle,
-                                                float                  *p_para,
-                                                uint8_t                 type)
+void dome_zml166_adc_thermocouple_measure_entry(void     *p_handle,
+                                                float    *p_para,
+                                                void     *p_ther_handle)
 {
-    am_zml166_adc_handle_t  handle = (am_zml166_adc_handle_t)p_handle;
-    int32_t  adc_val[1];
     double   temp;
-
-    am_adc_handle_t  adc_handle  = &handle->adc_serve;
+    int32_t  adc_val[1];
+    am_zml166_adc_handle_t  handle      = (am_zml166_adc_handle_t)p_handle;
+    am_ther_formula_t       ther_handle = (am_ther_formula_t)p_ther_handle;
+    am_adc_handle_t         adc_handle  = &handle->adc_serve;
 
     while(1){
-        double    temperature, v1;
+        double temperature, v1;
         /* 测量冷端温度 */
         am_zml166_adc_gain_set(handle, 1);
         am_zml166_adc_reg_set(handle,
@@ -65,7 +65,7 @@ void dome_zml166_adc_thermocouple_measure_entry(void                   *p_handle
         temp = (double)((temp * 8388607 / 2500 ) / (double)((1<<23)-adc_val[0]));
         temperature = 1 / (log(temp)/3435 + 1 / 298.15)-273.15;
 
-        am_thermocouplie_t2v(type, temperature, &v1);
+        am_ther_tem_to_vol(ther_handle, temperature, &v1);
 
         am_zml166_adc_reg_set(handle,
                               AM_ZML166_ADC_ADC3_ADDR,
@@ -77,7 +77,7 @@ void dome_zml166_adc_thermocouple_measure_entry(void                   *p_handle
         temp  = (double)((double)adc_val[0] / 16.0 * 2500 / 8388607  );
         temp  = temp * p_para[8] + p_para[9];
 
-        am_thermocouplie_v2t(type, temp + v1 * 1000, &temperature);
+        am_ther_vol_to_tem(ther_handle, temp + v1, &temperature);
 
         temperature *= 1000;
 

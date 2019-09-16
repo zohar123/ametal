@@ -133,7 +133,7 @@
             <UseExternalTool>0</UseExternalTool>
             <RunIndependent>0</RunIndependent>
             <UpdateFlashBeforeDebugging>1</UpdateFlashBeforeDebugging>
-            <Capability>1</Capability>
+            <Capability>0</Capability>
             <DriverSelection>4096</DriverSelection>
           </Flash1>
           <bUseTDR>1</bUseTDR>
@@ -478,11 +478,6 @@
               <FilePath>..\..\..\..\components\drivers\source\digitron\am_digitron_scan_hc595_gpio.c</FilePath>
             </File>
             <File>
-              <FileName>am_zlg72128.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\components\drivers\source\digitron_key\am_zlg72128.c</FilePath>
-            </File>
-            <File>
               <FileName>am_zlg72128_std.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\components\drivers\source\digitron_key\am_zlg72128_std.c</FilePath>
@@ -606,6 +601,16 @@
               <FileName>am_zlg600.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\components\drivers\source\zlg600\am_zlg600.c</FilePath>
+            </File>
+            <File>
+              <FileName>zlg72128.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\components\drivers\source\digitron_key\zlg72128.c</FilePath>
+            </File>
+            <File>
+              <FileName>zlg72128_platform.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\components\drivers\source\digitron_key\zlg72128_platform.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -2653,11 +2658,6 @@
               <FilePath>..\..\..\..\components\drivers\source\digitron\am_digitron_scan_hc595_gpio.c</FilePath>
             </File>
             <File>
-              <FileName>am_zlg72128.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\components\drivers\source\digitron_key\am_zlg72128.c</FilePath>
-            </File>
-            <File>
               <FileName>am_zlg72128_std.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\components\drivers\source\digitron_key\am_zlg72128_std.c</FilePath>
@@ -2781,6 +2781,16 @@
               <FileName>am_zlg600.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\components\drivers\source\zlg600\am_zlg600.c</FilePath>
+            </File>
+            <File>
+              <FileName>zlg72128.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\components\drivers\source\digitron_key\zlg72128.c</FilePath>
+            </File>
+            <File>
+              <FileName>zlg72128_platform.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\components\drivers\source\digitron_key\zlg72128_platform.c</FilePath>
             </File>
           </Files>
         </Group>
