@@ -12,19 +12,19 @@
 
 /**
  * \file
- * \brief ZLG116 Ä£°å¹¤³Ì
+ * \brief ZLG116 æ¨¡æ¿å·¥ç¨‹
  *
- * - ÊµÑéÏÖÏó:
- *   Ä£°åÀı³Ì:LED0ÒÔ1ÃëµÄÆµÂÊÉÁË¸; demoÀı³ÌÈë¿Ú:Ïê¼ûdemoÈë¿Úº¯ÊıÎÄ¼ş½éÉÜ
+ * - å®éªŒç°è±¡:
+ *   æ¨¡æ¿ä¾‹ç¨‹:LED0ä»¥1ç§’çš„é¢‘ç‡é—ªçƒ; demoä¾‹ç¨‹å…¥å£:è¯¦è§demoå…¥å£å‡½æ•°æ–‡ä»¶ä»‹ç»
  *
  * \internal
  * \par Modification history
  * - 1.00 17-07-07  nwt, first implementation.
  * \endinternal
- */ 
+ */
 
 /**
- * \brief AMetal Ó¦ÓÃ³ÌĞòÈë¿Ú
+ * \brief AMetal åº”ç”¨ç¨‹åºå…¥å£
  */
 #include "ametal.h"
 #include "am_board.h"
@@ -32,11 +32,16 @@
 #include "am_delay.h"
 #include "am_led.h"
 
-int am_main (void)
+#include "rtc.h"
+
+int am_main(void)
 {
     AM_DBG_INFO("Start up successful!\r\n");
 
-    while (1) {
+    vRtcInit();
+
+    while (1)
+    {
 
         am_led_toggle(LED0);
 
